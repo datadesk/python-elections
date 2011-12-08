@@ -32,4 +32,6 @@ Feel free to screw with, destroy, rebuild, rename whatever I've got right now. J
 >>> iowa.get_candidates()
 [<Candidate: Rick Santorum>, <Candidate: Gary Johnson>, <Candidate: Michele Bachmann>, <Candidate: Buddy Roemer>, <Candidate: Jon Huntsman>, <Candidate: Newt Gingrich>, <Candidate: Herman Cain>, <Candidate:  Other>, <Candidate: Mitt Romney>, <Candidate: Rick Perry>, <Candidate: Ron Paul>]
 >>> iowa.get_races()
-[<Race: President>]</code></pre>
+[<Race: President>]
+>>> a.get_candidates_for_race(a.get_races()[0])
+[<Candidate: Rick Santorum>, <Candidate: Gary Johnson>, <Candidate: Michele Bachmann>, <Candidate: Buddy Roemer>, <Candidate: Jon Huntsman>, <Candidate: Newt Gingrich>, <Candidate: Herman Cain>, <Candidate:  Other>, <Candidate: Mitt Romney>, <Candidate: Rick Perry>, <Candidate: Ron Paul>]</code></pre>
