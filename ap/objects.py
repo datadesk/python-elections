@@ -58,3 +58,49 @@ class Race(object):
 
     def __repr__(self):
         return u'<Race: %s>' % self.__unicode__()
+
+class ReportingUnit(object):
+    def __init__(self, ap_number=None, name=None, abbrev=None, fips=None,
+                 precincts_total=None, num_reg_voters=None):
+        self.ap_number = ap_number
+        self.name = name
+        self.abbrev = abbrev
+        self.fips = fips
+        self.precincts_total = precincts_total
+        self.num_reg_voters = num_reg_voters
+        self.results = {}
+
+    def update_result(self, result):
+        self.results[result.candidate.ap_polra_number] = result
+
+    @property
+    def is_state(self):
+        return self.fips == '00000'
+
+    def __unicode__(self):
+        name = self.name
+        if self.is_state:
+            name = '%s (state)' % name
+        return name
+
+    def __repr__(self):
+        return u'<ReportingUnit: %s>' % self.__unicode__()
+
+
+class Result(object):
+    def __init__(self, race=None, candidate=None,
+                 reporting_unit=None, vote_total=None, precincts_reporting=None,
+                 precincts_reporting_percent=None):
+        self.race = race
+        self.candidate = candidate
+        self.reporting_unit = reporting_unit
+        self.vote_total = vote_total
+        self.precincts_reporting = precincts_reporting
+        self.precincts_reporting_percent = precincts_reporting_percent
+
+    def __unicode__(self):
+        return u'%s, %s, %s' % (self.candidate, self.reporting_unit,
+                                self.vote_total)
+
+    def __repr__(self):
+        return u'<Result: %s>' % self.__unicode__()
