@@ -76,7 +76,7 @@ class APResults(object):
         """
         Gets all reporting units that can be defined as counties.
         """
-        return [o for o in self.get_reporting_units() if o.fips and o.fips != o.is_state]
+        return [o for o in self.get_reporting_units() if o.fips and !o.is_state]
 
     def get_state_results(self):
         """
@@ -89,9 +89,6 @@ class APResults(object):
         All results for a specific race
         """
         return [o for o in self.get_state_results() if o.race == race]
-
-    def get_results_for_candidate(self, candidate):
-        return [o for o in self.get_results() if o.candidate == candidate]
 
     def update_results(self):
         self._get_flat_results()
