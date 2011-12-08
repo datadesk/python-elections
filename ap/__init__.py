@@ -32,6 +32,15 @@ class APResults(object):
     def get_candidates(self):
         return self.candidates.values()
 
+    def get_candidates_for_race(self, race):
+        """
+        Takes an AP race number or a race object and returns
+        the candidates for that race.
+        """
+        if type(race) == object:
+            race = race.ap_race_number
+        return [o for o in self.get_candidates() if o.ap_race_number == race]
+
     def get_races(self):
         return self.races.values()
 
@@ -101,7 +110,7 @@ class APResults(object):
             return
 
         race = Race() 
-        race.ap_number = bits[RA_NUM]
+        race.ap_race_number = bits[RA_NUM]
         race.office_name = bits[OFF_NAME]
         race.office_descrip = bits[OFF_DESCRIP]
         race.office_id = bits[OFF_ID]

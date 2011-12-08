@@ -27,9 +27,9 @@ class Candidate(object):
 
 
 class Race(object):
-    def __init__(self, ap_number=None, office_name=None, office_descrip=None,
+    def __init__(self, ap_race_number=None, office_name=None, office_descrip=None,
                  office_id=None, seat_name=None, seat_number=None, scope=None):
-        self.ap_number = ap_number
+        self.ap_race_number = ap_race_number
         self.office_name = office_name
         self.office_descrip = office_descrip
         self.office_id = office_id
