@@ -35,7 +35,7 @@ Feel free to screw with, destroy, rebuild, rename whatever I've got right now. J
 [<Race: President>]
 >>> iowa.get_candidates_for_race(iowa.get_races()[0])
 [<Candidate: Rick Santorum>, <Candidate: Gary Johnson>, <Candidate: Michele Bachmann>, <Candidate: Buddy Roemer>, <Candidate: Jon Huntsman>, <Candidate: Newt Gingrich>...]
->>> a.get_counties()
+>>> iowa.get_counties()
 [<ReportingUnit: Winnebago>, <ReportingUnit: Washington>, <ReportingUnit: Warren>, <ReportingUnit: Webster>, <ReportingUnit: Delaware>...]
 >>> iowa.update_results()
 >>> iowa.get_state_results()
