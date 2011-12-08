@@ -12,7 +12,7 @@ class APResults(object):
         'NP': None
     }
 
-    def __init__(self, state, username=None, password=None, 
+    def __init__(self, state, username=None, password=None, date=None,
                     init_objects=True):
         """
         If init_objects is set to false, you must
@@ -22,6 +22,7 @@ class APResults(object):
         self.username = username
         self.password = password
         self.state = state
+        self.date = date
         self.candidates = {}
         self.reporting_units = {}
         self.races = {}
@@ -76,7 +77,7 @@ class APResults(object):
         """
         Gets all reporting units that can be defined as counties.
         """
-        return [o for o in self.get_reporting_units() if o.fips and !o.is_state]
+        return [o for o in self.get_reporting_units() if o.fips and not o.is_state]
 
     def get_state_results(self):
         """
