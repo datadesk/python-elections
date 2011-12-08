@@ -93,6 +93,8 @@ class APResults(object):
     def get_results_for_candidate(self, candidate):
         return [o for o in self.get_results() if o.candidate == candidate]
 
+    def update_results(self):
+        self._get_flat_results()
 
     def _init_objects(self):
         ftp = FTP('electionsonline.ap.org', self.username, self.password) # Connect
@@ -226,6 +228,10 @@ class APResults(object):
         ftp.quit()
 
     def _process_flat_results_line(self, line):
+        """
+        Takes a line from a flat results file and updates various
+        objects with the new information.
+        """
         # Race / ReportingUnit fields
         IS_TEST, DATE, STATE, COUNTY_NUM, FIPS, RU_NAME, RACE_NUM,\
         OFFICE_ID, RTYPE_ID, SEAT_NUM, OFFICE_NAME, SEAT_NAME, RTYPE_PARTY, RTYPE,\

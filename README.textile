@@ -30,8 +30,15 @@ Feel free to screw with, destroy, rebuild, rename whatever I've got right now. J
 <pre><code>>>> from ap import APResults
 >>> iowa = APResults('IA', UNAME, PWD)
 >>> iowa.get_candidates()
-[<Candidate: Rick Santorum>, <Candidate: Gary Johnson>, <Candidate: Michele Bachmann>, <Candidate: Buddy Roemer>, <Candidate: Jon Huntsman>, <Candidate: Newt Gingrich>, <Candidate: Herman Cain>, <Candidate:  Other>, <Candidate: Mitt Romney>, <Candidate: Rick Perry>, <Candidate: Ron Paul>]
+[<Candidate: Rick Santorum>, <Candidate: Gary Johnson>, <Candidate: Michele Bachmann>, <Candidate: Buddy Roemer>, <Candidate: Jon Huntsman>, <Candidate: Newt Gingrich>...]
 >>> iowa.get_races()
 [<Race: President>]
->>> iowa.get_candidates_for_race(a.get_races()[0])
-[<Candidate: Rick Santorum>, <Candidate: Gary Johnson>, <Candidate: Michele Bachmann>, <Candidate: Buddy Roemer>, <Candidate: Jon Huntsman>, <Candidate: Newt Gingrich>, <Candidate: Herman Cain>, <Candidate:  Other>, <Candidate: Mitt Romney>, <Candidate: Rick Perry>, <Candidate: Ron Paul>]</code></pre>
+>>> iowa.get_candidates_for_race(iowa.get_races()[0])
+[<Candidate: Rick Santorum>, <Candidate: Gary Johnson>, <Candidate: Michele Bachmann>, <Candidate: Buddy Roemer>, <Candidate: Jon Huntsman>, <Candidate: Newt Gingrich>...]
+>>> a.get_counties()
+[<ReportingUnit: Winnebago>, <ReportingUnit: Washington>, <ReportingUnit: Warren>, <ReportingUnit: Webster>, <ReportingUnit: Delaware>...]
+>>> iowa.update_results()
+>>> iowa.get_state_results()
+[<Result:  Other, Iowa (state), 0>, <Result: Jon Huntsman, Iowa (state), 0>, <Result: Newt Gingrich, Iowa (state), 0>, <Result: Herman Cain, Iowa (state), 0>...]
+>>> iowa.get_counties()[6].results
+{'21314': <Result:  Other, Dickinson, 0>, '21302': <Result: Jon Huntsman, Dickinson, 0>, '21301': <Result: Newt Gingrich, Dickinson, 0>, '21300': <Result: Herman Cain, Dickinson, 0>...}</code></pre>
