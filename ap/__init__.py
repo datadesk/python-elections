@@ -37,7 +37,7 @@ class APResults(object):
         Takes an AP race number or a race object and returns
         the candidates for that race.
         """
-        if type(race) == object:
+        if isinstance(race, Race):
             race = race.ap_race_number
         return [o for o in self.get_candidates() if o.ap_race_number == race]
 
@@ -118,7 +118,7 @@ class APResults(object):
         race.seat_number = bits[SEAT_NUM]
         race.scope = bits[SCOPE]
 
-        self.races[race.ap_number] = race
+        self.races[race.ap_race_number] = race
 
     def _get_flat_results(self):
         ftp = FTP('electionsonline.ap.org', self.username, self.password) # Connect
