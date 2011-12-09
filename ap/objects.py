@@ -1,4 +1,14 @@
+"""
+Classes that structure the data provided by AP.
+"""
+
 class Candidate(object):
+    """
+    A choice for voters in a race.
+    
+    In the presidential race, a person, like Barack Obama.
+    In a ballot measure, a direction, like Yes or No.
+    """
     def __init__(self, first_name=None, middle_name=None, last_name=None,
                  abbrev_name=None, suffix=None, use_suffix=False, 
                  ap_natl_number=None, ap_polra_number=None, ap_race_number=None,
@@ -27,6 +37,16 @@ class Candidate(object):
 
 
 class Race(object):
+    """
+    A contest being decided by voters choosing between candidates.
+    
+    For example:
+    
+        * The presidential general election
+        * The governorship of Maine
+        * Proposition 8 in California
+    
+    """
     def __init__(self, ap_race_number=None, office_name=None, office_descrip=None,
                  office_id=None, seat_name=None, seat_number=None, scope=None):
         self.ap_race_number = ap_race_number
@@ -59,7 +79,13 @@ class Race(object):
     def __repr__(self):
         return u'<Race: %s>' % self.__unicode__()
 
+
 class ReportingUnit(object):
+    """
+    An area or unit that groups votes into a total.
+    
+    For instance, a state, a congressional district, a county.
+    """
     def __init__(self, ap_number=None, name=None, abbrev=None, fips=None,
                  precincts_total=None, num_reg_voters=None):
         self.ap_number = ap_number
@@ -88,6 +114,11 @@ class ReportingUnit(object):
 
 
 class Result(object):
+    """
+    The actual vote count for a candidate in a race in a particular reporting unit.
+    
+    Also, the percent reporting.
+    """
     def __init__(self, race=None, candidate=None,
                  reporting_unit=None, vote_total=None, precincts_reporting=None,
                  precincts_reporting_percent=None):
@@ -104,3 +135,5 @@ class Result(object):
 
     def __repr__(self):
         return u'<Result: %s>' % self.__unicode__()
+
+
