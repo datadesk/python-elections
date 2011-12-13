@@ -263,7 +263,7 @@ class APResults(object):
             result = Result()
             result.race = race
             result.candidate = candidate
-            result.vote_total = cand[VOTE_COUNT]
+            result.vote_total = int(cand[VOTE_COUNT])
             result.reporting_unit = reporting_unit
             result.precincts_reporting = int(primary_bits[PRECINCTS_REPORTING])
             result.precincts_reporting_percent = get_percentage(result.precincts_reporting,
@@ -277,8 +277,8 @@ class APResults(object):
         # If this is a state-wide result
         if is_state:
             # Update the race with precinct reporting info
-            race.precincts_total = primary_bits[TOT_PRECINCTS]
-            race.precincts_reporting = primary_bits[PRECINCTS_REPORTING]
+            race.precincts_total = int(primary_bits[TOT_PRECINCTS])
+            race.precincts_reporting = int(primary_bits[PRECINCTS_REPORTING])
             race.precincts_reporting_percent =  get_percentage(float(race.precincts_reporting), 
                                                     float(race.precincts_total))
             race.votes_cast = votes_cast
