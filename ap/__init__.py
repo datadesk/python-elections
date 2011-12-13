@@ -188,61 +188,39 @@ class APResults(object):
             self._races.update({race.ap_race_number: race})
     
     def _init_reporting_units(self, ftp):
-        # Download California candidates file
-        state_dir = '/inits/%s/' % self.state
-        #TODO: How do we get US files when they're
-        # coded by date? Do we ask for a date string
-        # in the APResults init?
-        #if self.state == 'US':
-        #    cali_results = 'US_20101102_ru.txt'
-        #else:
-        results_file = '%s_ru.txt' % self.state
-        ftp.retrlines('RETR ' + os.path.join(state_dir, results_file), self._process_ru_init_line)
-
-    def _process_ru_init_line(self, line):
         """
-        Takes a single line from the CA_ru.txt init file and turns it into a
-        ReportingUnit object. With the exception of the state (ap_number: 1), all
-        ReportingUnit objects should be counties.
-        Will also load US states.
+        Download all the reporting units and load the data.
         """
-
-        # The fields we want
-        AP_NUMBER, NAME, ABBREV, FIPS, NUM_PRECINCTS, NUM_REG_VOTERS = (0,2,3,6,7,8)
-
-        # Split it up and strip whitespace at the same time
-        bits = map(lambda x: x.strip(), line.split('|'))
-        if len(bits) < 2:
-            return
-        del bits[0]
-        del bits[-1]
-        if 'ru' in bits[0]:
-            return
-
-        ru = ReportingUnit()
-        ru.name = bits[NAME]
-        ru.ap_number = bits[AP_NUMBER]
-        ru.fips = bits[FIPS]
-        ru.abbrev = bits[ABBREV]
-        ru.precincts_total = bits[NUM_PRECINCTS]
-        ru.num_reg_voters = bits[NUM_REG_VOTERS]
-
-        self._reporting_units.update({ru.fips: ru})
-
+        # Get the data
+        ru_list = self._fetch_csv("/inits/%(state)s/%(state)s_ru.txt" % self.__dict__)
+        # Loop through them all
+        for ru in ru_list:
+            # Create ReportingUnit objects...
+            ru = ReportingUnit(
+                name = ru['ru_name'],
+                ap_number = ru['ru_number'],
+                fips = ru['ru_fip'],
+                abbrev = ru['ru_abbrv'],
+                precincts_total = ru['ru_precincts'],
+                num_reg_voters = ru['ru_reg_voters'],
+            )
+            # And add them to the global store
+            self._reporting_units.update({ru.fips: ru})
+    
     def _get_flat_results(self, ftp=None):
         if not ftp:
             ftp = FTP('electionsonline.ap.org', self.username, self.password) # Connect
-
+        
         # Download state results file
         if self.state == 'US':
             file_dir = '/US_topofticket/flat/'
         else:
             file_dir = '/%s/flat/' % self.state
         results_file = '%s.txt' % self.state
-
+        
         ftp.retrlines('RETR ' + os.path.join(file_dir, results_file), self._process_flat_results_line)  
         ftp.quit()
-
+    
     def _process_flat_results_line(self, line):
         """
         Takes a line from a flat results file and updates various
@@ -253,11 +231,11 @@ class APResults(object):
         OFFICE_ID, RTYPE_ID, SEAT_NUM, OFFICE_NAME, SEAT_NAME, RTYPE_PARTY, RTYPE,\
         OFFICE_DESCRIP, MAX_WINNERS, NUM_RUNOFF, PRECINCTS_REPORTING, TOT_PRECINCTS =\
         (0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18)
-
+        
         # Candidate fields
         CANDIDATE_NUM, ORDER, PARTY, FNAME, MNAME, LNAME, SFFX, USE_SFFX,\
         INCUMBENT, VOTE_COUNT, IS_WINNER, NPID = (0,1,2,3,4,5,6,7,8,9,10,11)
-
+        
         bits = line.split(';')
         del bits[-1]
 
@@ -266,7 +244,7 @@ class APResults(object):
         # The next X set of 12 fields belong to X # of candidates
         # So we split by 12, and len(candidate_bits) == # of candidates == X
         candidate_bits = split_len(bits[19:], 12) 
-
+        
         is_state = primary_bits[COUNTY_NUM] == '1'
         
         if primary_bits[FIPS] == '0':
@@ -284,7 +262,7 @@ class APResults(object):
                 votes_cast += candidate.vote_total
             candidate.is_winner = cand[IS_WINNER] == 'X'
             candidate.is_runoff = cand[IS_WINNER] == 'R'
-
+            
             result = Result()
             result.race = race
             result.candidate = candidate
@@ -293,12 +271,12 @@ class APResults(object):
             result.precincts_reporting = int(primary_bits[PRECINCTS_REPORTING]),
             result.precincts_reporting_percent = get_percentage(result.precincts_reporting,
                                                     int(primary_bits[TOT_PRECINCTS]))
-
+            
             reporting_unit._results.update({candidate.ap_polra_number: result})
             if is_state:
                 # Set the state-wide result for this candidate
                 race._state_results.update({candidate.ap_polra_number: result})
-
+        
         # If this is a state-wide result
         if is_state:
             # Update the race with precinct reporting info
@@ -307,7 +285,6 @@ class APResults(object):
             race.precincts_reporting_percent =  get_percentage(float(race.precincts_reporting), 
                                                     float(race.precincts_total))
             race.votes_cast = votes_cast
-
+            
             for candidate in race.candidates:
                 candidate.vote_total_percent = get_percentage(candidate.vote_total, votes_cast)
-    
