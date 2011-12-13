@@ -187,24 +187,6 @@ class APResults(object):
             # And add it to the global store
             self._races.update({race.ap_race_number: race})
     
-    def _process_race_init_line(self, line):
-        """
-        Takes a single line from the CA_race.txt init file and turns it into a
-        Race object.
-        """
-        RA_NUM, SEAT_NUM, OFF_ID, OFF_DESCRIP,\
-        OFF_NAME, SEAT_NAME, SCOPE  = (0, 2, 4, 8, 10, 11, 12, )
-
-        bits = map(lambda x: x.strip(), line.split('|'))
-        if len(bits) < 2:
-            return
-        del bits[0]
-        del bits[-1]
-        if 'ra' in bits[0]:
-            return
-
-
-
     def _init_reporting_units(self, ftp):
         # Download California candidates file
         state_dir = '/inits/%s/' % self.state
