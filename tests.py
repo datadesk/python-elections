@@ -8,8 +8,8 @@ a file called private_settings.py
 """
 import os
 import unittest
-from ap import APClient
-from ap.objects import Candidate, Race, ReportingUnit
+from elections import AP
+from elections.objects import Candidate, Race, ReportingUnit
 from private_settings import AP_USERNAME, AP_PASSWORD
 
 #
@@ -19,7 +19,7 @@ from private_settings import AP_USERNAME, AP_PASSWORD
 class BaseTest(unittest.TestCase):
     
     def setUp(self):
-        self.client = APClient(AP_USERNAME, AP_PASSWORD)
+        self.client = AP(AP_USERNAME, AP_PASSWORD)
         self.iowa = self.client.get_state("IA")
 
 
