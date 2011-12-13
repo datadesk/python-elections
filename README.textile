@@ -68,8 +68,11 @@ print "%s votes cast" % gop_caucus.votes_cast
 state_results = [(
     i.vote_total,
     calculate.percentage(i.vote_total, gop_caucus.votes_cast),
-    i.candidate.__unicode__()
+    i.candidate.__unicode__(),
+    i.candidate.is_winner,
     ) for i in gop_caucus.state_results]
+
 state_results.sort(key=itemgetter(0,2))
+
 for cand in state_results:
-    print cand[2], cand[1], cand[0]</code></pre>
+    print cand[2], cand[1], cand[0], cand[3]</code></pre>
