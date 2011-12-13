@@ -49,7 +49,8 @@ class Race(object):
     
     """
     def __init__(self, ap_race_number=None, office_name=None, office_description=None,
-                 office_id=None, seat_name=None, seat_number=None, scope=None):
+                 office_id=None, seat_name=None, seat_number=None, scope=None,
+                 date=None, num_winners=None, party=None, uncontested=None):
         self.ap_race_number = ap_race_number
         self.office_name = office_name
         self.office_description = office_description
@@ -57,6 +58,10 @@ class Race(object):
         self.seat_name = seat_name
         self.seat_number = seat_number
         self.scope = scope
+        self.date = date
+        self.num_winners = num_winners
+        self.party = party
+        self.uncontested = uncontested
         self._candidates = {}
         self._state_results = {}
 

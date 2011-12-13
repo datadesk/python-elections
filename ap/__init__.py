@@ -2,6 +2,7 @@ import os
 import csv
 from cStringIO import StringIO
 from ftplib import FTP
+from datetime import date
 from tools import split_len, get_percentage, strip_dict
 from ap.objects import Candidate, Race, ReportingUnit, Result
 
@@ -162,10 +163,30 @@ class APResults(object):
             self._races[candidate.ap_race_number].add_candidate(candidate)
     
     def _init_races(self, ftp):
-        cali_dir = '/inits/%s/' % self.state
-        cali_results = '%s_race.txt' % self.state
-        ftp.retrlines('RETR ' + os.path.join(cali_dir, cali_results), self._process_race_init_line)   
-
+        """
+        Download all the races in the state and load the data.
+        """
+        # Get the data
+        race_list = self._fetch_csv("/inits/%(state)s/%(state)s_race.txt" % self.__dict__)
+        # Loop through it all
+        for race in race_list:
+            # Create a Race object...
+            race = Race(
+                ap_race_number = race['ra_number'],
+                office_name = race['ot_name'],
+                office_description = race['of_description'],
+                office_id = race['office_id'],
+                seat_name = race['se_name'],
+                seat_number = race['se_number'],
+                scope = race['of_scope'],
+                date = date(*map(int, [race['el_date'][:4], race['el_date'][4:6], race['el_date'][6:]])),
+                num_winners = race['ra_num_winners'],
+                party = self._parties.get(race['rt_party_name']),
+                uncontested = race['ra_uncontested'],
+            )
+            # And add it to the global store
+            self._races.update({race.ap_race_number: race})
+    
     def _process_race_init_line(self, line):
         """
         Takes a single line from the CA_race.txt init file and turns it into a
@@ -182,16 +203,7 @@ class APResults(object):
         if 'ra' in bits[0]:
             return
 
-        race = Race() 
-        race.ap_race_number = bits[RA_NUM]
-        race.office_name = bits[OFF_NAME]
-        race.office_description = bits[OFF_DESCRIP]
-        race.office_id = bits[OFF_ID]
-        race.seat_name = bits[SEAT_NAME]
-        race.seat_number = bits[SEAT_NUM]
-        race.scope = bits[SCOPE]
 
-        self._races.update({race.ap_race_number: race})
 
     def _init_reporting_units(self, ftp):
         # Download California candidates file
