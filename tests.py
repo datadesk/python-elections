@@ -8,7 +8,7 @@ a file called private_settings.py
 """
 import os
 import unittest
-from ap import APResults
+from ap import APClient
 from ap.objects import Candidate
 from private_settings import AP_USERNAME, AP_PASSWORD
 
@@ -19,13 +19,14 @@ from private_settings import AP_USERNAME, AP_PASSWORD
 class BaseTest(unittest.TestCase):
     
     def setUp(self):
-        self.client = APResults('IA', AP_USERNAME, AP_PASSWORD)
+        self.client = APClient(AP_USERNAME, AP_PASSWORD)
+        self.iowa = self.client.get_state("IA")
 
 
-class DocumentSearchTest(BaseTest):
+class StateTest(BaseTest):
     
-    def test_get_candidates(self):
-        obj_list = self.client.get_candidates()
+    def test_get_candidate(self):
+        obj_list = self.iowa.candidates
         self.assertEqual(type(obj_list), type([]))
         self.assertEqual(len(obj_list) > 0, True)
         self.assertEqual(type(obj_list[0]), Candidate)
