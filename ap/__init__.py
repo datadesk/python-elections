@@ -1,7 +1,10 @@
 import os
+import csv
+from cStringIO import StringIO
 from ftplib import FTP
-from tools import split_len, get_percentage
+from tools import split_len, get_percentage, strip_dict
 from ap.objects import Candidate, Race, ReportingUnit, Result
+
 
 class APClient(object):
     def __init__(self, username=None, password=None):
@@ -20,7 +23,7 @@ class APResults(object):
         'Ind': 'I',
         'NP': None
     }
-
+    
     def __init__(self, state, username=None, password=None, init_objects=True):
         """
         If init_objects is set to false, you must
@@ -30,10 +33,10 @@ class APResults(object):
         self.username = username
         self.password = password
         self.state = state
-        self._candidates = {}
+        self._candidates = {} # All candidates keyed by AP's `ap_polra_number` ID.
         self._reporting_units = {}
         self._races = {}
-    
+        
         if init_objects:
             self._init_objects()
     
@@ -105,56 +108,59 @@ class APResults(object):
     # Private methods
     #
     
+    def _fetch_csv(self, path):
+        """
+        Fetch a delimited file from the AP FTP.
+        
+        Provide the path of the file you want.
+        
+        Returns a list of dictionaries that's ready to roll.
+        """
+        buffer = StringIO()
+        cmd = 'RETR %s' % path
+        self.ftp.retrbinary(cmd, buffer.write)
+        reader = csv.DictReader(StringIO(buffer.getvalue()), delimiter='|')
+        return [strip_dict(i) for i in reader]
+    
     def _init_objects(self, results=True):
-        ftp = FTP('electionsonline.ap.org', self.username, self.password) # Connect
-        self._init_races(ftp)
-        self._init_candidates(ftp)
-        self._init_reporting_units(ftp)
+        self.ftp = FTP('electionsonline.ap.org', self.username, self.password) # Connect
+        self._init_races(self.ftp)
+        self._init_candidates()
+        self._init_reporting_units(self.ftp)
         if results:
-            self.fetch_results(ftp)
+            self.fetch_results(self.ftp)
         else:
             # Probably goofy, but fetch_results quits the
             # FTP, so we only need to quit if results=False
             ftp.quit()
     
-    def _init_candidates(self, ftp):
-        # Download state candidates file
-        cali_dir = '/inits/%s/' % self.state
-        cali_results = '%s_pol.txt' % self.state
-        ftp.retrlines('RETR ' + os.path.join(cali_dir, cali_results), self._process_candidate_init_line)  
+    def _init_candidates(self):
+        """
+        Download the state's candidate file and load the data.
+        """
+        # Fetch the data from the FTP
+        candidate_list = self._fetch_csv("/inits/%(state)s/%(state)s_pol.txt" % self.__dict__)
+        # Loop through it...
+        for cand in candidate_list:
+            # Create a Candidate...
+            candidate = Candidate(
+                first_name = cand['pol_first_name'],
+                middle_name = cand['pol_middle_name'],
+                last_name = cand['pol_last_name'],
+                ap_race_number = cand['ra_number'],
+                ap_natl_number = cand['pol_nat_id'],
+                ap_polra_number = cand['polra_number'],
+                ap_pol_number = cand['pol_number'],
+                combined_id = u'%s%s' % (self.state, cand['polra_number']),
+                abbrev_name = cand['pol_abbrv'],
+                suffix = cand['pol_junior'],
+                party = self._parties.get(cand['polra_party']),
+                # use_suffix?
+            )
+            # And add it to the global data stores
+            self._candidates.update({candidate.ap_polra_number: candidate})
+            self._races[candidate.ap_race_number].add_candidate(candidate)
     
-    def _process_candidate_init_line(self, line):
-        """
-        Takes a single line from the CA_pol.txt init file and turns it into a
-        Candidate object.
-        """
-        POLRA_NUM, FNAME, MNAME, LNAME,\
-        ABBRV, SFFX, PARTY, RA_NUM, NAT_NUM, = (0,1,2,3,4,5,6,7,8)
-
-        bits = map(lambda x: x.strip(), line.split('|'))
-        if len(bits) < 2:
-            return
-        del bits[0]
-        del bits[-1]
-        if 'polra' in bits[0]:
-            return
-
-        candidate = Candidate()
-        candidate.state_abbrev = self.state,
-        candidate.first_name = bits[FNAME]
-        candidate.middle_name = bits[MNAME]
-        candidate.last_name = bits[LNAME]
-        candidate.ap_race_number = bits[RA_NUM]
-        candidate.ap_natl_number = bits[NAT_NUM]
-        candidate.ap_polra_number = bits[POLRA_NUM]
-        candidate.combined_id = u'%s%s' % (self.state, candidate.ap_polra_number)
-        candidate.abbrev_name = bits[ABBRV]
-        candidate.suffix = bits[SFFX]
-        candidate.party = self._parties.get(bits[PARTY])
-
-        self._candidates.update({candidate.ap_polra_number: candidate})
-        self._races[candidate.ap_race_number].add_candidate(candidate)
-
     def _init_races(self, ftp):
         cali_dir = '/inits/%s/' % self.state
         cali_results = '%s_race.txt' % self.state

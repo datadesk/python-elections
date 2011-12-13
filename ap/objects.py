@@ -12,7 +12,7 @@ class Candidate(object):
     def __init__(self, first_name=None, middle_name=None, last_name=None,
                  abbrev_name=None, suffix=None, use_suffix=False, 
                  ap_natl_number=None, ap_polra_number=None, ap_race_number=None,
-                 combined_id=None, party=None, vote_total=None,
+                 combined_id=None, party=None, vote_total=None, ap_pol_number=None,
                  vote_total_percent=None):
         self.first_name = first_name
         self.middle_name = middle_name
@@ -23,6 +23,7 @@ class Candidate(object):
         self.ap_natl_number = ap_natl_number
         self.ap_polra_number = ap_polra_number
         self.ap_race_number = ap_race_number
+        self.ap_pol_number = ap_pol_number
         self.combined_id = combined_id
         self.party = party
 
