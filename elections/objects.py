@@ -28,6 +28,8 @@ class Candidate(object):
         self.party = party
         self.is_winner = is_winner
         self.is_runoff = is_runoff
+        self.vote_total = vote_total
+        self.vote_total_percent = vote_total_percent
 
     def __unicode__(self):
         if not self.last_name in ('Yes', 'No'):
