@@ -13,7 +13,7 @@ class Candidate(object):
                  abbrev_name=None, suffix=None, use_suffix=False, 
                  ap_natl_number=None, ap_polra_number=None, ap_race_number=None,
                  combined_id=None, party=None, vote_total=None, ap_pol_number=None,
-                 vote_total_percent=None):
+                 vote_total_percent=None, is_winner=None):
         self.first_name = first_name
         self.middle_name = middle_name
         self.last_name = last_name
@@ -26,6 +26,7 @@ class Candidate(object):
         self.ap_pol_number = ap_pol_number
         self.combined_id = combined_id
         self.party = party
+        self.is_winner = is_winner
 
     def __unicode__(self):
         if not self.last_name in ('Yes', 'No'):
