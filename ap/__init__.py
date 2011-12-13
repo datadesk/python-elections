@@ -33,56 +33,66 @@ class APResults(object):
         self._candidates = {}
         self._reporting_units = {}
         self._races = {}
-
+    
         if init_objects:
             self._init_objects()
-
+    
+    def __unicode__(self):
+        return self.state
+    
+    def __repr__(self):
+        return u'<APResults: %s>' % self.__unicode__()
+    
+    #
+    # Public methods
+    #
+    
     def get_candidate(self, ap_polra_num):
         """
         Takes AP's polra number and returns a Candidate object.
         """
         return self._candidates.get(ap_polra_num, None)
-
+    
     @property
     def candidates(self):
         """
         Get all candidates
         """
         return self._candidates.values()
-
+    
+    def get_race(self, ap_race_number):
+        """
+        Get a single Race object by it's ap_race_number
+        """
+        return self._races.get(ap_race_number, None)
+    
     @property
     def races(self):
         """
         Get all races
         """
         return self._races.values()
-
-    def get_race(self, ap_race_number):
-        """
-        Get a single Race object by it's ap_race_number
-        """
-        return self._races.get(ap_race_number, None)
-
+    
     def get_reporting_unit(self, fips):
         """
         Get a single ReportinUnit
         """
         return self._reporting_units.get(fips, None)
-
+    
     @property
     def reporting_units(self):
         """
         Get all reporting units
         """
         return self._reporting_units.values()
-
+    
     @property
     def counties(self):
         """
         Gets all reporting units that can be defined as counties.
         """
         return [o for o in self.reporting_units if o.fips and not o.is_state]
-
+    
     def fetch_results(self, ftp=None):
         """
         This will fetch and fill out all of the results. If called again,
@@ -90,7 +100,11 @@ class APResults(object):
         the most fresh data from the AP.
         """
         self._get_flat_results(ftp)
-
+    
+    # 
+    # Private methods
+    #
+    
     def _init_objects(self, results=True):
         ftp = FTP('electionsonline.ap.org', self.username, self.password) # Connect
         self._init_races(ftp)
@@ -102,13 +116,13 @@ class APResults(object):
             # Probably goofy, but fetch_results quits the
             # FTP, so we only need to quit if results=False
             ftp.quit()
-
+    
     def _init_candidates(self, ftp):
         # Download state candidates file
         cali_dir = '/inits/%s/' % self.state
         cali_results = '%s_pol.txt' % self.state
         ftp.retrlines('RETR ' + os.path.join(cali_dir, cali_results), self._process_candidate_init_line)  
-
+    
     def _process_candidate_init_line(self, line):
         """
         Takes a single line from the CA_pol.txt init file and turns it into a
@@ -296,9 +310,4 @@ class APResults(object):
 
             for candidate in race.candidates:
                 candidate.vote_total_percent = get_percentage(candidate.vote_total, votes_cast)
-
-    def __unicode__(self):
-        return self.state
-
-    def __repr__(self):
-        return u'<APResults: %s>' % self.__unicode__()
+    
