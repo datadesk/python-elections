@@ -42,3 +42,34 @@ Current API:
 >>> iowa.counties[0].results[:3]
 [<Result:  Other, Winnebago, 0>, <Result: Jon Huntsman, Winnebago, 0>, <Result: Newt Gingrich, Winnebago, 0>]
 </code></pre>
+
+Pull Iowa GOP results
+
+<pre><code>import calculate
+from elections import AP
+from operator import itemgetter
+from private_settings import *
+
+# Log into AP
+client = AP(AP_USERNAME, AP_PASSWORD)
+
+# Pull the data on the Iowa GOP caucus
+iowa = client.get_state("IA")
+gop_caucus = [i for i in iowa.races if i.party == 'R' and i.office_name == 'President'][0]
+
+print gop_caucus.office_name
+print "%s/%s (%s percent)" % (
+    gop_caucus.precincts_reporting,
+    gop_caucus.precincts_total,
+    gop_caucus.precincts_reporting_percent,
+)
+print "%s votes cast" % gop_caucus.votes_cast
+
+state_results = [(
+    i.vote_total,
+    calculate.percentage(i.vote_total, gop_caucus.votes_cast),
+    i.candidate.__unicode__()
+    ) for i in gop_caucus.state_results]
+state_results.sort(key=itemgetter(0,2))
+for cand in state_results:
+    print cand[2], cand[1], cand[0]</code></pre>
