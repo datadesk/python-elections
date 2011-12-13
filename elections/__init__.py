@@ -265,7 +265,7 @@ class APResults(object):
             result.candidate = candidate
             result.vote_total = cand[VOTE_COUNT]
             result.reporting_unit = reporting_unit
-            result.precincts_reporting = int(primary_bits[PRECINCTS_REPORTING]),
+            result.precincts_reporting = int(primary_bits[PRECINCTS_REPORTING])
             result.precincts_reporting_percent = get_percentage(result.precincts_reporting,
                                                     int(primary_bits[TOT_PRECINCTS]))
             
