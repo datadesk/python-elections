@@ -125,9 +125,9 @@ class APResults(object):
     
     def _init_objects(self, results=True):
         self.ftp = FTP('electionsonline.ap.org', self.username, self.password) # Connect
-        self._init_races(self.ftp)
+        self._init_races()
         self._init_candidates()
-        self._init_reporting_units(self.ftp)
+        self._init_reporting_units()
         if results:
             self.fetch_results(self.ftp)
         else:
@@ -162,7 +162,7 @@ class APResults(object):
             self._candidates.update({candidate.ap_polra_number: candidate})
             self._races[candidate.ap_race_number].add_candidate(candidate)
     
-    def _init_races(self, ftp):
+    def _init_races(self):
         """
         Download all the races in the state and load the data.
         """
@@ -187,7 +187,7 @@ class APResults(object):
             # And add it to the global store
             self._races.update({race.ap_race_number: race})
     
-    def _init_reporting_units(self, ftp):
+    def _init_reporting_units(self):
         """
         Download all the reporting units and load the data.
         """
