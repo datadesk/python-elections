@@ -119,6 +119,11 @@ class ReportingUnit(object):
     def results(self):
         return self._results.values()
 
+    def results_for_race(self, race):
+        if isinstance(race, Race):
+            race = race.ap_race_number
+        return [o for o in self._results.values() if o.race.ap_race_number == race]
+
     def update_result(self, result):
         self._results[result.candidate.ap_polra_number] = result
 
