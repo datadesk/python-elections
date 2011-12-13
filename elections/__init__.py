@@ -3,7 +3,7 @@ import csv
 from ftplib import FTP
 from datetime import date
 from cStringIO import StringIO
-from tools import split_len, get_percentage, strip_dict
+from utils import split_len, get_percentage, strip_dict
 from objects import Candidate, Race, ReportingUnit, Result
 
 

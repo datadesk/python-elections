@@ -21,3 +21,4 @@ def strip_dict(d):
     """
     return dict((k.strip(), v.strip()) for k, v in d.items())
     
+
