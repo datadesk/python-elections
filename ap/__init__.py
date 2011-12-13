@@ -1,8 +1,8 @@
 import os
 import csv
-from cStringIO import StringIO
 from ftplib import FTP
 from datetime import date
+from cStringIO import StringIO
 from tools import split_len, get_percentage, strip_dict
 from ap.objects import Candidate, Race, ReportingUnit, Result
 
@@ -25,7 +25,7 @@ class APResults(object):
         'NP': None
     }
     
-    def __init__(self, state, username=None, password=None, init_objects=True):
+    def __init__(self, state, username=None, password=None, init_objects=True, results=True):
         """
         If init_objects is set to false, you must
         call the init function later before you
@@ -39,7 +39,16 @@ class APResults(object):
         self._races = {}
         
         if init_objects:
-            self._init_objects()
+            self.ftp = FTP('electionsonline.ap.org', self.username, self.password) # Connect
+            self._init_races()
+            self._init_candidates()
+            self._init_reporting_units()
+            if results:
+                self.fetch_results(self.ftp)
+            else:
+                # Probably goofy, but fetch_results quits the
+                # FTP, so we only need to quit if results=False
+                ftp.quit()
     
     def __unicode__(self):
         return self.state
@@ -122,18 +131,6 @@ class APResults(object):
         self.ftp.retrbinary(cmd, buffer.write)
         reader = csv.DictReader(StringIO(buffer.getvalue()), delimiter='|')
         return [strip_dict(i) for i in reader]
-    
-    def _init_objects(self, results=True):
-        self.ftp = FTP('electionsonline.ap.org', self.username, self.password) # Connect
-        self._init_races()
-        self._init_candidates()
-        self._init_reporting_units()
-        if results:
-            self.fetch_results(self.ftp)
-        else:
-            # Probably goofy, but fetch_results quits the
-            # FTP, so we only need to quit if results=False
-            ftp.quit()
     
     def _init_candidates(self):
         """
