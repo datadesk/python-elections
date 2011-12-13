@@ -28,8 +28,8 @@
 Feel free to screw with, destroy, rebuild, rename whatever I've got right now. Just getting something down on paper, so to speak.
 
 Current API:
-<pre><code>>>> from ap import APClient
->>> client = APClient(username, password)
+<pre><code>>>> from elections import AP
+>>> client = AP(username, password)
 >>> iowa = client.get_state('IA')
 >>> iowa.races
 [<Race: President>]
