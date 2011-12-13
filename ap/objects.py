@@ -57,6 +57,11 @@ class Race(object):
         self.seat_number = seat_number
         self.scope = scope
         self._candidates = {}
+        self._state_results = {}
+
+    @property
+    def state_results(self):
+        return self._state_results.values()
 
     @property
     def candidates(self):

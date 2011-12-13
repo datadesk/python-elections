@@ -20,8 +20,7 @@ class APClient(object):
             'NP': None
         }
 
-        def __init__(self, state, username=None, password=None, date=None,
-                        init_objects=True):
+        def __init__(self, state, username=None, password=None, init_objects=True):
             """
             If init_objects is set to false, you must
             call the init function later before you
@@ -30,11 +29,9 @@ class APClient(object):
             self.username = username
             self.password = password
             self.state = state
-            self.date = date
             self._candidates = {}
             self._reporting_units = {}
             self._races = {}
-            self._state_results = {}
 
             if init_objects:
                 self._init_objects()
@@ -84,19 +81,6 @@ class APClient(object):
             Gets all reporting units that can be defined as counties.
             """
             return [o for o in self.reporting_units if o.fips and not o.is_state]
-
-        @property
-        def state_results(self):
-            """
-            Gets all of the results in the state
-            """
-            return self._state_results.values()
-
-        def get_state_results_for_race(self, race):
-            """
-            All results for a specific race
-            """
-            return [o for o in self.state_results if o.race == race]
 
         def fetch_results(self, ftp=None):
             """
@@ -298,7 +282,7 @@ class APClient(object):
                 reporting_unit._results.update({candidate.ap_polra_number: result})
                 if is_state:
                     # Set the state-wide result for this candidate
-                    self._state_results.update({candidate.ap_polra_number: result})
+                    race._state_results.update({candidate.ap_polra_number: result})
 
             # If this is a state-wide result
             if is_state:
@@ -309,7 +293,7 @@ class APClient(object):
                                                         float(race.precincts_total))
                 race.votes_cast = votes_cast
 
-                for candidate in self.get_candidates_for_race(race):
+                for candidate in race.candidates:
                     candidate.vote_total_percent = get_percentage(candidate.vote_total, votes_cast)
 
 
