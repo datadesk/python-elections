@@ -47,15 +47,23 @@ class Race(object):
         * Proposition 8 in California
     
     """
-    def __init__(self, ap_race_number=None, office_name=None, office_descrip=None,
+    def __init__(self, ap_race_number=None, office_name=None, office_description=None,
                  office_id=None, seat_name=None, seat_number=None, scope=None):
         self.ap_race_number = ap_race_number
         self.office_name = office_name
-        self.office_descrip = office_descrip
+        self.office_description = office_description
         self.office_id = office_id
         self.seat_name = seat_name
         self.seat_number = seat_number
         self.scope = scope
+        self._candidates = {}
+
+    @property
+    def candidates(self):
+        return self._candidates.values()
+
+    def add_candidate(self, candidate):
+        self._candidates.update({candidate.ap_polra_number: candidate})
 
     def get_name(self):
         name = ''
@@ -94,10 +102,14 @@ class ReportingUnit(object):
         self.fips = fips
         self.precincts_total = precincts_total
         self.num_reg_voters = num_reg_voters
-        self.results = {}
+        self._results = {}
+
+    @property
+    def results(self):
+        return self._results.values()
 
     def update_result(self, result):
-        self.results[result.candidate.ap_polra_number] = result
+        self._results[result.candidate.ap_polra_number] = result
 
     @property
     def is_state(self):
