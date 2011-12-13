@@ -30,7 +30,7 @@ class StateTest(BaseTest):
         self.assertEqual(type(obj_list), type([]))
         self.assertEqual(len(obj_list) > 0, True)
         self.assertEqual(type(obj_list[0]), Candidate)
-   
+    
     def test_races(self):
         obj_list = self.iowa.races
         self.assertEqual(type(obj_list), type([]))
@@ -42,6 +42,13 @@ class StateTest(BaseTest):
         self.assertEqual(type(obj_list), type([]))
         self.assertEqual(len(obj_list) > 0, True)
         self.assertEqual(type(obj_list[0]), ReportingUnit)
+    
+    def test_counties(self):
+        obj_list = self.iowa.counties
+        self.assertEqual(type(obj_list), type([]))
+        self.assertEqual(len(obj_list) == 99, True)
+        self.assertEqual(type(obj_list[0]), ReportingUnit)
+
 
 
 if __name__ == '__main__':
