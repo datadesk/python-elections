@@ -25,7 +25,7 @@ class APResults(object):
         'NP': None
     }
     
-    def __init__(self, state, username=None, password=None, init_objects=True, results=True):
+    def __init__(self, state, username=None, password=None, results=True):
         """
         If init_objects is set to false, you must
         call the init function later before you
@@ -38,17 +38,16 @@ class APResults(object):
         self._reporting_units = {}
         self._races = {}
         
-        if init_objects:
-            self.ftp = FTP('electionsonline.ap.org', self.username, self.password) # Connect
-            self._init_races()
-            self._init_candidates()
-            self._init_reporting_units()
-            if results:
-                self.fetch_results(self.ftp)
-            else:
-                # Probably goofy, but fetch_results quits the
-                # FTP, so we only need to quit if results=False
-                ftp.quit()
+        self.ftp = FTP('electionsonline.ap.org', self.username, self.password) # Connect
+        self._init_races()
+        self._init_candidates()
+        self._init_reporting_units()
+        if results:
+            self.fetch_results(self.ftp)
+        else:
+            # Probably goofy, but fetch_results quits the
+            # FTP, so we only need to quit if results=False
+            self.ftp.quit()
     
     def __unicode__(self):
         return self.state
