@@ -1,9 +1,10 @@
 import os
 import csv
+import calculate
 from ftplib import FTP
 from datetime import date
 from cStringIO import StringIO
-from utils import split_len, get_percentage, strip_dict
+from utils import split_len, strip_dict
 from objects import Candidate, Race, ReportingUnit, Result
 
 
@@ -265,7 +266,7 @@ class APResults(object):
             result.vote_total = int(cand[VOTE_COUNT])
             result.reporting_unit = reporting_unit
             result.precincts_reporting = int(primary_bits[PRECINCTS_REPORTING])
-            result.precincts_reporting_percent = get_percentage(result.precincts_reporting,
+            result.precincts_reporting_percent = calculate.percentage(result.precincts_reporting,
                                                     int(primary_bits[TOT_PRECINCTS]))
             
             reporting_unit._results.update({candidate.ap_polra_number: result})
@@ -278,9 +279,9 @@ class APResults(object):
             # Update the race with precinct reporting info
             race.precincts_total = int(primary_bits[TOT_PRECINCTS])
             race.precincts_reporting = int(primary_bits[PRECINCTS_REPORTING])
-            race.precincts_reporting_percent =  get_percentage(float(race.precincts_reporting), 
+            race.precincts_reporting_percent =  calculate.percentage(float(race.precincts_reporting), 
                                                     float(race.precincts_total))
             race.votes_cast = votes_cast
             
             for candidate in race.candidates:
-                candidate.vote_total_percent = get_percentage(candidate.vote_total, votes_cast)
+                candidate.vote_total_percent = calculate.percentage(candidate.vote_total, votes_cast)

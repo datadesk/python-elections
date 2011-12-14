@@ -33,7 +33,8 @@ class Candidate(object):
 
     def __unicode__(self):
         if not self.last_name in ('Yes', 'No'):
-            return u'%s %s' % (self.first_name, self.last_name)
+            s = u'%s %s' % (self.first_name, self.last_name)
+            return s.strip()
         else:
             return u'%s' % self.last_name
 
