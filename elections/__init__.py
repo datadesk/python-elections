@@ -12,9 +12,35 @@ class AP(object):
     def __init__(self, username=None, password=None):
         self.username = username
         self.password = password
+        self._ftp = None
+
+    @property
+    def ftp(self):
+        """
+        Checks if we have an active FTP connection.
+        If not, activates a new connection to the AP.
+        """
+        if not self._ftp or not self._ftp.sock:
+            self._ftp = FTP('electionsonline.ap.org', self.username, self.password)
+        return self._ftp
 
     def get_state(self, state=None, *args, **kwargs):
-        return APResults(state, self.username, self.password, *args, **kwargs)
+        """
+        Takes a single state postal code, returns an APResult
+        object for that state.
+        """
+        result = APResults(self, state, *args, **kwargs)
+        self.ftp.quit()
+        return result
+
+    def get_states(self, states=[], *args, **kwargs):
+        """
+        Takes a list of state postal codes, returns a list of APResult
+        objects.
+        """
+        results = [APResults(self, state, *args, **kwargs) for state in states]
+        self.ftp.quit()
+        return results
 
 
 class APResults(object):
@@ -26,30 +52,25 @@ class APResults(object):
         'NP': None
     }
     
-    def __init__(self, state, username=None, password=None, results=True):
+    def __init__(self, client, state, username=None, password=None, ftp=None, results=True):
         """
         If init_objects is set to false, you must
         call the init function later before you
         pull the results down.
         """
+        self.client = client
+        self.state = state
         self.username = username
         self.password = password
-        self.state = state
         self.is_test = None
         self._candidates = {} # All candidates keyed by AP's `ap_polra_number` ID.
         self._reporting_units = {}
         self._races = {}
-        
-        self.ftp = FTP('electionsonline.ap.org', self.username, self.password) # Connect
         self._init_races()
         self._init_candidates()
         self._init_reporting_units()
         if results:
-            self.fetch_results(self.ftp)
-        else:
-            # Probably goofy, but fetch_results quits the
-            # FTP, so we only need to quit if results=False
-            self.ftp.quit()
+            self.fetch_results()
     
     def __unicode__(self):
         return self.state
@@ -107,20 +128,20 @@ class APResults(object):
         """
         return [o for o in self.reporting_units if o.fips and not o.is_state]
     
-    def fetch_results(self, ftp=None):
+    def fetch_results(self):
         """
         This will fetch and fill out all of the results. If called again,
         it will simply run through and update all of the results with 
         the most fresh data from the AP.
         """
-        self._get_flat_results(ftp)
+        self._get_flat_results()
 
-    def fetch_delegates(self, ftp=None):
+    def fetch_delegates(self):
         """
         This will fetch and fill out the delegate_total variable on 
         the candidate models with the statewide results.
         """
-        self._get_flat_delegates(ftp)
+        self._get_flat_delegates()
     
     # 
     # Private methods
@@ -136,7 +157,7 @@ class APResults(object):
         """
         buffer = StringIO()
         cmd = 'RETR %s' % path
-        self.ftp.retrbinary(cmd, buffer.write)
+        self.client.ftp.retrbinary(cmd, buffer.write)
         reader = csv.DictReader(StringIO(buffer.getvalue()), delimiter='|')
         return [strip_dict(i) for i in reader]
     
@@ -185,7 +206,7 @@ class APResults(object):
                 seat_number = race['se_number'],
                 scope = race['of_scope'],
                 date = date(*map(int, [race['el_date'][:4], race['el_date'][4:6], race['el_date'][6:]])),
-                num_winners = race['ra_num_winners'],
+                num_winners = int(race['ra_num_winners']),
                 party = self._parties.get(race['rt_party_name']),
                 uncontested = race['ra_uncontested'],
             )
@@ -206,16 +227,13 @@ class APResults(object):
                 ap_number = ru['ru_number'],
                 fips = ru['ru_fip'],
                 abbrev = ru['ru_abbrv'],
-                precincts_total = ru['ru_precincts'],
-                num_reg_voters = ru['ru_reg_voters'],
+                precincts_total = int(ru['ru_precincts']),
+                num_reg_voters = int(ru['ru_reg_voters']),
             )
             # And add them to the global store
             self._reporting_units.update({ru.fips: ru})
 
     def _get_flat_delegates(self, ftp=None):
-        if not ftp:
-            ftp = FTP('electionsonline.ap.org', self.username, self.password) # Connect
-        
         # Download state results file
         if self.state == 'US':
             file_dir = '/US_topofticket/flat/'
@@ -223,8 +241,7 @@ class APResults(object):
             file_dir = '/%s/flat/' % self.state
         results_file = '%s_D.txt' % self.state
         
-        ftp.retrlines('RETR ' + os.path.join(file_dir, results_file), self._process_flat_delegates_line)  
-        ftp.quit()
+        self.client.ftp.retrlines('RETR ' + os.path.join(file_dir, results_file), self._process_flat_delegates_line)  
 
     def _process_flat_delegates_line(self, line):
         """
@@ -252,8 +269,6 @@ class APResults(object):
             candidate.delegate_total = num_delegates
 
     def _get_flat_results(self, ftp=None):
-        if not ftp:
-            ftp = FTP('electionsonline.ap.org', self.username, self.password) # Connect
         
         # Download state results file
         if self.state == 'US':
@@ -262,9 +277,7 @@ class APResults(object):
             file_dir = '/%s/flat/' % self.state
         results_file = '%s.txt' % self.state
         
-        ftp.retrlines('RETR ' + os.path.join(file_dir, results_file), self._process_flat_results_line)  
-        ftp.quit()
-
+        self.client.ftp.retrlines('RETR ' + os.path.join(file_dir, results_file), self._process_flat_results_line)  
     
     def _process_flat_results_line(self, line):
         """
