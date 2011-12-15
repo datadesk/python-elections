@@ -61,7 +61,9 @@ class Race(object):
     """
     def __init__(self, ap_race_number=None, office_name=None, office_description=None,
                  office_id=None, seat_name=None, seat_number=None, scope=None,
-                 date=None, num_winners=None, party=None, uncontested=None):
+                 date=None, num_winners=None, party=None, uncontested=None,
+                 precincts_total=None, precincts_reporting=None,
+                 precincts_reporting_percent=None):
         self.ap_race_number = ap_race_number
         self.office_name = office_name
         self.office_description = office_description
@@ -73,6 +75,10 @@ class Race(object):
         self.num_winners = num_winners
         self.party = party
         self.uncontested = uncontested
+        self.precincts_total = precincts_total
+        self.precincts_reporting = precincts_reporting
+        self.precincts_reporting_percent = precincts_reporting_percent
+
         self._candidates = {}
         self._state_results = {}
         self._reporting_units = {}
@@ -119,8 +125,8 @@ class Race(object):
     def get_name(self):
         name = ''
         if self.scope == 'L':
-            if self.office_descrip:
-                name = u'%s %s - %s' % (self.office_name, self.seat_name, self.office_descrip)
+            if self.office_description:
+                name = u'%s %s - %s' % (self.office_name, self.seat_name, self.office_description)
             else:
                 name = u'%s %s' % (self.office_name, self.seat_name)
         else:
@@ -190,12 +196,9 @@ class Result(object):
     def __init__(self, race=None, candidate=None,
                  reporting_unit=None, vote_total=None, precincts_reporting=None,
                  precincts_reporting_percent=None):
-        self.race = race
         self.candidate = candidate
         self.reporting_unit = reporting_unit
         self.vote_total = vote_total
-        self.precincts_reporting = precincts_reporting
-        self.precincts_reporting_percent = precincts_reporting_percent
 
     def __unicode__(self):
         return u'%s, %s, %s' % (self.candidate, self.reporting_unit,

@@ -54,6 +54,11 @@ class State(object):
     def __init__(self, client, name, results=True):
         self.client = client
         self.name = name
+        self.leading_zero_fips = False
+        # The AP results files for these 7 states are missing
+        # the leading 0 on the FIPS codes.
+        if self.name in ('AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT'):
+            self.leading_zero_fips = True
         self._races = {}
         self._reporting_units = {}
         self._init_races()
@@ -180,7 +185,7 @@ class State(object):
                 date = date(*map(int, [race['el_date'][:4], race['el_date'][4:6], race['el_date'][6:]])),
                 num_winners = int(race['ra_num_winners']),
                 party = self._parties.get(race['rt_party_name']),
-                uncontested = race['ra_uncontested'],
+                uncontested = race['ra_uncontested'] == '1',
             )
             # And add it to the global store
             self._races.update({race.ap_race_number: race})
@@ -294,10 +299,17 @@ class State(object):
         
         is_state = primary_bits[COUNTY_NUM] == '1'
         
-        if primary_bits[FIPS] == '0':
-            primary_bits[FIPS] = '00000'
+        fips = primary_bits[FIPS]
+        # AP stupidly strips leading 0s in the FIPS for the 
+        # results file. This helps us match back up.
+        if is_state:
+            fips = '00000'
+        else:
+            if self.leading_zero_fips and not fips[0] == '0':
+                fips = '0' + primary_bits[FIPS]
+
         race = self.get_race(primary_bits[RACE_NUM]) 
-        reporting_unit = race.get_reporting_unit(primary_bits[FIPS])
+        reporting_unit = race.get_reporting_unit(fips)
 
         votes_cast = 0
         for cand in candidate_bits:
@@ -314,10 +326,10 @@ class State(object):
             result.candidate = candidate
             result.vote_total = int(cand[VOTE_COUNT])
             result.reporting_unit = reporting_unit
-            result.precincts_reporting = int(primary_bits[PRECINCTS_REPORTING])
-            result.precincts_reporting_percent = calculate.percentage(result.precincts_reporting,
-                                                    int(primary_bits[TOT_PRECINCTS]))
-            
+
+            reporting_unit.precincts_reporting = int(primary_bits[PRECINCTS_REPORTING])
+            reporting_unit.precincts_reporting_percent = calculate.percentage(reporting_unit.precincts_reporting,
+                                                    reporting_unit.precincts_total)
             reporting_unit._results.update({candidate.ap_polra_number: result})
             if is_state:
                 # Set the state-wide result for this candidate
