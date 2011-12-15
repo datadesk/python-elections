@@ -44,6 +44,9 @@ class Candidate(object):
         else:
             return u'%s' % self.last_name
 
+    def __str__(self):
+        return self.__unicode__()
+
     def __repr__(self):
         return u'<Candidate: %s>' % self.__unicode__()
 
@@ -141,6 +144,9 @@ class Race(object):
     def __unicode__(self):
         return u'%s' % self.name
 
+    def __str__(self):
+        return self.__unicode__()
+
     def __repr__(self):
         return u'<Race: %s>' % self.__unicode__()
 
@@ -183,6 +189,9 @@ class ReportingUnit(object):
             name = '%s (state)' % name
         return name
 
+    def __str__(self):
+        return self.__unicode__()
+
     def __repr__(self):
         return u'<ReportingUnit: %s>' % self.__unicode__()
 
@@ -203,6 +212,9 @@ class Result(object):
     def __unicode__(self):
         return u'%s, %s, %s' % (self.candidate, self.reporting_unit,
                                 self.vote_total)
+
+    def __str__(self):
+        return self.__unicode__()
 
     def __repr__(self):
         return u'<Result: %s>' % self.__unicode__()

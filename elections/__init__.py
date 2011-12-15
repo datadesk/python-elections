@@ -14,6 +14,19 @@ class AP(object):
         self.password = password
         self._ftp = None
 
+    def __unicode__(self):
+        return u'%s' % self.username
+
+    def __str__(self):
+        return self.__unicode__()   
+ 
+    def __repr__(self):
+        return u'<AP: %s>' % self.__unicode__()
+
+    #
+    # Public methods
+    #
+
     @property
     def ftp(self):
         """
@@ -69,7 +82,10 @@ class State(object):
 
     def __unicode__(self):
         return self.name
-    
+
+    def __str__(self):
+        return self.__unicode__()   
+ 
     def __repr__(self):
         return u'<State: %s>' % self.__unicode__()
 
