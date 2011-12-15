@@ -30,18 +30,23 @@ Feel free to screw with, destroy, rebuild, rename whatever I've got right now. J
 
 Current API:
 <pre><code>>>> from elections import AP
->>> client = AP(username, password)
->>> iowa = client.get_state('IA')
->>> iowa.races
-[<Race: President>]
->>> iowa.races[0].candidates[:3]
-[<Candidate:  Other>, <Candidate: Jon Huntsman>, <Candidate: Newt Gingrich>]
->>> iowa.races[0].state_results[:3]
-[<Result:  Other, Iowa (state), 0>, <Result: Jon Huntsman, Iowa (state), 0>, <Result: Newt Gingrich, Iowa (state), 0>]
->>> iowa.counties[:3]
-[<ReportingUnit: Winnebago>, <ReportingUnit: Washington>, <ReportingUnit: Warren>]
->>> iowa.counties[0].results[:3]
-[<Result:  Other, Winnebago, 0>, <Result: Jon Huntsman, Winnebago, 0>, <Result: Newt Gingrich, Winnebago, 0>]
+>>> client = AP(uname, pwd)
+>>> ia = client.get_state('IA')
+>>> ia.races[0]
+<Race: President>
+>>> ia.races[0].candidates[4]
+<Candidate: Rick Santorum>
+>>> ia.races[0].candidates[4].vote_total
+0
+>>> ia.races[0].candidates[4].is_winner
+False
+>>> ia.races[0].state_results[:3]
+[<Result: Other, Iowa (state), 0>, <Result: Jon Huntsman, Iowa (state), 0>, <Result: Newt Gingrich, Iowa (state), 0>]
+>>> ia.races[0].counties[10].results[:3]
+[<Result: Other, Wright, 0>, <Result: Jon Huntsman, Wright, 0>, <Result: Newt Gingrich, Wright, 0>]
+>>> ia.fetch_delegates() # Gets delegate totals for all candidates in a primary race
+>>> ia.races[0].candidates[4].delegates
+0
 </code></pre>
 
 Pull Iowa GOP results
@@ -56,7 +61,7 @@ client = AP(AP_USERNAME, AP_PASSWORD)
 
 # Pull the data on the Iowa GOP caucus
 iowa = client.get_state("IA")
-gop_caucus = [i for i in iowa.races if i.party == 'R' and i.office_name == 'President'][0]
+gop_caucus = iowa.races[0]
 
 print gop_caucus.office_name
 print "%s/%s (%s percent)" % (
@@ -68,7 +73,7 @@ print "%s votes cast" % gop_caucus.votes_cast
 
 state_results = [(
     i.vote_total,
-    calculate.percentage(i.vote_total, gop_caucus.votes_cast),
+    i.vote_total_percent,
     i.candidate.__unicode__(),
     i.candidate.is_winner,
     ) for i in gop_caucus.state_results]
