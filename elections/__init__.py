@@ -35,6 +35,7 @@ class APResults(object):
         self.username = username
         self.password = password
         self.state = state
+        self.is_test = None
         self._candidates = {} # All candidates keyed by AP's `ap_polra_number` ID.
         self._reporting_units = {}
         self._races = {}
@@ -113,6 +114,13 @@ class APResults(object):
         the most fresh data from the AP.
         """
         self._get_flat_results(ftp)
+
+    def fetch_delegates(self, ftp=None):
+        """
+        This will fetch and fill out the delegate_total variable on 
+        the candidate models with the statewide results.
+        """
+        self._get_flat_delegates(ftp)
     
     # 
     # Private methods
@@ -203,7 +211,46 @@ class APResults(object):
             )
             # And add them to the global store
             self._reporting_units.update({ru.fips: ru})
-    
+
+    def _get_flat_delegates(self, ftp=None):
+        if not ftp:
+            ftp = FTP('electionsonline.ap.org', self.username, self.password) # Connect
+        
+        # Download state results file
+        if self.state == 'US':
+            file_dir = '/US_topofticket/flat/'
+        else:
+            file_dir = '/%s/flat/' % self.state
+        results_file = '%s_D.txt' % self.state
+        
+        ftp.retrlines('RETR ' + os.path.join(file_dir, results_file), self._process_flat_delegates_line)  
+        ftp.quit()
+
+    def _process_flat_delegates_line(self, line):
+        """
+        Takes a line from the flat delegates file and tosses it out
+        until it finds the state-wide result, then assigns the delegates
+        to the proper candidate.
+        """
+        DISTRICT_NUM = 4
+        POLRA_NUM, NUM_DELEGATES = (0, 9)
+        
+        bits = line.split(';')
+        del bits[-1]
+
+        # The first 19 fields are race / reporting unit specific
+        primary_bits = bits[:19]
+        if primary_bits[DISTRICT_NUM] != '1': 
+            return # We only want state results
+        # The next X set of 13 fields belong to X # of candidates
+        # So we split by 13, and len(candidate_bits) == # of candidates == X
+        candidate_bits = split_len(bits[19:], 13) 
+
+        for cand in candidate_bits:
+            candidate = self.get_candidate(cand[POLRA_NUM])
+            num_delegates = int(cand[NUM_DELEGATES])
+            candidate.delegate_total = num_delegates
+
     def _get_flat_results(self, ftp=None):
         if not ftp:
             ftp = FTP('electionsonline.ap.org', self.username, self.password) # Connect
@@ -217,6 +264,7 @@ class APResults(object):
         
         ftp.retrlines('RETR ' + os.path.join(file_dir, results_file), self._process_flat_results_line)  
         ftp.quit()
+
     
     def _process_flat_results_line(self, line):
         """
@@ -241,6 +289,8 @@ class APResults(object):
         # The next X set of 12 fields belong to X # of candidates
         # So we split by 12, and len(candidate_bits) == # of candidates == X
         candidate_bits = split_len(bits[19:], 12) 
+
+        self.is_test = primary_bits[IS_TEST] == 't'
         
         is_state = primary_bits[COUNTY_NUM] == '1'
         
