@@ -29,7 +29,7 @@ class AP(object):
         Takes a single state postal code, returns an APResult
         object for that state.
         """
-        result = APResults(self, state, *args, **kwargs)
+        result = State(self, state, *args, **kwargs)
         self.ftp.quit()
         return result
 
@@ -38,12 +38,12 @@ class AP(object):
         Takes a list of state postal codes, returns a list of APResult
         objects.
         """
-        results = [APResults(self, state, *args, **kwargs) for state in states]
+        results = [State(self, state, *args, **kwargs) for state in states]
         self.ftp.quit()
         return results
 
 
-class APResults(object):
+class State(object):
     _parties = {
         'Lib': 'L',
         'Dem': 'D',
@@ -51,69 +51,38 @@ class APResults(object):
         'Ind': 'I',
         'NP': None
     }
-    
-    def __init__(self, client, state, username=None, password=None, ftp=None, results=True):
-        """
-        If init_objects is set to false, you must
-        call the init function later before you
-        pull the results down.
-        """
+    def __init__(self, client, name, results=True):
         self.client = client
-        self.state = state
-        self.username = username
-        self.password = password
-        self.is_test = None
-        self._candidates = {} # All candidates keyed by AP's `ap_polra_number` ID.
-        self._reporting_units = {}
+        self.name = name
         self._races = {}
+        self._reporting_units = {}
         self._init_races()
-        self._init_candidates()
         self._init_reporting_units()
+        self._init_candidates()
         if results:
             self.fetch_results()
-    
+
     def __unicode__(self):
-        return self.state
+        return self.name
     
     def __repr__(self):
-        return u'<APResults: %s>' % self.__unicode__()
+        return u'<State: %s>' % self.__unicode__()
+
     
     #
     # Public methods
     #
     
-    def get_candidate(self, ap_polra_num):
-        """
-        Takes AP's polra number and returns a Candidate object.
-        """
-        return self._candidates.get(ap_polra_num, None)
-    
     @property
-    def candidates(self):
-        """
-        Get all candidates
-        """
-        return self._candidates.values()
-    
+    def races(self):
+        return self._races.values()
+
     def get_race(self, ap_race_number):
         """
         Get a single Race object by it's ap_race_number
         """
         return self._races.get(ap_race_number, None)
-    
-    @property
-    def races(self):
-        """
-        Get all races
-        """
-        return self._races.values()
-    
-    def get_reporting_unit(self, fips):
-        """
-        Get a single ReportinUnit
-        """
-        return self._reporting_units.get(fips, None)
-    
+
     @property
     def reporting_units(self):
         """
@@ -121,13 +90,19 @@ class APResults(object):
         """
         return self._reporting_units.values()
     
+    def get_reporting_unit(self, fips):
+        """
+        Get a single ReportinUnit
+        """
+        return self._reporting_units.get(fips, None)
+
     @property
     def counties(self):
         """
         Gets all reporting units that can be defined as counties.
         """
         return [o for o in self.reporting_units if o.fips and not o.is_state]
-    
+
     def fetch_results(self):
         """
         This will fetch and fill out all of the results. If called again,
@@ -166,7 +141,7 @@ class APResults(object):
         Download the state's candidate file and load the data.
         """
         # Fetch the data from the FTP
-        candidate_list = self._fetch_csv("/inits/%(state)s/%(state)s_pol.txt" % self.__dict__)
+        candidate_list = self._fetch_csv("/inits/%(name)s/%(name)s_pol.txt" % self.__dict__)
         # Loop through it...
         for cand in candidate_list:
             # Create a Candidate...
@@ -178,14 +153,11 @@ class APResults(object):
                 ap_natl_number = cand['pol_nat_id'],
                 ap_polra_number = cand['polra_number'],
                 ap_pol_number = cand['pol_number'],
-                combined_id = u'%s%s' % (self.state, cand['polra_number']),
                 abbrev_name = cand['pol_abbrv'],
                 suffix = cand['pol_junior'],
                 party = self._parties.get(cand['polra_party']),
                 # use_suffix?
             )
-            # And add it to the global data stores
-            self._candidates.update({candidate.ap_polra_number: candidate})
             self._races[candidate.ap_race_number].add_candidate(candidate)
     
     def _init_races(self):
@@ -193,7 +165,7 @@ class APResults(object):
         Download all the races in the state and load the data.
         """
         # Get the data
-        race_list = self._fetch_csv("/inits/%(state)s/%(state)s_race.txt" % self.__dict__)
+        race_list = self._fetch_csv("/inits/%(name)s/%(name)s_race.txt" % self.__dict__)
         # Loop through it all
         for race in race_list:
             # Create a Race object...
@@ -218,28 +190,43 @@ class APResults(object):
         Download all the reporting units and load the data.
         """
         # Get the data
-        ru_list = self._fetch_csv("/inits/%(state)s/%(state)s_ru.txt" % self.__dict__)
+        ru_list = self._fetch_csv("/inits/%(name)s/%(name)s_ru.txt" % self.__dict__)
         # Loop through them all
-        for ru in ru_list:
-            # Create ReportingUnit objects...
+        for r in ru_list:
+            # Create ReportingUnit objects for each race
+            for race in self.races:
+                ru = ReportingUnit(
+                    name = r['ru_name'],
+                    ap_number = r['ru_number'],
+                    fips = r['ru_fip'],
+                    abbrev = r['ru_abbrv'],
+                    precincts_total = int(r['ru_precincts']),
+                    num_reg_voters = int(r['ru_reg_voters']),
+                )
+                # And add them to the global store
+                race._reporting_units.update({ru.fips: ru})
+            # We add a set of reportingunits for the State object
+            # so you can get county and state voter info from the
+            # State object itself. We null out results, since there
+            # shouldn't ever be any for these.
             ru = ReportingUnit(
-                name = ru['ru_name'],
-                ap_number = ru['ru_number'],
-                fips = ru['ru_fip'],
-                abbrev = ru['ru_abbrv'],
-                precincts_total = int(ru['ru_precincts']),
-                num_reg_voters = int(ru['ru_reg_voters']),
+                name = r['ru_name'],
+                ap_number = r['ru_number'],
+                fips = r['ru_fip'],
+                abbrev = r['ru_abbrv'],
+                precincts_total = int(r['ru_precincts']),
+                num_reg_voters = int(r['ru_reg_voters']),
+                results=None,
             )
-            # And add them to the global store
             self._reporting_units.update({ru.fips: ru})
 
     def _get_flat_delegates(self, ftp=None):
         # Download state results file
-        if self.state == 'US':
+        if self.name == 'US':
             file_dir = '/US_topofticket/flat/'
         else:
-            file_dir = '/%s/flat/' % self.state
-        results_file = '%s_D.txt' % self.state
+            file_dir = '/%s/flat/' % self.name
+        results_file = '%s_D.txt' % self.name
         
         self.client.ftp.retrlines('RETR ' + os.path.join(file_dir, results_file), self._process_flat_delegates_line)  
 
@@ -249,7 +236,7 @@ class APResults(object):
         until it finds the state-wide result, then assigns the delegates
         to the proper candidate.
         """
-        DISTRICT_NUM = 4
+        DISTRICT_NUM, RACE_NUM = (4, 6)
         POLRA_NUM, NUM_DELEGATES = (0, 9)
         
         bits = line.split(';')
@@ -262,20 +249,20 @@ class APResults(object):
         # The next X set of 13 fields belong to X # of candidates
         # So we split by 13, and len(candidate_bits) == # of candidates == X
         candidate_bits = split_len(bits[19:], 13) 
-
+        race = self.get_race(primary_bits[RACE_NUM])
         for cand in candidate_bits:
-            candidate = self.get_candidate(cand[POLRA_NUM])
+            candidate = race.get_candidate(cand[POLRA_NUM])
             num_delegates = int(cand[NUM_DELEGATES])
             candidate.delegate_total = num_delegates
 
     def _get_flat_results(self, ftp=None):
         
         # Download state results file
-        if self.state == 'US':
+        if self.name == 'US':
             file_dir = '/US_topofticket/flat/'
         else:
-            file_dir = '/%s/flat/' % self.state
-        results_file = '%s.txt' % self.state
+            file_dir = '/%s/flat/' % self.name
+        results_file = '%s.txt' % self.name
         
         self.client.ftp.retrlines('RETR ' + os.path.join(file_dir, results_file), self._process_flat_results_line)  
     
@@ -309,22 +296,21 @@ class APResults(object):
         
         if primary_bits[FIPS] == '0':
             primary_bits[FIPS] = '00000'
-        reporting_unit = self.get_reporting_unit(primary_bits[FIPS])
-        race = self.get_race(bits[RACE_NUM]) 
-        
+        race = self.get_race(primary_bits[RACE_NUM]) 
+        reporting_unit = race.get_reporting_unit(primary_bits[FIPS])
+
         votes_cast = 0
         for cand in candidate_bits:
-            candidate = self.get_candidate(cand[CANDIDATE_NUM])
+            candidate = race.get_candidate(cand[CANDIDATE_NUM])
             if is_state:
                 # Update the overall vote total if it's state-wide
                 candidate.vote_total = int(cand[VOTE_COUNT])
-                # And the total votes cast so far in the election
+                # And the total votes cast so far in the race
                 votes_cast += candidate.vote_total
             candidate.is_winner = cand[IS_WINNER] == 'X'
             candidate.is_runoff = cand[IS_WINNER] == 'R'
             
             result = Result()
-            result.race = race
             result.candidate = candidate
             result.vote_total = int(cand[VOTE_COUNT])
             result.reporting_unit = reporting_unit

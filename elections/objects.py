@@ -75,10 +75,17 @@ class Race(object):
         self.uncontested = uncontested
         self._candidates = {}
         self._state_results = {}
+        self._reporting_units = {}
 
     @property
     def state_results(self):
         return self._state_results.values()
+
+    def get_candidate(self, ap_polra_num):
+        """
+        Takes AP's polra number and returns a Candidate object.
+        """
+        return self._candidates.get(ap_polra_num, None)
 
     @property
     def candidates(self):
@@ -86,6 +93,28 @@ class Race(object):
 
     def add_candidate(self, candidate):
         self._candidates.update({candidate.ap_polra_number: candidate})
+
+
+    def get_reporting_unit(self, fips):
+        """
+        Get a single ReportinUnit
+        """
+        return self._reporting_units.get(fips, None)
+    
+    @property
+    def reporting_units(self):
+        """
+        Get all reporting units
+        """
+        return self._reporting_units.values()
+    
+    @property
+    def counties(self):
+        """
+        Gets all reporting units that can be defined as counties.
+        """
+        return [o for o in self.reporting_units if o.fips and not o.is_state]
+
 
     def get_name(self):
         name = ''
@@ -117,14 +146,14 @@ class ReportingUnit(object):
     For instance, a state, a congressional district, a county.
     """
     def __init__(self, ap_number=None, name=None, abbrev=None, fips=None,
-                 precincts_total=None, num_reg_voters=None):
+                 precincts_total=None, num_reg_voters=None, results={}):
         self.ap_number = ap_number
         self.name = name
         self.abbrev = abbrev
         self.fips = fips
         self.precincts_total = precincts_total
         self.num_reg_voters = num_reg_voters
-        self._results = {}
+        self._results = results
 
     @property
     def results(self):
