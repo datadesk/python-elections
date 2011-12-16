@@ -114,7 +114,6 @@ class Race(object):
     def add_candidate(self, candidate):
         self._candidates.update({candidate.ap_polra_number: candidate})
 
-
     def get_reporting_unit(self, fips):
         """
         Get a single ReportinUnit
@@ -135,6 +134,21 @@ class Race(object):
         """
         return [o for o in self.reporting_units if o.fips and not o.is_state]
 
+    @property
+    def race_type_name(self):
+        return self._race_types.get(self.race_type, None)
+
+    @property
+    def is_primary(self):
+        return self.race_type in ('D', 'R',)
+
+    @property
+    def is_caucus(self):
+        return self.race_type in ('E', 'S',)
+
+    @property
+    def is_general(self):
+        return self.race_type == 'G'
 
     def get_name(self):
         name = ''
@@ -149,6 +163,8 @@ class Race(object):
                 name = "%s %s" % (self.office_name, num)
             else:
                 name = u'%s' % self.office_name
+        if not self.is_general:
+            name = u'%s - %s' % (self.race_type_name, name)   
         return name
     name = property(get_name)
 
