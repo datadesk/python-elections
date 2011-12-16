@@ -9,24 +9,37 @@ from objects import Candidate, Race, ReportingUnit, Result
 
 
 class AP(object):
+    """
+    The public client you can use to connect to AP's data feed.
+    
+    Example usage:
+        
+        >>> from elections import AP
+        >>> client = AP(USERNAME, PASSWORD)
+        >>> client.get_state("IA") 
+    
+    """
+    FTP_HOSTNAME = 'electionsonline.ap.org'
+    
     def __init__(self, username=None, password=None):
         self.username = username
         self.password = password
         self._ftp = None
-
+        self._ftp_hits = 0
+    
     def __unicode__(self):
-        return u'%s' % self.username
-
+        return unicode(self.username)
+    
     def __str__(self):
-        return self.__unicode__()   
- 
+        return self.__unicode__().encode("utf-8")
+    
     def __repr__(self):
-        return u'<AP: %s>' % self.__unicode__()
-
+        return '<%s: %s>' % (self.__class__.__name__, self.__unicode__())
+    
     #
     # Public methods
     #
-
+    
     @property
     def ftp(self):
         """
@@ -34,9 +47,10 @@ class AP(object):
         If not, activates a new connection to the AP.
         """
         if not self._ftp or not self._ftp.sock:
-            self._ftp = FTP('electionsonline.ap.org', self.username, self.password)
+            self._ftp = FTP(self.FTP_HOSTNAME, self.username, self.password)
+            self._ftp_hits += 1
         return self._ftp
-
+    
     def get_state(self, state=None, *args, **kwargs):
         """
         Takes a single state postal code, returns an APResult
@@ -45,7 +59,7 @@ class AP(object):
         result = State(self, state, *args, **kwargs)
         self.ftp.quit()
         return result
-
+    
     def get_states(self, states=[], *args, **kwargs):
         """
         Takes a list of state postal codes, returns a list of APResult
@@ -68,11 +82,12 @@ class State(object):
     def __init__(self, client, name, results=True):
         self.client = client
         self.name = name
-        self.leading_zero_fips = False
         # The AP results files for these 7 states are missing
         # the leading 0 on the county FIPS codes.
         if self.name in ('AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT'):
             self.leading_zero_fips = True
+        else:
+            self.leading_zero_fips = False
         self._races = {}
         self._reporting_units = {}
         self._init_races()
@@ -80,16 +95,15 @@ class State(object):
         self._init_candidates()
         if results:
             self.fetch_results()
-
+    
     def __unicode__(self):
-        return self.name
-
+        return unicode(self.name)
+    
     def __str__(self):
-        return self.__unicode__()   
- 
+        return self.__unicode__().encode("utf-8")
+     
     def __repr__(self):
-        return u'<State: %s>' % self.__unicode__()
-
+        return '<%s: %s>' % (self.__class__.__name__, self.__unicode__())
     
     #
     # Public methods
@@ -103,7 +117,10 @@ class State(object):
         """
         Get a single Race object by it's ap_race_number
         """
-        return self._races.get(ap_race_number, None)
+        try:
+            return self._races[ap_race_number]
+        except KeyError:
+            raise KeyError("The race you requested does not exist.")
 
     def filter_races(self, **kwargs):
         """
@@ -131,8 +148,11 @@ class State(object):
         """
         Get a single ReportinUnit
         """
-        return self._reporting_units.get(fips, None)
-
+        try:
+            return self._reporting_units[fips]
+        except KeyError:
+            raise KeyError("The reporting unit you requested does not exist.")
+    
     @property
     def counties(self):
         """

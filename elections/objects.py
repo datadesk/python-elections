@@ -92,25 +92,20 @@ class Race(object):
         self.precincts_reporting = precincts_reporting
         self.precincts_reporting_percent = precincts_reporting_percent
         self.votes_cast = votes_cast
-
         self._candidates = {}
-        self._state_results = {}
         self._reporting_units = {}
 
+    
     @property
-    def state_results(self):
-        return self._state_results.values()
-
+    def candidates(self):
+        return self._candidates.values()
+    
     def get_candidate(self, ap_polra_num):
         """
         Takes AP's polra number and returns a Candidate object.
         """
         return self._candidates.get(ap_polra_num, None)
-
-    @property
-    def candidates(self):
-        return self._candidates.values()
-
+    
     def add_candidate(self, candidate):
         self._candidates.update({candidate.ap_polra_number: candidate})
 
@@ -133,6 +128,10 @@ class Race(object):
         Gets all reporting units that can be defined as counties.
         """
         return [o for o in self.reporting_units if o.fips and not o.is_state]
+    
+    @property
+    def state(self):
+        return self._state_results.values()[0]
 
     @property
     def race_type_name(self):
@@ -167,13 +166,13 @@ class Race(object):
             name = u'%s - %s' % (self.race_type_name, name)   
         return name
     name = property(get_name)
-
+    
     def __unicode__(self):
         return u'%s' % self.name
-
+    
     def __str__(self):
         return self.__unicode__()
-
+    
     def __repr__(self):
         return u'<Race: %s>' % self.__unicode__()
 
