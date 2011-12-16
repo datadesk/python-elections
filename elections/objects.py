@@ -96,6 +96,15 @@ class Race(object):
         self._reporting_units = {}
         self._state_results = {}
     
+    def __unicode__(self):
+        return unicode(self.name)
+    
+    def __str__(self):
+        return self.__unicode__().encode("utf-8")
+    
+    def __repr__(self):
+        return '<%s: %s>' % (self.__class__.__name__, self.__unicode__())
+    
     @property
     def candidates(self):
         return self._candidates.values()
@@ -111,25 +120,30 @@ class Race(object):
 
     def get_reporting_unit(self, fips):
         """
-        Get a single ReportinUnit
+        Get a single ReportingUnit
         """
         return self._reporting_units.get(fips, None)
     
     @property
     def reporting_units(self):
         """
-        Get all reporting units
+        Returns all reporting units that belong to this race as a list of
+        ReportingUnit objects.
         """
         return self._reporting_units.values()
     
     @property
     def state(self):
+        """
+        Returns the state-level results for this race as a ReportingUnit object.
+        """
         return [o for o in self.reporting_units if o.is_state][0]
     
     @property
     def counties(self):
         """
-        Gets all reporting units that can be defined as counties.
+        Returns all the counties that report results for this race as a list
+        of ReportingUnit objects.
         """
         return [o for o in self.reporting_units if o.fips and not o.is_state]
     
@@ -170,15 +184,6 @@ class Race(object):
             name = u'%s - %s' % (self.race_type_name, name)   
         return name
     name = property(get_name)
-    
-    def __unicode__(self):
-        return u'%s' % self.name
-    
-    def __str__(self):
-        return self.__unicode__()
-    
-    def __repr__(self):
-        return u'<Race: %s>' % self.__unicode__()
 
 
 class ReportingUnit(object):
