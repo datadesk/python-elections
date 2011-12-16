@@ -62,7 +62,6 @@ class Race(object):
         * Proposition 8 in California
     
     """
-
     _race_types = {
         'D': 'Dem Primary',
         'R': 'GOP Primary',
@@ -106,6 +105,24 @@ class Race(object):
         return '<%s: %s>' % (self.__class__.__name__, self.__unicode__())
     
     @property
+    def name(self):
+        name = ''
+        if self.scope == 'L':
+            if self.office_description:
+                name = '%s %s - %s' % (self.office_name, self.seat_name, self.office_description)
+            else:
+                name = '%s %s' % (self.office_name, self.seat_name)
+        else:
+            if self.office_name == "Proposition":
+                num = self.seat_name.split('-')[0].strip()
+                name = "%s %s" % (self.office_name, num)
+            else:
+                name = '%s' % self.office_name
+        if not self.is_general:
+            name = u'%s - %s' % (self.race_type_name, name)   
+        return name
+    
+    @property
     def candidates(self):
         return self._candidates.values()
     
@@ -146,10 +163,6 @@ class Race(object):
         of ReportingUnit objects.
         """
         return [o for o in self.reporting_units if o.fips and not o.is_state]
-    
-    @property
-    def state(self):
-        return self._state_results.values()[0]
 
     @property
     def race_type_name(self):
@@ -166,24 +179,6 @@ class Race(object):
     @property
     def is_general(self):
         return self.race_type == 'G'
-
-    def get_name(self):
-        name = ''
-        if self.scope == 'L':
-            if self.office_description:
-                name = u'%s %s - %s' % (self.office_name, self.seat_name, self.office_description)
-            else:
-                name = u'%s %s' % (self.office_name, self.seat_name)
-        else:
-            if self.office_name == "Proposition":
-                num = self.seat_name.split('-')[0].strip()
-                name = "%s %s" % (self.office_name, num)
-            else:
-                name = u'%s' % self.office_name
-        if not self.is_general:
-            name = u'%s - %s' % (self.race_type_name, name)   
-        return name
-    name = property(get_name)
 
 
 class ReportingUnit(object):
@@ -206,29 +201,29 @@ class ReportingUnit(object):
         self.precincts_reporting = precincts_reporting
         self.precincts_reporting_percent = precincts_reporting_percent
         self._results = results
-
-    @property
-    def results(self):
-        return self._results.values()
-
-    def update_result(self, result):
-        self._results[result.candidate.ap_polra_number] = result
-
-    @property
-    def is_state(self):
-        return self.fips == '00000'
-
+    
     def __unicode__(self):
         name = self.name
         if self.is_state:
             name = '%s (state)' % name
-        return name
-
+        return unicode(name)
+    
     def __str__(self):
-        return self.__unicode__()
-
+        return self.__unicode__().encode("utf-8")
+    
     def __repr__(self):
-        return u'<ReportingUnit: %s>' % self.__unicode__()
+        return '<%s: %s>' % (self.__class__.__name__, self.__unicode__())
+    
+    @property
+    def results(self):
+        return self._results.values()
+    
+    def update_result(self, result):
+        self._results[result.candidate.ap_polra_number] = result
+    
+    @property
+    def is_state(self):
+        return self.fips == '00000'
 
 
 class Result(object):
