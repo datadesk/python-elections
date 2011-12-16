@@ -36,21 +36,23 @@ class StateTest(BaseTest):
             self.iowa.filter_races(office_name='President', party='GOP')[0],
             race_list[0],
         )
-        self.assertEqual(
-            len(self.iowa.filter_races(office_name='President', party='Dem')),
-            0,
-        )
+#        self.assertEqual(
+#            len(self.iowa.filter_races(office_name='President', party='Dem')),
+#            0,
+#        )
+        
+        # Reporting units
+        obj_list = self.iowa.reporting_units
+        self.assertEqual(type(obj_list), type([]))
+        self.assertEqual(len(obj_list) > 0, True)
+        self.assertEqual(type(obj_list[0]), ReportingUnit)
 
 #        # Candidates
 #        obj_list = self.iowa.candidates
 #        self.assertEqual(type(obj_list), type([]))
 #        self.assertEqual(len(obj_list) > 0, True)
 #        self.assertEqual(type(obj_list[0]), Candidate)
-#        # Reporting units
-#        obj_list = self.iowa.reporting_units
-#        self.assertEqual(type(obj_list), type([]))
-#        self.assertEqual(len(obj_list) > 0, True)
-#        self.assertEqual(type(obj_list[0]), ReportingUnit)
+
 #        # Counties
 #        obj_list = self.iowa.counties
 #        self.assertEqual(type(obj_list), type([]))
