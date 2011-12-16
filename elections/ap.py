@@ -96,14 +96,7 @@ class AP(object):
 
 
 class State(object):
-    _parties = {
-        'Lib': 'L',
-        'Dem': 'D',
-        'GOP': 'R',
-        'Ind': 'I',
-        'NP': None
-    }
-
+    
     def __init__(self, client, name, results=True, delegates=True):
         self.client = client
         self.name = name
@@ -238,7 +231,7 @@ class State(object):
                 ap_pol_number = cand['pol_number'],
                 abbrev_name = cand['pol_abbrv'],
                 suffix = cand['pol_junior'],
-                party = self._parties.get(cand['polra_party']),
+                party = cand['polra_party'],
                 # use_suffix?
             )
             self._races[candidate.ap_race_number].add_candidate(candidate)
@@ -263,7 +256,7 @@ class State(object):
                 scope = race['of_scope'],
                 date = date(*map(int, [race['el_date'][:4], race['el_date'][4:6], race['el_date'][6:]])),
                 num_winners = int(race['ra_num_winners']),
-                party = self._parties.get(race['rt_party_name']),
+                party = race['rt_party_name'],
                 uncontested = race['ra_uncontested'] == '1',
             )
             # And add it to the global store
