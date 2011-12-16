@@ -146,7 +146,9 @@ class State(object):
     def filter_races(self, **kwargs):
         """
         Takes a series of keyword arguments and returns any Race objects
-        that match.
+        that match. Works an OR query and returns anything that matches
+        any of the provided kwargs. 
+        
         ex:
             >>> iowa.filter_races(office_name='President', party='GOP')
             [<Race: President>]
