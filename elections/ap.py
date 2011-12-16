@@ -139,6 +139,9 @@ class State(object):
     
     @property
     def races(self):
+        """
+        Returns a list of all the races reporting results in this state.
+        """
         return self._races.values()
 
     def get_race(self, ap_race_number):
