@@ -120,6 +120,7 @@ class State(object):
         self._init_candidates()
         if results:
             self.fetch_results()
+        # Fetches delegates for any Primary or Caucus races
         if delegates and self.filter_races(is_general=False):
             self.fetch_delegates()
     
