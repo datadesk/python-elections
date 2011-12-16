@@ -9,7 +9,7 @@ a file called private_settings.py with AP_USERNAME and AP_PASSWORD
 import os
 import unittest
 from elections import AP
-from elections.objects import Candidate, Race, ReportingUnit, Result
+from elections.ap import Candidate, Race, ReportingUnit, Result
 from private_settings import AP_USERNAME, AP_PASSWORD
 
 #
@@ -37,6 +37,8 @@ class StateTest(BaseTest):
             self.iowa.filter_races(office_name='President', party='GOP')[0],
             race_list[0],
         )
+        
+
 #        self.assertEqual(
 #            len(self.iowa.filter_races(office_name='President', party='Dem')),
 #            0,
