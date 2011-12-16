@@ -9,6 +9,16 @@ from objects import Candidate, Race, ReportingUnit, Result
 
 
 class AP(object):
+    """
+    The public client you can use to connect to AP's data feed.
+    
+    Example usage:
+        
+        >>> from elections import AP
+        >>> client = AP(USERNAME, PASSWORD)
+        >>> client.get_state("IA") 
+    
+    """
     def __init__(self, username=None, password=None):
         self.username = username
         self.password = password
