@@ -106,6 +106,22 @@ class Race(object):
         return '<%s: %s>' % (self.__class__.__name__, self.__unicode__())
     
     @property
+    def name(self):
+        name = ''
+        if self.scope == 'L':
+            if self.office_description:
+                name = u'%s %s - %s' % (self.office_name, self.seat_name, self.office_description)
+            else:
+                name = u'%s %s' % (self.office_name, self.seat_name)
+        else:
+            if self.office_name == "Proposition":
+                num = self.seat_name.split('-')[0].strip()
+                name = "%s %s" % (self.office_name, num)
+            else:
+                name = u'%s' % self.office_name
+        return name
+    
+    @property
     def candidates(self):
         return self._candidates.values()
     
@@ -146,22 +162,6 @@ class Race(object):
         of ReportingUnit objects.
         """
         return [o for o in self.reporting_units if o.fips and not o.is_state]
-    
-    def get_name(self):
-        name = ''
-        if self.scope == 'L':
-            if self.office_description:
-                name = u'%s %s - %s' % (self.office_name, self.seat_name, self.office_description)
-            else:
-                name = u'%s %s' % (self.office_name, self.seat_name)
-        else:
-            if self.office_name == "Proposition":
-                num = self.seat_name.split('-')[0].strip()
-                name = "%s %s" % (self.office_name, num)
-            else:
-                name = u'%s' % self.office_name
-        return name
-    name = property(get_name)
 
 
 class ReportingUnit(object):
