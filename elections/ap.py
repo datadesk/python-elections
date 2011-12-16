@@ -96,6 +96,13 @@ class AP(object):
 
 
 class State(object):
+    """
+    One of these United States.
+    
+    Returned by the AP client in response to a `get_state` or `get_states`
+    call. Contains, among its attributes, the results for all races recorded
+    by the AP.
+    """
     
     def __init__(self, client, name, results=True, delegates=True):
         self.client = client
