@@ -9,7 +9,7 @@ a file called private_settings.py with AP_USERNAME and AP_PASSWORD
 import os
 import unittest
 from elections import AP
-from elections import Candidate, Race, ReportingUnit, Result
+from elections.ap import Candidate, Race, ReportingUnit, Result
 from private_settings import AP_USERNAME, AP_PASSWORD
 
 #
