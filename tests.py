@@ -49,19 +49,24 @@ class StateTest(BaseTest):
         self.assertEqual(type(ru_list[0]), ReportingUnit)
         self.assertEqual(self.iowa.get_reporting_unit(ru_list[0].fips), ru_list[0])
         self.assertRaises(KeyError, self.iowa.get_reporting_unit, 'foo')
-
+        
         # Candidates
         cand_list = self.iowa.races[0].candidates
         self.assertEqual(type(cand_list), type([]))
         self.assertEqual(len(cand_list) > 0, True)
         self.assertEqual(type(cand_list[0]), Candidate)
-
+        
         # Counties
         county_list = self.iowa.races[0].counties
         self.assertEqual(type(county_list), type([]))
         self.assertEqual(len(county_list) == 99, True)
         self.assertEqual(type(county_list[0]), ReportingUnit)
-
+        
+        # State
+        state = self.iowa.races[0].state
+        self.assertEqual(type(state), ReportingUnit)
+        
+        # FTP hits
         self.assertEqual(self.client._ftp_hits, 1)
 
 
