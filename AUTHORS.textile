@@ -1,5 +1,5 @@
 <pre><code>
-Ken Schwencke, ken.scwencke@latimes.com
+Ken Schwencke, ken.schwencke@latimes.com
                   _                        _        _        
    ____          | |                      | |      | |       
   / __ \ ___  ___| |____      ____ _ _ __ | | _____| |_ __ _ 
