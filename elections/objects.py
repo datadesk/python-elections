@@ -213,7 +213,10 @@ class ReportingUnit(object):
     
     @property
     def results(self):
-        return self._results.values()
+        """
+        Returns the Result objects sorted by total votes (highest first)
+        """
+        return sorted(self._results.values(), key=lambda x: x.vote_total, reverse=True)
     
     def update_result(self, result):
         self._results[result.candidate.ap_polra_number] = result
@@ -229,7 +232,8 @@ class Result(object):
     
     Also, the percent reporting.
     """
-    def __init__(self, candidate=None, reporting_unit=None, vote_total=None, vote_total_percent=None):
+    def __init__(self, candidate=None, reporting_unit=None, vote_total=None,
+                 vote_total_percent=None):
         self.candidate = candidate
         self.reporting_unit = reporting_unit
         self.vote_total = vote_total

@@ -386,7 +386,6 @@ class State(object):
         reporting_unit.votes_cast = votes_cast
         
         for result in reporting_unit.results:
-            #result.margin_of_victory = # margin of victory
             result.vote_total_percent = calculate.percentage(result.vote_total, votes_cast)
 
         if is_state:
