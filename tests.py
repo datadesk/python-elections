@@ -9,7 +9,7 @@ a file called private_settings.py
 import os
 import unittest
 from elections import AP
-from elections.objects import Candidate, Race, ReportingUnit
+from elections.objects import Candidate, Race, ReportingUnit, Result
 from private_settings import AP_USERNAME, AP_PASSWORD
 
 #
@@ -64,7 +64,7 @@ class StateTest(BaseTest):
         
         # State
         state = self.iowa.races[0].state
-        self.assertEqual(type(state), ReportingUnit)
+        self.assertEqual(type(state), Result)
         
         # FTP hits
         self.assertEqual(self.client._ftp_hits, 1)
