@@ -93,6 +93,24 @@ class AP(object):
         results = [State(self, state, *args, **kwargs) for state in states]
         self.ftp.quit()
         return results
+    
+    #
+    # Private methods
+    #
+    
+    def _fetch_csv(self, path):
+        """
+        Fetch a delimited file from the AP FTP.
+        
+        Provide the path of the file you want.
+        
+        Returns a list of dictionaries that's ready to roll.
+        """
+        buffer = StringIO()
+        cmd = 'RETR %s' % path
+        self.ftp.retrbinary(cmd, buffer.write)
+        reader = csv.DictReader(StringIO(buffer.getvalue()), delimiter='|')
+        return [strip_dict(i) for i in reader]
 
 
 class State(object):
@@ -210,26 +228,12 @@ class State(object):
     # Private methods
     #
     
-    def _fetch_csv(self, path):
-        """
-        Fetch a delimited file from the AP FTP.
-        
-        Provide the path of the file you want.
-        
-        Returns a list of dictionaries that's ready to roll.
-        """
-        buffer = StringIO()
-        cmd = 'RETR %s' % path
-        self.client.ftp.retrbinary(cmd, buffer.write)
-        reader = csv.DictReader(StringIO(buffer.getvalue()), delimiter='|')
-        return [strip_dict(i) for i in reader]
-    
     def _init_candidates(self):
         """
         Download the state's candidate file and load the data.
         """
         # Fetch the data from the FTP
-        candidate_list = self._fetch_csv("/inits/%(name)s/%(name)s_pol.txt" % self.__dict__)
+        candidate_list = self.client._fetch_csv("/inits/%(name)s/%(name)s_pol.txt" % self.__dict__)
         # Loop through it...
         for cand in candidate_list:
             # Create a Candidate...
@@ -253,7 +257,7 @@ class State(object):
         Download all the races in the state and load the data.
         """
         # Get the data
-        race_list = self._fetch_csv("/inits/%(name)s/%(name)s_race.txt" % self.__dict__)
+        race_list = self.client._fetch_csv("/inits/%(name)s/%(name)s_race.txt" % self.__dict__)
         # Loop through it all
         for race in race_list:
             # Create a Race object...
@@ -279,7 +283,7 @@ class State(object):
         Download all the reporting units and load the data.
         """
         # Get the data
-        ru_list = self._fetch_csv("/inits/%(name)s/%(name)s_ru.txt" % self.__dict__)
+        ru_list = self.client._fetch_csv("/inits/%(name)s/%(name)s_ru.txt" % self.__dict__)
         # Loop through them all
         for r in ru_list:
             # Create ReportingUnit objects for each race
