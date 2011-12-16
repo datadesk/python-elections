@@ -274,7 +274,6 @@ class State(object):
                 abbrev = r['ru_abbrv'],
                 precincts_total = int(r['ru_precincts']),
                 num_reg_voters = int(r['ru_reg_voters']),
-                results=None,
             )
             self._reporting_units.update({ru.fips: ru})
 
@@ -373,19 +372,16 @@ class State(object):
                 candidate.vote_total = vote_count
             candidate.is_winner = cand[IS_WINNER] == 'X'
             candidate.is_runoff = cand[IS_WINNER] == 'R'
-            
-            result = Result()
-            result.candidate = candidate
-            result.vote_total = vote_count
-            result.reporting_unit = reporting_unit
+
+            reporting_unit.update_result(Result(
+                candidate = candidate,
+                vote_total = vote_count,
+                reporting_unit = reporting_unit
+            ))
 
             reporting_unit.precincts_reporting = int(primary_bits[PRECINCTS_REPORTING])
             reporting_unit.precincts_reporting_percent = calculate.percentage(reporting_unit.precincts_reporting,
                                                     reporting_unit.precincts_total)
-            reporting_unit._results.update({candidate.ap_polra_number: result})
-            if is_state:
-                # Set the state-wide result for this candidate
-                race._state_results.update({candidate.ap_polra_number: result})
 
         reporting_unit.votes_cast = votes_cast
         

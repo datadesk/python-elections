@@ -87,13 +87,12 @@ class Race(object):
         self.race_type = race_type
         self.party = party
         self.uncontested = uncontested
-        self.precincts_total = precincts_total
-        self.precincts_reporting = precincts_reporting
-        self.precincts_reporting_percent = precincts_reporting_percent
-        self.votes_cast = votes_cast
+        #self.precincts_total = precincts_total
+        #self.precincts_reporting = precincts_reporting
+        #self.precincts_reporting_percent = precincts_reporting_percent
+        #self.votes_cast = votes_cast
         self._candidates = {}
         self._reporting_units = {}
-        self._state_results = {}
     
     def __unicode__(self):
         return unicode(self.name)
@@ -166,6 +165,9 @@ class Race(object):
 
     @property
     def race_type_name(self):
+        """
+        Returns a descriptive name for the race_type.
+        """
         return self._race_types.get(self.race_type, None)
 
     @property
@@ -189,8 +191,7 @@ class ReportingUnit(object):
     """
     def __init__(self, ap_number=None, name=None, abbrev=None, fips=None,
                  precincts_total=None, num_reg_voters=None, votes_cast=None,
-                 precincts_reporting=None, precincts_reporting_percent=None,
-                 results={}):
+                 precincts_reporting=None, precincts_reporting_percent=None):
         self.ap_number = ap_number
         self.name = name
         self.abbrev = abbrev
@@ -200,7 +201,7 @@ class ReportingUnit(object):
         self.votes_cast = votes_cast
         self.precincts_reporting = precincts_reporting
         self.precincts_reporting_percent = precincts_reporting_percent
-        self._results = results
+        self._results = {}
     
     def __unicode__(self):
         name = self.name
@@ -232,9 +233,7 @@ class Result(object):
     
     Also, the percent reporting.
     """
-    def __init__(self, race=None, candidate=None,
-                 reporting_unit=None, vote_total=None, precincts_reporting=None,
-                 precincts_reporting_percent=None):
+    def __init__(self, candidate=None, reporting_unit=None, vote_total=None):
         self.candidate = candidate
         self.reporting_unit = reporting_unit
         self.vote_total = vote_total
