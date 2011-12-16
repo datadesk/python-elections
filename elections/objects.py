@@ -111,25 +111,30 @@ class Race(object):
     
     def get_reporting_unit(self, fips):
         """
-        Get a single ReportinUnit
+        Get a single ReportingUnit
         """
         return self._reporting_units.get(fips, None)
     
     @property
     def reporting_units(self):
         """
-        Get all reporting units
+        Returns all reporting units that belong to this race as a list of
+        ReportingUnit objects.
         """
         return self._reporting_units.values()
     
     @property
     def state(self):
+        """
+        Returns the state-level results for this race as a ReportingUnit object.
+        """
         return [o for o in self.reporting_units if o.is_state][0]
     
     @property
     def counties(self):
         """
-        Gets all reporting units that can be defined as counties.
+        Returns all the counties that report results for this race as a list
+        of ReportingUnit objects.
         """
         return [o for o in self.reporting_units if o.fips and not o.is_state]
     
