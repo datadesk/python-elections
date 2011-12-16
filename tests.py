@@ -27,10 +27,11 @@ class StateTest(BaseTest):
     
     def test_attrs(self):
         # Races
-        obj_list = self.iowa.races
-        self.assertEqual(type(obj_list), type([]))
-        self.assertEqual(len(obj_list) > 0, True)
-        self.assertEqual(type(obj_list[0]), Race)
+        race_list = self.iowa.races
+        self.assertEqual(type(race_list), type([]))
+        self.assertEqual(len(race_list) > 0, True)
+        self.assertEqual(type(race_list[0]), Race)
+        self.assertEqual(self.iowa.get_race(race_list[0].ap_race_number), race_list[0])
 
 #        # Candidates
 #        obj_list = self.iowa.candidates
