@@ -25,13 +25,17 @@ class BaseTest(unittest.TestCase):
 
 class StateTest(BaseTest):
     
-    def test_attrs(self):
+    def test_methods(self):
         # Races
         race_list = self.iowa.races
         self.assertEqual(type(race_list), type([]))
         self.assertEqual(len(race_list) > 0, True)
         self.assertEqual(type(race_list[0]), Race)
         self.assertEqual(self.iowa.get_race(race_list[0].ap_race_number), race_list[0])
+        self.assertEqual(
+            self.iowa.filter_races(office_name='President', party='GOP')[0],
+            race_list[0],
+        )
 
 #        # Candidates
 #        obj_list = self.iowa.candidates
