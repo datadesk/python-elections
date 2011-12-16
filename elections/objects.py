@@ -158,23 +158,21 @@ class ReportingUnit(object):
     For instance, a state, a congressional district, a county.
     """
     def __init__(self, ap_number=None, name=None, abbrev=None, fips=None,
-                 precincts_total=None, num_reg_voters=None, results={}):
+                 precincts_total=None, num_reg_voters=None, precincts_reporting=None,
+                 precincts_reporting_percent=None, results={}):
         self.ap_number = ap_number
         self.name = name
         self.abbrev = abbrev
         self.fips = fips
         self.precincts_total = precincts_total
         self.num_reg_voters = num_reg_voters
+        self.precincts_reporting = precincts_reporting
+        self.precincts_reporting_percent = precincts_reporting_percent
         self._results = results
 
     @property
     def results(self):
         return self._results.values()
-
-    def results_for_race(self, race):
-        if isinstance(race, Race):
-            race = race.ap_race_number
-        return [o for o in self._results.values() if o.race.ap_race_number == race]
 
     def update_result(self, result):
         self._results[result.candidate.ap_polra_number] = result
