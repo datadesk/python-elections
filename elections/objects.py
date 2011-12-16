@@ -87,10 +87,6 @@ class Race(object):
         self.race_type = race_type
         self.party = party
         self.uncontested = uncontested
-        #self.precincts_total = precincts_total
-        #self.precincts_reporting = precincts_reporting
-        #self.precincts_reporting_percent = precincts_reporting_percent
-        #self.votes_cast = votes_cast
         self._candidates = {}
         self._reporting_units = {}
     
@@ -196,9 +192,9 @@ class ReportingUnit(object):
         self.name = name
         self.abbrev = abbrev
         self.fips = fips
-        self.precincts_total = precincts_total
         self.num_reg_voters = num_reg_voters
         self.votes_cast = votes_cast
+        self.precincts_total = precincts_total
         self.precincts_reporting = precincts_reporting
         self.precincts_reporting_percent = precincts_reporting_percent
         self._results = {}
@@ -233,10 +229,11 @@ class Result(object):
     
     Also, the percent reporting.
     """
-    def __init__(self, candidate=None, reporting_unit=None, vote_total=None):
+    def __init__(self, candidate=None, reporting_unit=None, vote_total=None, vote_total_percent=None):
         self.candidate = candidate
         self.reporting_unit = reporting_unit
         self.vote_total = vote_total
+        self.vote_total_percent = vote_total_percent
 
     def __unicode__(self):
         return u'%s, %s, %s' % (self.candidate, self.reporting_unit,
@@ -247,5 +244,3 @@ class Result(object):
 
     def __repr__(self):
         return u'<Result: %s>' % self.__unicode__()
-
-

@@ -385,14 +385,10 @@ class State(object):
 
         reporting_unit.votes_cast = votes_cast
         
-        # If this is a state-wide result
+        for result in reporting_unit.results:
+            #result.margin_of_victory = # margin of victory
+            result.vote_total_percent = calculate.percentage(result.vote_total, votes_cast)
+
         if is_state:
-            # Update the race with precinct reporting info
-            race.precincts_total = int(primary_bits[TOT_PRECINCTS])
-            race.precincts_reporting = int(primary_bits[PRECINCTS_REPORTING])
-            race.precincts_reporting_percent =  calculate.percentage(float(race.precincts_reporting), 
-                                                    float(race.precincts_total))
-            race.votes_cast = votes_cast
-            
             for candidate in race.candidates:
                 candidate.vote_total_percent = calculate.percentage(candidate.vote_total, votes_cast)
