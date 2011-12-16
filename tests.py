@@ -59,6 +59,8 @@ class StateTest(BaseTest):
 #        self.assertEqual(len(obj_list) == 99, True)
 #        self.assertEqual(type(obj_list[0]), ReportingUnit)
 
+        self.assertEqual(self.client._ftp_hits, 1)
+
 
 
 if __name__ == '__main__':

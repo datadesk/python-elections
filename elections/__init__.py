@@ -25,6 +25,7 @@ class AP(object):
         self.username = username
         self.password = password
         self._ftp = None
+        self._ftp_hits = 0
     
     def __unicode__(self):
         return unicode(self.username)
@@ -47,6 +48,7 @@ class AP(object):
         """
         if not self._ftp or not self._ftp.sock:
             self._ftp = FTP(self.FTP_HOSTNAME, self.username, self.password)
+            self._ftp_hits += 1
         return self._ftp
     
     def get_state(self, state=None, *args, **kwargs):
