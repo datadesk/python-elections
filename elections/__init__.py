@@ -23,16 +23,16 @@ class AP(object):
         self.username = username
         self.password = password
         self._ftp = None
-
+    
     def __unicode__(self):
-        return u'%s' % self.username
-
+        return unicode(self.username)
+    
     def __str__(self):
-        return self.__unicode__()   
- 
+        return self.__unicode__().encode("utf-8")
+    
     def __repr__(self):
-        return u'<AP: %s>' % self.__unicode__()
-
+        return '<%s: %s>' % (self.__class__.__name__, self.__unicode__())
+    
     #
     # Public methods
     #
