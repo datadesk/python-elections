@@ -413,11 +413,6 @@ class State(object):
         for result in reporting_unit.results:
             result.vote_total_percent = calculate.percentage(result.vote_total, votes_cast)
 
-        if is_state:
-            for candidate in race.candidates:
-                candidate.vote_total_percent = calculate.percentage(candidate.vote_total, votes_cast)
-
-
 class Candidate(object):
     """
     A choice for voters in a race.
