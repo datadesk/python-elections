@@ -110,15 +110,15 @@ class Race(object):
         name = ''
         if self.scope == 'L':
             if self.office_description:
-                name = u'%s %s - %s' % (self.office_name, self.seat_name, self.office_description)
+                name = '%s %s - %s' % (self.office_name, self.seat_name, self.office_description)
             else:
-                name = u'%s %s' % (self.office_name, self.seat_name)
+                name = '%s %s' % (self.office_name, self.seat_name)
         else:
             if self.office_name == "Proposition":
                 num = self.seat_name.split('-')[0].strip()
                 name = "%s %s" % (self.office_name, num)
             else:
-                name = u'%s' % self.office_name
+                name = '%s' % self.office_name
         return name
     
     @property
