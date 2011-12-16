@@ -113,6 +113,8 @@ class State(object):
             >>> iowa.filter_races(office_name='President', party='GOP')
             [<Race: President>]
         """
+        # TODO: We could update this to split on __ and match that to a different
+        # filter function, ala the way Django can filter attribute__icontains
         s = set()
         for k in kwargs.keys():
             s.update(filter(lambda x: getattr(x, k) == kwargs[k], self.races))
