@@ -56,11 +56,11 @@ class StateTest(BaseTest):
         self.assertEqual(len(cand_list) > 0, True)
         self.assertEqual(type(cand_list[0]), Candidate)
 
-#        # Counties
-#        obj_list = self.iowa.counties
-#        self.assertEqual(type(obj_list), type([]))
-#        self.assertEqual(len(obj_list) == 99, True)
-#        self.assertEqual(type(obj_list[0]), ReportingUnit)
+        # Counties
+        county_list = self.iowa.races[0].counties
+        self.assertEqual(type(county_list), type([]))
+        self.assertEqual(len(county_list) == 99, True)
+        self.assertEqual(type(county_list[0]), ReportingUnit)
 
         self.assertEqual(self.client._ftp_hits, 1)
 
