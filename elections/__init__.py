@@ -117,7 +117,10 @@ class State(object):
         """
         Get a single Race object by it's ap_race_number
         """
-        return self._races.get(ap_race_number, None)
+        try:
+            return self._races[ap_race_number]
+        except KeyError:
+            raise KeyError("The race you requested does not exist.")
 
     def filter_races(self, **kwargs):
         """
@@ -145,8 +148,11 @@ class State(object):
         """
         Get a single ReportinUnit
         """
-        return self._reporting_units.get(fips, None)
-
+        try:
+            return self._reporting_units[fips]
+        except KeyError:
+            raise KeyError("The reporting unit you requested does not exist.")
+    
     @property
     def counties(self):
         """
