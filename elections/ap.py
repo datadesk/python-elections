@@ -109,6 +109,8 @@ class AP(object):
     def _strip_dict(self, d):
         """
         Strip all leading and trailing whitespace in dictionary keys and values.
+        
+        This problem is common to the AP's CSV files
         """
         return dict((k.strip(), v.strip()) for k, v in d.items())
 
