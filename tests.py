@@ -61,10 +61,12 @@ class StateTest(BaseTest):
         self.assertEqual(type(county_list), type([]))
         self.assertEqual(len(county_list) == 99, True)
         self.assertEqual(type(county_list[0]), ReportingUnit)
+        self.assertEqual(county_list[0].is_state, False)
         
         # State
         state = self.iowa.races[0].state
-        self.assertEqual(type(state), Result)
+        self.assertEqual(type(state), ReportingUnit)
+        self.assertEqual(state.is_state, True)
         
         # FTP hits
         self.assertEqual(self.client._ftp_hits, 1)

@@ -94,7 +94,7 @@ class Race(object):
         self.votes_cast = votes_cast
         self._candidates = {}
         self._reporting_units = {}
-
+        self._state_results = {}
     
     @property
     def candidates(self):
@@ -121,6 +121,10 @@ class Race(object):
         Get all reporting units
         """
         return self._reporting_units.values()
+    
+    @property
+    def state(self):
+        return [o for o in self.reporting_units if o.is_state][0]
     
     @property
     def counties(self):
