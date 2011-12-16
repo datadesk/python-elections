@@ -50,11 +50,11 @@ class StateTest(BaseTest):
         self.assertEqual(self.iowa.get_reporting_unit(ru_list[0].fips), ru_list[0])
         self.assertRaises(KeyError, self.iowa.get_reporting_unit, 'foo')
 
-#        # Candidates
-#        obj_list = self.iowa.candidates
-#        self.assertEqual(type(obj_list), type([]))
-#        self.assertEqual(len(obj_list) > 0, True)
-#        self.assertEqual(type(obj_list[0]), Candidate)
+        # Candidates
+        cand_list = self.iowa.races[0].candidates
+        self.assertEqual(type(cand_list), type([]))
+        self.assertEqual(len(cand_list) > 0, True)
+        self.assertEqual(type(cand_list[0]), Candidate)
 
 #        # Counties
 #        obj_list = self.iowa.counties
