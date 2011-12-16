@@ -70,7 +70,7 @@ class State(object):
         self.name = name
         self.leading_zero_fips = False
         # The AP results files for these 7 states are missing
-        # the leading 0 on the FIPS codes.
+        # the leading 0 on the county FIPS codes.
         if self.name in ('AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT'):
             self.leading_zero_fips = True
         self._races = {}
