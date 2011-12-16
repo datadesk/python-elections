@@ -4,7 +4,7 @@
 Collects and organizes election results published the Associated Press's 
 data service.
 
-In order to use this library, you must pay AP for access to the data. 
+In order to use this library, you must pay AP for access to the data.
 
 More information can be found on the AP's web site (http://www.apdigitalnews.com/ap_elections.html)
 or by contacting Anthony Marquez at amarquez@ap.org.
