@@ -66,7 +66,7 @@ class Race(object):
                  office_id=None, seat_name=None, seat_number=None, scope=None,
                  date=None, num_winners=None, party=None, uncontested=None,
                  precincts_total=None, precincts_reporting=None,
-                 precincts_reporting_percent=None):
+                 precincts_reporting_percent=None, votes_cast=None):
         self.ap_race_number = ap_race_number
         self.office_name = office_name
         self.office_description = office_description
@@ -81,6 +81,7 @@ class Race(object):
         self.precincts_total = precincts_total
         self.precincts_reporting = precincts_reporting
         self.precincts_reporting_percent = precincts_reporting_percent
+        self.votes_cast = votes_cast
 
         self._candidates = {}
         self._state_results = {}
@@ -158,14 +159,16 @@ class ReportingUnit(object):
     For instance, a state, a congressional district, a county.
     """
     def __init__(self, ap_number=None, name=None, abbrev=None, fips=None,
-                 precincts_total=None, num_reg_voters=None, precincts_reporting=None,
-                 precincts_reporting_percent=None, results={}):
+                 precincts_total=None, num_reg_voters=None, votes_cast=None,
+                 precincts_reporting=None, precincts_reporting_percent=None,
+                 results={}):
         self.ap_number = ap_number
         self.name = name
         self.abbrev = abbrev
         self.fips = fips
         self.precincts_total = precincts_total
         self.num_reg_voters = num_reg_voters
+        self.votes_cast = votes_cast
         self.precincts_reporting = precincts_reporting
         self.precincts_reporting_percent = precincts_reporting_percent
         self._results = results

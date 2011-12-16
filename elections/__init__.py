@@ -330,17 +330,16 @@ class State(object):
         votes_cast = 0
         for cand in candidate_bits:
             candidate = race.get_candidate(cand[CANDIDATE_NUM])
-            if is_state:
-                # Update the overall vote total if it's state-wide
-                candidate.vote_total = int(cand[VOTE_COUNT])
-                # And the total votes cast so far in the race
-                votes_cast += candidate.vote_total
+            vote_count = int(cand[VOTE_COUNT])
+            votes_cast += vote_count
+            if is_state: # Update the overall vote total if it's state-wide
+                candidate.vote_total = vote_count
             candidate.is_winner = cand[IS_WINNER] == 'X'
             candidate.is_runoff = cand[IS_WINNER] == 'R'
             
             result = Result()
             result.candidate = candidate
-            result.vote_total = int(cand[VOTE_COUNT])
+            result.vote_total = vote_count
             result.reporting_unit = reporting_unit
 
             reporting_unit.precincts_reporting = int(primary_bits[PRECINCTS_REPORTING])
@@ -350,6 +349,8 @@ class State(object):
             if is_state:
                 # Set the state-wide result for this candidate
                 race._state_results.update({candidate.ap_polra_number: result})
+
+        reporting_unit.votes_cast = votes_cast
         
         # If this is a state-wide result
         if is_state:
