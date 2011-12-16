@@ -23,12 +23,6 @@ from cStringIO import StringIO
 def split_len(seq, length):
     return [seq[i:i+length] for i in range(0, len(seq), length)]
 
-def strip_dict(d):
-    """
-    Strip all leading and trailing whitespace in dictionary keys and values.
-    """
-    return dict((k.strip(), v.strip()) for k, v in d.items())
-
 #
 # AP data
 #
@@ -110,7 +104,13 @@ class AP(object):
         cmd = 'RETR %s' % path
         self.ftp.retrbinary(cmd, buffer.write)
         reader = csv.DictReader(StringIO(buffer.getvalue()), delimiter='|')
-        return [strip_dict(i) for i in reader]
+        return [self._strip_dict(i) for i in reader]
+    
+    def _strip_dict(self, d):
+        """
+        Strip all leading and trailing whitespace in dictionary keys and values.
+        """
+        return dict((k.strip(), v.strip()) for k, v in d.items())
 
 
 class State(object):
