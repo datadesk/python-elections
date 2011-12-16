@@ -26,26 +26,27 @@ class BaseTest(unittest.TestCase):
 class StateTest(BaseTest):
     
     def test_attrs(self):
-        # Candidates
-        obj_list = self.iowa.candidates
-        self.assertEqual(type(obj_list), type([]))
-        self.assertEqual(len(obj_list) > 0, True)
-        self.assertEqual(type(obj_list[0]), Candidate)
         # Races
         obj_list = self.iowa.races
         self.assertEqual(type(obj_list), type([]))
         self.assertEqual(len(obj_list) > 0, True)
         self.assertEqual(type(obj_list[0]), Race)
-        # Reporting units
-        obj_list = self.iowa.reporting_units
-        self.assertEqual(type(obj_list), type([]))
-        self.assertEqual(len(obj_list) > 0, True)
-        self.assertEqual(type(obj_list[0]), ReportingUnit)
-        # Counties
-        obj_list = self.iowa.counties
-        self.assertEqual(type(obj_list), type([]))
-        self.assertEqual(len(obj_list) == 99, True)
-        self.assertEqual(type(obj_list[0]), ReportingUnit)
+
+#        # Candidates
+#        obj_list = self.iowa.candidates
+#        self.assertEqual(type(obj_list), type([]))
+#        self.assertEqual(len(obj_list) > 0, True)
+#        self.assertEqual(type(obj_list[0]), Candidate)
+#        # Reporting units
+#        obj_list = self.iowa.reporting_units
+#        self.assertEqual(type(obj_list), type([]))
+#        self.assertEqual(len(obj_list) > 0, True)
+#        self.assertEqual(type(obj_list[0]), ReportingUnit)
+#        # Counties
+#        obj_list = self.iowa.counties
+#        self.assertEqual(type(obj_list), type([]))
+#        self.assertEqual(len(obj_list) == 99, True)
+#        self.assertEqual(type(obj_list[0]), ReportingUnit)
 
 
 

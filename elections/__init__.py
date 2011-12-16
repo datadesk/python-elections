@@ -80,11 +80,12 @@ class State(object):
     def __init__(self, client, name, results=True):
         self.client = client
         self.name = name
-        self.leading_zero_fips = False
         # The AP results files for these 7 states are missing
         # the leading 0 on the county FIPS codes.
         if self.name in ('AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT'):
             self.leading_zero_fips = True
+        else:
+            self.leading_zero_fips = False
         self._races = {}
         self._reporting_units = {}
         self._init_races()
@@ -92,16 +93,15 @@ class State(object):
         self._init_candidates()
         if results:
             self.fetch_results()
-
+    
     def __unicode__(self):
-        return self.name
-
+        return unicode(self.name)
+    
     def __str__(self):
-        return self.__unicode__()   
- 
+        return self.__unicode__().encode("utf-8")
+     
     def __repr__(self):
-        return u'<State: %s>' % self.__unicode__()
-
+        return '<%s: %s>' % (self.__class__.__name__, self.__unicode__())
     
     #
     # Public methods
