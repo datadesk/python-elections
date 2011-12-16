@@ -36,6 +36,10 @@ class StateTest(BaseTest):
             self.iowa.filter_races(office_name='President', party='GOP')[0],
             race_list[0],
         )
+        self.assertEqual(
+            len(self.iowa.filter_races(office_name='President', party='Dem')),
+            0,
+        )
 
 #        # Candidates
 #        obj_list = self.iowa.candidates
