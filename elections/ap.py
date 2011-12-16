@@ -417,9 +417,8 @@ class Candidate(object):
     def __init__(self, first_name=None, middle_name=None, last_name=None,
                  abbrev_name=None, suffix=None, use_suffix=False, 
                  ap_natl_number=None, ap_polra_number=None, ap_race_number=None,
-                 combined_id=None, party=None, vote_total=None, ap_pol_number=None,
-                 vote_total_percent=None, is_winner=None, is_runoff=None,
-                 delegate_total=None, delegate_total_percent=None):
+                 combined_id=None, party=None, ap_pol_number=None, is_winner=None,
+                 is_runoff=None, delegate_total=None, delegate_total_percent=None):
         self.first_name = first_name
         self.middle_name = middle_name
         self.last_name = last_name
@@ -434,8 +433,6 @@ class Candidate(object):
         self.party = party
         self.is_winner = is_winner
         self.is_runoff = is_runoff
-        self.vote_total = vote_total
-        self.vote_total_percent = vote_total_percent
         self.delegate_total = delegate_total
 
     @property
