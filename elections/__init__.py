@@ -19,7 +19,7 @@ class AP(object):
         >>> client.get_state("IA") 
     
     """
-    FTP_ADDRESS = 'electionsonline.ap.org'
+    FTP_HOSTNAME = 'electionsonline.ap.org'
     
     def __init__(self, username=None, password=None):
         self.username = username
@@ -46,7 +46,7 @@ class AP(object):
         If not, activates a new connection to the AP.
         """
         if not self._ftp or not self._ftp.sock:
-            self._ftp = FTP(self.FTP_ADDRESS, self.username, self.password)
+            self._ftp = FTP(self.FTP_HOSTNAME, self.username, self.password)
         return self._ftp
     
     def get_state(self, state=None, *args, **kwargs):
