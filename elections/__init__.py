@@ -79,7 +79,7 @@ class State(object):
         'NP': None
     }
 
-    def __init__(self, client, name, results=True):
+    def __init__(self, client, name, results=True, delegates=True):
         self.client = client
         self.name = name
         # The AP results files for these 7 states are missing
@@ -95,6 +95,8 @@ class State(object):
         self._init_candidates()
         if results:
             self.fetch_results()
+        if delegates and self.filter_races(is_general=False):
+            self.fetch_delegates()
     
     def __unicode__(self):
         return unicode(self.name)
@@ -130,8 +132,6 @@ class State(object):
             >>> iowa.filter_races(office_name='President', party='GOP')
             [<Race: President>]
         """
-        # TODO: We could update this to split on __ and match that to a different
-        # filter function, ala the way Django can filter attribute__icontains
         s = set()
         for k in kwargs.keys():
             s.update(filter(lambda x: getattr(x, k) == kwargs[k], self.races))
