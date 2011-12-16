@@ -96,6 +96,15 @@ class Race(object):
         self._state_results = {}
         self._reporting_units = {}
     
+    def __unicode__(self):
+        return unicode(self.name)
+    
+    def __str__(self):
+        return self.__unicode__().encode("utf-8")
+    
+    def __repr__(self):
+        return '<%s: %s>' % (self.__class__.__name__, self.__unicode__())
+    
     @property
     def candidates(self):
         return self._candidates.values()
@@ -153,15 +162,6 @@ class Race(object):
                 name = u'%s' % self.office_name
         return name
     name = property(get_name)
-    
-    def __unicode__(self):
-        return u'%s' % self.name
-    
-    def __str__(self):
-        return self.__unicode__()
-    
-    def __repr__(self):
-        return u'<Race: %s>' % self.__unicode__()
 
 
 class ReportingUnit(object):
