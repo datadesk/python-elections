@@ -62,9 +62,18 @@ class Race(object):
         * Proposition 8 in California
     
     """
+
+    _race_types = {
+        'D': 'Dem Primary',
+        'R': 'GOP Primary',
+        'G': 'General Election',
+        'E': 'Dem Caucus',
+        'S': 'GOP Caucus'
+    }
+
     def __init__(self, ap_race_number=None, office_name=None, office_description=None,
                  office_id=None, seat_name=None, seat_number=None, scope=None,
-                 date=None, num_winners=None, party=None, uncontested=None,
+                 date=None, num_winners=None, race_type=None, party=None, uncontested=None,
                  precincts_total=None, precincts_reporting=None,
                  precincts_reporting_percent=None, votes_cast=None):
         self.ap_race_number = ap_race_number
@@ -76,6 +85,7 @@ class Race(object):
         self.scope = scope
         self.date = date
         self.num_winners = num_winners
+        self.race_type = race_type
         self.party = party
         self.uncontested = uncontested
         self.precincts_total = precincts_total

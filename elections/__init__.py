@@ -64,6 +64,7 @@ class State(object):
         'Ind': 'I',
         'NP': None
     }
+
     def __init__(self, client, name, results=True):
         self.client = client
         self.name = name
@@ -103,6 +104,19 @@ class State(object):
         Get a single Race object by it's ap_race_number
         """
         return self._races.get(ap_race_number, None)
+
+    def filter_races(self, **kwargs):
+        """
+        Takes a series of keyword arguments and returns any Race objects
+        that match.
+        ex:
+            >>> iowa.filter_races(office_name='President', party='GOP')
+            [<Race: President>]
+        """
+        s = set()
+        for k in kwargs.keys():
+            s.update(filter(lambda x: getattr(x, k) == kwargs[k], self.races))
+        return list(s)
 
     @property
     def reporting_units(self):
@@ -195,6 +209,7 @@ class State(object):
                 office_name = race['ot_name'],
                 office_description = race['of_description'],
                 office_id = race['office_id'],
+                race_type = race['race_id'],
                 seat_name = race['se_name'],
                 seat_number = race['se_number'],
                 scope = race['of_scope'],
