@@ -42,10 +42,11 @@ class StateTest(BaseTest):
 #        )
         
         # Reporting units
-        obj_list = self.iowa.reporting_units
-        self.assertEqual(type(obj_list), type([]))
-        self.assertEqual(len(obj_list) > 0, True)
-        self.assertEqual(type(obj_list[0]), ReportingUnit)
+        ru_list = self.iowa.reporting_units
+        self.assertEqual(type(ru_list), type([]))
+        self.assertEqual(len(ru_list) > 0, True)
+        self.assertEqual(type(ru_list[0]), ReportingUnit)
+        self.assertEqual(self.iowa.get_reporting_unit(ru_list[0].fips), ru_list[0])
 
 #        # Candidates
 #        obj_list = self.iowa.candidates
