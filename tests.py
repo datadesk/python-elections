@@ -4,7 +4,7 @@
 Tests out python-elections
 
 Most requests require authentication with, so you'll need to provide that in
-a file called private_settings.py
+a file called private_settings.py with AP_USERNAME and AP_PASSWORD
 """
 import os
 import unittest
