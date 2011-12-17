@@ -155,7 +155,6 @@ class AP(object):
         raw_data = list(reader)[:-1]
         # Loop thorugh the raw data...
         prepped_data = []
-        print len(candidatefields)
         for row in raw_data:
             # Split out the basic fields
             basic_data = row[:len(basicfields)]
@@ -169,8 +168,9 @@ class AP(object):
                 dict((candidatefields[i], v) for i, v in enumerate(cand))
                     for cand in candidate_sets
             ]
-            # Pass it all out
-            return prepped_dict
+            prepped_data.append(prepped_dict)
+        # Pass it all out
+        return prepped_data
     
     def _split_list(self, iterable, n, fillvalue=None):
         """
