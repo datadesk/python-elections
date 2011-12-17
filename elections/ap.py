@@ -789,9 +789,7 @@ class Candidate(object):
 
 class Result(object):
     """
-    The actual vote count for a candidate in a race in a particular reporting unit.
-    
-    Also, the percent reporting.
+    The vote count for a candidate in a race in a particular reporting unit.
     """
     def __init__(self, candidate=None, reporting_unit=None, vote_total=None,
                  vote_total_percent=None):
