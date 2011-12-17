@@ -121,18 +121,22 @@ class AP(object):
     
     def _fetch_flatfile(self, path, basicfields, candidatefields):
         """
-        Retrive one of the AP's flatfiles, which are delimited by ";",
-        do not include headers and include a dynamic number of fields
-        depending on the number of candidates in the data set.
-        
-        Provide the path of the file you want, the list of basic fields
-        that will be the same in every file, and then the list of candidate
-        fields that will repeat outwards to the right for each candidate
-        recorded in the data set.
+        Retrive, parse and structure one of the AP's flatfiles.
         
         Returns a list of dictionaries with the standard "basicfields" as
-        top-leve keys and then a `candidates` key that contains a nested dictionary
-        with all the candidate fields as keys.
+        top-level keys and then a `candidates` key that contains a nested dictionary
+        with the candidate data inside.
+        
+        AP's flatfiles are delimited by ";", do not include headers and include 
+        a dynamic number of fields depending on the number of candidates in the 
+        data set.
+        
+        Provide:
+            * The path of the file you want
+            * The list of basic fields that will be stay the same
+            * The list of candidate fields that will repeat outwards to the right 
+              for each candidate in the data set.
+        
         """
         buffer = StringIO()
         cmd = 'RETR %s' % path
