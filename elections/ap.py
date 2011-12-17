@@ -11,6 +11,7 @@ or by contacting Anthony Marquez at amarquez@ap.org.
 """
 import os
 import csv
+import itertools
 import calculate
 from ftplib import FTP
 from datetime import date
@@ -101,14 +102,17 @@ class AP(object):
         
         Returns a list of dictionaries that's ready to roll.
         """
+        # Pull the file
         buffer = StringIO()
         cmd = 'RETR %s' % path
         self.ftp.retrbinary(cmd, buffer.write)
+        # Toss it into a CSV DictReader
         reader = csv.DictReader(
             StringIO(buffer.getvalue()),
             delimiter=delimiter,
             fieldnames=fieldnames
         )
+        # Clean up the keys and values, since AP provides them a little messy
         return [self._strip_dict(i) for i in reader]
     
     def _strip_dict(self, d):
@@ -138,9 +142,11 @@ class AP(object):
               for each candidate in the data set.
         
         """
+        # Pull the file
         buffer = StringIO()
         cmd = 'RETR %s' % path
         self.ftp.retrbinary(cmd, buffer.write)
+        # Toss it in a CSV reader
         reader = csv.reader(
             StringIO(buffer.getvalue()),
             delimiter=";",
@@ -157,12 +163,35 @@ class AP(object):
             prepped_dict = dict((basicfields[i], v) for i, v in enumerate(basic_data))
             # Split out all the candidate sets that come after the basic fields
             candidate_data = row[len(basicfields):]
-            print len(candidatefields)
-            candidate_sets = split_len(candidate_data, len(candidatefields))
-            #candidate_sets = [candidate_data[i:i+len(candidatefields)] for i in range(0, len(candidate_data), len(candidatefields))]
-            # return [seq[i:i+length] for i in range(0, len(seq), length)]
-            pprint(candidate_sets[:2])
-            #print len(candidatefields), len(candidate_sets[0][0])
+            candidate_sets = self._split_list(candidate_data, len(candidatefields))
+            # Load candidate data into a list of dicts with the proper keys
+            prepped_dict['candidates'] = [
+                dict((candidatefields[i], v) for i, v in enumerate(cand))
+                    for cand in candidate_sets
+            ]
+            # Pass it all out
+            return prepped_dict
+    
+    def _split_list(self, iterable, n, fillvalue=None):
+        """
+        Splits the provided list into groups of n length.
+        
+        You can optionally provide a value to be included if the last list
+        comes up short of the n value. By default it's none.
+        
+        Example usage:
+        
+            >>> _split_list([1,2,3,4,5,6], 2)
+            [(1, 2), (3, 4), (5, 6)]
+            >>> _split_list([1,2,3,4,5], 2, fillvalue="x")
+            [(1, 2), (3, 4), (5, "x")]
+        
+        Derived from a snippet published by Stephan202
+        http://stackoverflow.com/a/1625013
+        """
+        args = [iter(iterable)] * n
+        return list(itertools.izip_longest(*args, fillvalue=fillvalue))
+
 
 class State(object):
     """
@@ -408,7 +437,7 @@ class State(object):
                 'incumbent',
                 'delegates',
                 'vote_count',
-                'winner'
+                'is_winner',
                 'national_politician_id',
             ]
         )
