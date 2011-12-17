@@ -396,9 +396,10 @@ class State(object):
         """
         Download statewide delegate totals and load it into Candidates.
         """
+        # Pull the data
         flat_list = self.client._fetch_flatfile(
             "/%(name)s/flat/%(name)s_D.txt" % self.__dict__,
-            [
+            [ # First the basic fields that will the same in each row
                 'test',
                 'election_date',
                 'state_postal',
@@ -419,7 +420,7 @@ class State(object):
                 'precincts_reporting',
                 'total_precincts',
             ],
-           [
+           [ # Then the candidate fields that will repeat after the basics
                 'candidate_number',
                 'order',
                 'party',
@@ -435,12 +436,20 @@ class State(object):
                 'national_politician_id',
             ]
         )
+        # Filter it down to the state level results
         state_data = [i for i in flat_list if i['district_number'] == '1']
+        # Loop through them
         for row in state_data:
+            # Get the race
             race = self.get_race(row['race_number'])
+            # Loop through the candidates in that race
             for cand in row['candidates']:
+                # And if it's a legit candidate, cuz sometimes they come out
+                # blank at the end of the file.
                 if cand['candidate_number']:
+                    # Grab the candidate
                     candidate = race.get_candidate(cand['candidate_number'])
+                    # Set the delegates
                     candidate.delegates = int(cand['delegates'])
     
     def _get_flat_results(self, ftp=None):
