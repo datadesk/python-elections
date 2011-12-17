@@ -15,6 +15,7 @@ import calculate
 from ftplib import FTP
 from datetime import date
 from cStringIO import StringIO
+from pprint import pprint
 
 #
 # Utils
@@ -92,9 +93,9 @@ class AP(object):
     # Private methods
     #
     
-    def _fetch_csv(self, path):
+    def _fetch_csv(self, path, delimiter="|", fieldnames=None):
         """
-        Fetch a delimited file from the AP FTP.
+        Fetch a pipe delimited file from the AP FTP.
         
         Provide the path of the file you want.
         
@@ -103,7 +104,11 @@ class AP(object):
         buffer = StringIO()
         cmd = 'RETR %s' % path
         self.ftp.retrbinary(cmd, buffer.write)
-        reader = csv.DictReader(StringIO(buffer.getvalue()), delimiter='|')
+        reader = csv.DictReader(
+            StringIO(buffer.getvalue()),
+            delimiter=delimiter,
+            fieldnames=fieldnames
+        )
         return [self._strip_dict(i) for i in reader]
     
     def _strip_dict(self, d):
@@ -112,8 +117,48 @@ class AP(object):
         
         This problem is common to the AP's CSV files
         """
-        return dict((k.strip(), v.strip()) for k, v in d.items())
-
+        return dict((k.strip(), v.strip()) for k, v in d.items() if k != None and v != None)
+    
+    def _fetch_flatfile(self, path, basicfields, candidatefields):
+        """
+        Retrive one of the AP's flatfiles, which are delimited by ";",
+        do not include headers and include a dynamic number of fields
+        depending on the number of candidates in the data set.
+        
+        Provide the path of the file you want, the list of basic fields
+        that will be the same in every file, and then the list of candidate
+        fields that will repeat outwards to the right for each candidate
+        recorded in the data set.
+        
+        Returns a list of dictionaries with the standard "basicfields" as
+        top-leve keys and then a `candidates` key that contains a nested dictionary
+        with all the candidate fields as keys.
+        """
+        buffer = StringIO()
+        cmd = 'RETR %s' % path
+        self.ftp.retrbinary(cmd, buffer.write)
+        reader = csv.reader(
+            StringIO(buffer.getvalue()),
+            delimiter=";",
+        )
+        # Slice off the last column since it's always empty
+        raw_data = list(reader)[:-1]
+        # Loop thorugh the raw data...
+        prepped_data = []
+        print len(candidatefields)
+        for row in raw_data:
+            # Split out the basic fields
+            basic_data = row[:len(basicfields)]
+            # Load them into a new dictionary with the proper keys
+            prepped_dict = dict((basicfields[i], v) for i, v in enumerate(basic_data))
+            # Split out all the candidate sets that come after the basic fields
+            candidate_data = row[len(basicfields):]
+            print len(candidatefields)
+            candidate_sets = split_len(candidate_data, len(candidatefields))
+            #candidate_sets = [candidate_data[i:i+len(candidatefields)] for i in range(0, len(candidate_data), len(candidatefields))]
+            # return [seq[i:i+length] for i in range(0, len(seq), length)]
+            pprint(candidate_sets[:2])
+            #print len(candidatefields), len(candidate_sets[0][0])
 
 class State(object):
     """
@@ -321,8 +366,48 @@ class State(object):
         else:
             file_dir = '/%s/flat/' % self.name
         results_file = '%s_D.txt' % self.name
-        
         self.client.ftp.retrlines('RETR ' + os.path.join(file_dir, results_file), self._process_flat_delegates_line)  
+        
+        from pprint import pprint
+        flat_list = self.client._fetch_flatfile(
+            "/%(name)s/flat/%(name)s_D.txt" % self.__dict__,
+            [
+                'test',
+                'election_date',
+                'state_postal',
+                'district_type',
+                'district_number',
+                'district_name',
+                'race_number',
+                'office_id',
+                'race_type_id',
+                'seat_number',
+                'office_name',
+                'seat_name',
+                'race_type_party',
+                'race_type',
+                'office_description',
+                'number_of_winners',
+                'number_in_runoff',
+                'precincts_reporting',
+                'total_precincts',
+            ],
+           [
+                'candidate_number',
+                'order',
+                'party',
+                'first_name',
+                'middle_name',
+                'last_name',
+                'junior',
+                'use_junior',
+                'incumbent',
+                'delegates',
+                'vote_count',
+                'winner'
+                'national_politician_id',
+            ]
+        )
 
     def _process_flat_delegates_line(self, line):
         """
@@ -346,9 +431,8 @@ class State(object):
         race = self.get_race(primary_bits[RACE_NUM])
         for cand in candidate_bits:
             candidate = race.get_candidate(cand[POLRA_NUM])
-            num_delegates = int(cand[NUM_DELEGATES])
-            candidate.delegate_total = num_delegates
-
+            candidate.delegate_total = int(cand[NUM_DELEGATES])
+    
     def _get_flat_results(self, ftp=None):
         
         # Download state results file
@@ -424,51 +508,6 @@ class State(object):
         
         for result in reporting_unit.results:
             result.vote_total_percent = calculate.percentage(result.vote_total, votes_cast)
-
-class Candidate(object):
-    """
-    A choice for voters in a race.
-    
-    In the presidential race, a person, like Barack Obama.
-    In a ballot measure, a direction, like Yes or No.
-    """
-    def __init__(self, first_name=None, middle_name=None, last_name=None,
-                 abbrev_name=None, suffix=None, use_suffix=False, 
-                 ap_natl_number=None, ap_polra_number=None, ap_race_number=None,
-                 combined_id=None, party=None, ap_pol_number=None, is_winner=None,
-                 is_runoff=None, delegate_total=None, delegate_total_percent=None):
-        self.first_name = first_name
-        self.middle_name = middle_name
-        self.last_name = last_name
-        self.abbrev_name = abbrev_name
-        self.suffix = suffix
-        self.use_suffix = use_suffix
-        self.ap_natl_number = ap_natl_number
-        self.ap_polra_number = ap_polra_number
-        self.ap_race_number = ap_race_number
-        self.ap_pol_number = ap_pol_number
-        self.combined_id = combined_id
-        self.party = party
-        self.is_winner = is_winner
-        self.is_runoff = is_runoff
-        self.delegate_total = delegate_total
-
-    @property
-    def delegates(self):
-        return self.delegate_total
-
-    def __unicode__(self):
-        if not self.last_name in ('Yes', 'No'):
-            s = u'%s %s' % (self.first_name, self.last_name)
-            return s.strip()
-        else:
-            return u'%s' % self.last_name
-
-    def __str__(self):
-        return self.__unicode__()
-
-    def __repr__(self):
-        return u'<Candidate: %s>' % self.__unicode__()
 
 
 class Race(object):
@@ -644,6 +683,52 @@ class ReportingUnit(object):
     @property
     def is_state(self):
         return self.fips == '00000'
+
+
+class Candidate(object):
+    """
+    A choice for voters in a race.
+    
+    In the presidential race, a person, like Barack Obama.
+    In a ballot measure, a direction, like Yes or No.
+    """
+    def __init__(self, first_name=None, middle_name=None, last_name=None,
+                 abbrev_name=None, suffix=None, use_suffix=False, 
+                 ap_natl_number=None, ap_polra_number=None, ap_race_number=None,
+                 combined_id=None, party=None, ap_pol_number=None, is_winner=None,
+                 is_runoff=None, delegate_total=None, delegate_total_percent=None):
+        self.first_name = first_name
+        self.middle_name = middle_name
+        self.last_name = last_name
+        self.abbrev_name = abbrev_name
+        self.suffix = suffix
+        self.use_suffix = use_suffix
+        self.ap_natl_number = ap_natl_number
+        self.ap_polra_number = ap_polra_number
+        self.ap_race_number = ap_race_number
+        self.ap_pol_number = ap_pol_number
+        self.combined_id = combined_id
+        self.party = party
+        self.is_winner = is_winner
+        self.is_runoff = is_runoff
+        self.delegate_total = delegate_total
+
+    @property
+    def delegates(self):
+        return self.delegate_total
+
+    def __unicode__(self):
+        if not self.last_name in ('Yes', 'No'):
+            s = u'%s %s' % (self.first_name, self.last_name)
+            return s.strip()
+        else:
+            return u'%s' % self.last_name
+
+    def __str__(self):
+        return self.__unicode__()
+
+    def __repr__(self):
+        return u'<Candidate: %s>' % self.__unicode__()
 
 
 class Result(object):
