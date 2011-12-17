@@ -16,18 +16,7 @@ import calculate
 from ftplib import FTP
 from datetime import date
 from cStringIO import StringIO
-from pprint import pprint
 
-#
-# Utils
-#
-
-def split_len(seq, length):
-    return [seq[i:i+length] for i in range(0, len(seq), length)]
-
-#
-# AP data
-#
 
 class AP(object):
     """
@@ -453,80 +442,128 @@ class State(object):
                     candidate.delegates = int(cand['delegates'])
     
     def _get_flat_results(self, ftp=None):
-        
-        # Download state results file
-        if self.name == 'US':
-            file_dir = '/US_topofticket/flat/'
-        else:
-            file_dir = '/%s/flat/' % self.name
-        results_file = '%s.txt' % self.name
-        
-        self.client.ftp.retrlines('RETR ' + os.path.join(file_dir, results_file), self._process_flat_results_line)  
-    
-    def _process_flat_results_line(self, line):
         """
-        Takes a line from a flat results file and updates various
-        objects with the new information.
+        Download, parse and structure the state and county votes totals.
         """
-        # Race / ReportingUnit fields
-        IS_TEST, DATE, STATE, COUNTY_NUM, FIPS, RU_NAME, RACE_NUM,\
-        OFFICE_ID, RTYPE_ID, SEAT_NUM, OFFICE_NAME, SEAT_NAME, RTYPE_PARTY, RTYPE,\
-        OFFICE_DESCRIP, MAX_WINNERS, NUM_RUNOFF, PRECINCTS_REPORTING, TOT_PRECINCTS =\
-        (0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18)
+        # Download the data
+        flat_list = self.client._fetch_flatfile(
+            "/%(name)s/flat/%(name)s.txt" % self.__dict__,
+            [ # First the basic fields that will the same in each row
+                'test',
+                'election_date',
+                'state_postal',
+                'county_number',
+                'fips',
+                'county_name',
+                'race_number',
+                'office_id',
+                'race_type_id',
+                'seat_number',
+                'office_name',
+                'seat_name',
+                'race_type_party',
+                'race_type',
+                'office_description',
+                'number_of_winners',
+                'number_in_runoff',
+                'precincts_reporting',
+                'total_precincts',
+            ],
+           [ # Then the candidate fields that will repeat after the basics
+                'candidate_number',
+                'order',
+                'party',
+                'first_name',
+                'middle_name',
+                'last_name',
+                'junior',
+                'use_junior',
+                'incumbent',
+                'vote_count',
+                'is_winner',
+                'national_politician_id',
+            ]
+        )
         
-        # Candidate fields
-        CANDIDATE_NUM, ORDER, PARTY, FNAME, MNAME, LNAME, SFFX, USE_SFFX,\
-        INCUMBENT, VOTE_COUNT, IS_WINNER, NPID = (0,1,2,3,4,5,6,7,8,9,10,11)
+        # Figure out if we're dealing with test data or the real thing
+        self.is_test = flat_list[0]['test'] == 't'
         
-        bits = line.split(';')
-        del bits[-1]
-
-        # The first 19 fields are race / reporting unit specific
-        primary_bits = bits[:19]
-        # The next X set of 12 fields belong to X # of candidates
-        # So we split by 12, and len(candidate_bits) == # of candidates == X
-        candidate_bits = split_len(bits[19:], 12) 
-
-        self.is_test = primary_bits[IS_TEST] == 't'
-        
-        is_state = primary_bits[COUNTY_NUM] == '1'
-        
-        fips = primary_bits[FIPS]
-        # AP stupidly strips leading 0s in the FIPS for the 
-        # results file. This helps us match back up.
-        if is_state:
-            fips = '00000'
-        else:
-            if self.leading_zero_fips and not fips[0] == '0':
-                fips = '0' + primary_bits[FIPS]
-
-        race = self.get_race(primary_bits[RACE_NUM]) 
-        reporting_unit = race.get_reporting_unit(fips)
-
-        votes_cast = 0
-        for cand in candidate_bits:
-            candidate = race.get_candidate(cand[CANDIDATE_NUM])
-            vote_count = int(cand[VOTE_COUNT])
-            votes_cast += vote_count
-            if is_state: # Update the overall vote total if it's state-wide
-                candidate.vote_total = vote_count
-            candidate.is_winner = cand[IS_WINNER] == 'X'
-            candidate.is_runoff = cand[IS_WINNER] == 'R'
-
-            reporting_unit.update_result(Result(
-                candidate = candidate,
-                vote_total = vote_count,
-                reporting_unit = reporting_unit
-            ))
-
-            reporting_unit.precincts_reporting = int(primary_bits[PRECINCTS_REPORTING])
-            reporting_unit.precincts_reporting_percent = calculate.percentage(reporting_unit.precincts_reporting,
-                                                    reporting_unit.precincts_total)
-
-        reporting_unit.votes_cast = votes_cast
-        
-        for result in reporting_unit.results:
-            result.vote_total_percent = calculate.percentage(result.vote_total, votes_cast)
+        # Start looping through the lines...
+        for row in flat_list:
+            
+            # Get the race
+            race = self.get_race(row['race_number'])
+            
+            # Figure out if it's a state or a county
+            fips =row['fips']
+            is_state = row['county_number'] == '1'
+            
+            # AP stupidly strips leading 0s in the FIPS for the 
+            # results file. This fixes em.
+            if is_state:
+                fips = '00000'
+            else:
+                if self.leading_zero_fips and fips[0] != '0':
+                    fips = '0' + fips
+            
+            # Pull the reporting unit
+            reporting_unit = race.get_reporting_unit(fips)
+            
+            # Loop through all the candidates
+            votes_cast = 0
+            for cand in row['candidates']:
+                # Skip it if the candidate is empty, as it sometimes is at
+                # the end of the row
+                if not cand['candidate_number']:
+                    continue
+                
+                # Pull the existing candidate object
+                candidate = race.get_candidate(cand["candidate_number"])
+                
+                # Pull the vote total
+                vote_count = int(cand['vote_count'])
+                
+                # Add it to the overall total
+                votes_cast += vote_count
+                
+                # Update the candidate's global vote total if data are statewide
+                if is_state:
+                    candidate.vote_total = vote_count
+                
+                # Set is_winner and is_runoff
+                # (This will just get set over and over as we loop
+                # but AP seems to put the statewide result in for every 
+                # reporting unit so I think we're safe.)
+                candidate.is_winner = cand['is_winner'] == 'X'
+                candidate.is_runoff = cand['is_winner'] == 'R'
+                
+                # Create the Result object, which is specific to the
+                # reporting unit in this row of the flatfile.
+                result = Result(
+                    candidate = candidate,
+                    vote_total = vote_count,
+                    reporting_unit = reporting_unit
+                )
+                # Update result connected to the reporting unit
+                reporting_unit.update_result(result)
+                
+            # Update the reporting unit's precincts status
+            reporting_unit.precincts_reporting = int(row['precincts_reporting'])
+            reporting_unit.precincts_reporting_percent = calculate.percentage(
+                reporting_unit.precincts_reporting,
+                reporting_unit.precincts_total
+            )
+            
+            # Update the total votes cast
+            reporting_unit.votes_cast = votes_cast
+            
+            # Loop back through the results and set the percentages now
+            # that we know the overall total
+            for result in reporting_unit.results:
+                result.vote_total_percent = calculate.percentage(
+                    result.vote_total, 
+                    votes_cast
+                )
 
 
 class Race(object):
@@ -730,7 +767,7 @@ class Candidate(object):
         self.party = party
         self.is_winner = is_winner
         self.is_runoff = is_runoff
-        self.delegates = delegate_total
+        self.delegates = delegates
     
     def __unicode__(self):
         return unicode(self.name)
