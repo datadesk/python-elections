@@ -92,12 +92,12 @@ class AP(object):
         Returns a list of dictionaries that's ready to roll.
         """
         # Pull the file
-        buffer = StringIO()
+        buffer_ = StringIO()
         cmd = 'RETR %s' % path
-        self.ftp.retrbinary(cmd, buffer.write)
+        self.ftp.retrbinary(cmd, buffer_.write)
         # Toss it into a CSV DictReader
         reader = csv.DictReader(
-            StringIO(buffer.getvalue()),
+            StringIO(buffer_.getvalue()),
             delimiter=delimiter,
             fieldnames=fieldnames
         )
@@ -132,12 +132,12 @@ class AP(object):
         
         """
         # Pull the file
-        buffer = StringIO()
+        buffer_ = StringIO()
         cmd = 'RETR %s' % path
-        self.ftp.retrbinary(cmd, buffer.write)
+        self.ftp.retrbinary(cmd, buffer_.write)
         # Toss it in a CSV reader
         reader = csv.reader(
-            StringIO(buffer.getvalue()),
+            StringIO(buffer_.getvalue()),
             delimiter=";",
         )
         # Slice off the last column since it's always empty
