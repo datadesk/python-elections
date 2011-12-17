@@ -805,7 +805,7 @@ class Result(object):
                                 self.vote_total)
 
     def __str__(self):
-        return self.__unicode__()
+        return self.__unicode__().encode("utf-8")
 
     def __repr__(self):
-        return u'<Result: %s>' % self.__unicode__()
+        return '<%s: %s>' % (self.__class__.__name__, self.__unicode__())
