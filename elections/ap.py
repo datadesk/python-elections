@@ -126,7 +126,7 @@ class AP(object):
         
         Provide:
             * The path of the file you want
-            * The list of basic fields that will be stay the same
+            * The list of basic fields that start each row
             * The list of candidate fields that will repeat outwards to the right 
               for each candidate in the data set.
         
