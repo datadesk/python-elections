@@ -391,17 +391,11 @@ class State(object):
                 num_reg_voters = int(r['ru_reg_voters']),
             )
             self._reporting_units.update({ru.fips: ru})
-
-    def _get_flat_delegates(self, ftp=None):
-        # Download state results file
-        if self.name == 'US':
-            file_dir = '/US_topofticket/flat/'
-        else:
-            file_dir = '/%s/flat/' % self.name
-        results_file = '%s_D.txt' % self.name
-        self.client.ftp.retrlines('RETR ' + os.path.join(file_dir, results_file), self._process_flat_delegates_line)  
-        
-        from pprint import pprint
+    
+    def _get_flat_delegates(self):
+        """
+        Download statewide delegate totals and load it into Candidates.
+        """
         flat_list = self.client._fetch_flatfile(
             "/%(name)s/flat/%(name)s_D.txt" % self.__dict__,
             [
@@ -441,30 +435,13 @@ class State(object):
                 'national_politician_id',
             ]
         )
-
-    def _process_flat_delegates_line(self, line):
-        """
-        Takes a line from the flat delegates file and tosses it out
-        until it finds the state-wide result, then assigns the delegates
-        to the proper candidate.
-        """
-        DISTRICT_NUM, RACE_NUM = (4, 6)
-        POLRA_NUM, NUM_DELEGATES = (0, 9)
-        
-        bits = line.split(';')
-        del bits[-1]
-
-        # The first 19 fields are race / reporting unit specific
-        primary_bits = bits[:19]
-        if primary_bits[DISTRICT_NUM] != '1': 
-            return # We only want state results
-        # The next X set of 13 fields belong to X # of candidates
-        # So we split by 13, and len(candidate_bits) == # of candidates == X
-        candidate_bits = split_len(bits[19:], 13) 
-        race = self.get_race(primary_bits[RACE_NUM])
-        for cand in candidate_bits:
-            candidate = race.get_candidate(cand[POLRA_NUM])
-            candidate.delegate_total = int(cand[NUM_DELEGATES])
+        state_data = [i for i in flat_list if i['district_number'] == '1']
+        for row in state_data:
+            race = self.get_race(row['race_number'])
+            for cand in row['candidates']:
+                if cand['candidate_number']:
+                    candidate = race.get_candidate(cand['candidate_number'])
+                    candidate.delegates = int(cand['delegates'])
     
     def _get_flat_results(self, ftp=None):
         
@@ -729,7 +706,7 @@ class Candidate(object):
                  abbrev_name=None, suffix=None, use_suffix=False, 
                  ap_natl_number=None, ap_polra_number=None, ap_race_number=None,
                  combined_id=None, party=None, ap_pol_number=None, is_winner=None,
-                 is_runoff=None, delegate_total=None, delegate_total_percent=None):
+                 is_runoff=None, delegates=None):
         self.first_name = first_name
         self.middle_name = middle_name
         self.last_name = last_name
@@ -744,24 +721,24 @@ class Candidate(object):
         self.party = party
         self.is_winner = is_winner
         self.is_runoff = is_runoff
-        self.delegate_total = delegate_total
-
-    @property
-    def delegates(self):
-        return self.delegate_total
-
+        self.delegates = delegate_total
+    
     def __unicode__(self):
+        return unicode(self.name)
+    
+    def __str__(self):
+        return self.__unicode__().encode("utf-8")
+    
+    def __repr__(self):
+        return '<%s: %s>' % (self.__class__.__name__, self.__unicode__())
+    
+    @property
+    def name(self):
         if not self.last_name in ('Yes', 'No'):
             s = u'%s %s' % (self.first_name, self.last_name)
             return s.strip()
         else:
             return u'%s' % self.last_name
-
-    def __str__(self):
-        return self.__unicode__()
-
-    def __repr__(self):
-        return u'<Candidate: %s>' % self.__unicode__()
 
 
 class Result(object):
