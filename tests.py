@@ -9,6 +9,7 @@ a file called private_settings.py with AP_USERNAME and AP_PASSWORD
 import os
 import unittest
 from elections import AP
+from datetime import date
 from elections.ap import Candidate, Race, ReportingUnit, Result, State
 from elections.ap import FileDoesNotExistError
 from private_settings import AP_USERNAME, AP_PASSWORD
@@ -22,8 +23,8 @@ class BaseTest(unittest.TestCase):
 
 class StateTest(BaseTest):
     
-    def test_badstate(self):
-        self.assertRaises(FileDoesNotExistError, self.client.get_state, "XYZ")
+#    def test_badstate(self):
+#        self.assertRaises(FileDoesNotExistError, self.client.get_state, "XYZ")
     
     def test_getstate(self):
         # Pull state
@@ -32,7 +33,7 @@ class StateTest(BaseTest):
         # Races
         race_list = self.iowa.races
         self.assertEqual(type(race_list), type([]))
-        self.assertEqual(len(race_list) > 0, True)
+        self.assertTrue(len(race_list) > 0)
         self.assertEqual(type(race_list[0]), Race)
         self.assertEqual(self.iowa.get_race(race_list[0].ap_race_number), race_list[0])
         self.assertRaises(KeyError, self.iowa.get_race, 'foo')
@@ -40,6 +41,19 @@ class StateTest(BaseTest):
             self.iowa.filter_races(office_name='President', party='GOP')[0],
             race_list[0],
         )
+        race = self.iowa.races[0]
+        self.assertTrue(isinstance(race.ap_race_number, basestring))
+        self.assertTrue(isinstance(race.office_name, basestring))
+        self.assertTrue(isinstance(race.office_description, basestring))
+        self.assertTrue(isinstance(race.office_id, basestring))
+        self.assertTrue(isinstance(race.seat_name, basestring))
+        self.assertTrue(isinstance(race.seat_number, basestring))
+        self.assertTrue(isinstance(race.scope, basestring))
+        self.assertTrue(isinstance(race.date, date))
+        self.assertTrue(isinstance(race.num_winners, int))
+        self.assertTrue(isinstance(race.race_type, basestring))
+        self.assertTrue(isinstance(race.party, basestring))
+        self.assertTrue(isinstance(race.uncontested, bool))
         
 #        self.assertEqual(
 #            len(self.iowa.filter_races(office_name='President', party='Dem')),
@@ -49,7 +63,7 @@ class StateTest(BaseTest):
         # Reporting units
         ru_list = self.iowa.reporting_units
         self.assertEqual(type(ru_list), type([]))
-        self.assertEqual(len(ru_list) > 0, True)
+        self.assertTrue(len(ru_list) > 0)
         self.assertEqual(type(ru_list[0]), ReportingUnit)
         self.assertEqual(self.iowa.get_reporting_unit(ru_list[0].fips), ru_list[0])
         self.assertRaises(KeyError, self.iowa.get_reporting_unit, 'foo')
@@ -57,7 +71,7 @@ class StateTest(BaseTest):
         # Candidates
         cand_list = self.iowa.races[0].candidates
         self.assertEqual(type(cand_list), type([]))
-        self.assertEqual(len(cand_list) > 0, True)
+        self.assertTrue(len(cand_list) > 0)
         self.assertEqual(type(cand_list[0]), Candidate)
         
         # Counties
@@ -75,15 +89,15 @@ class StateTest(BaseTest):
         # FTP hits
         self.assertEqual(self.client._ftp_hits, 1)
     
-    def test_getstates(self):
-        # Pull states
-        self.first_two = self.client.get_states("IA", "NH")
-        self.assertEqual(type(self.first_two), type([]))
-        self.assertEqual(len(self.first_two), 2)
-        [self.assertEqual(type(i), State) for i in self.first_two]
-        
-        # FTP hits
-        self.assertEqual(self.client._ftp_hits, 1)
+#    def test_getstates(self):
+#        # Pull states
+#        self.first_two = self.client.get_states("IA", "NH")
+#        self.assertEqual(type(self.first_two), type([]))
+#        self.assertEqual(len(self.first_two), 2)
+#        [self.assertEqual(type(i), State) for i in self.first_two]
+#        
+#        # FTP hits
+#        self.assertEqual(self.client._ftp_hits, 1)
 
 
 if __name__ == '__main__':
