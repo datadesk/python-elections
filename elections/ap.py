@@ -83,6 +83,17 @@ class AP(object):
     # Private methods
     #
     
+    def _fetch(self, path):
+        """
+        Fetch a file from the AP FTP.
+        
+        Provide a path, get back a file obj with your data.
+        """
+        buffer_ = StringIO()
+        cmd = 'RETR %s' % path
+        self.ftp.retrbinary(cmd, buffer_.write)
+        return buffer_
+    
     def _fetch_csv(self, path, delimiter="|", fieldnames=None):
         """
         Fetch a pipe delimited file from the AP FTP.
@@ -92,9 +103,7 @@ class AP(object):
         Returns a list of dictionaries that's ready to roll.
         """
         # Pull the file
-        buffer_ = StringIO()
-        cmd = 'RETR %s' % path
-        self.ftp.retrbinary(cmd, buffer_.write)
+        buffer_ = self._fetch(path)
         # Toss it into a CSV DictReader
         reader = csv.DictReader(
             StringIO(buffer_.getvalue()),
@@ -132,9 +141,7 @@ class AP(object):
         
         """
         # Pull the file
-        buffer_ = StringIO()
-        cmd = 'RETR %s' % path
-        self.ftp.retrbinary(cmd, buffer_.write)
+        buffer_ = self._fetch(path)
         # Toss it in a CSV reader
         reader = csv.reader(
             StringIO(buffer_.getvalue()),

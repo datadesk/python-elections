@@ -25,9 +25,10 @@ class BaseTest(unittest.TestCase):
 
 class StateTest(BaseTest):
     
-    #def test_badstate(self):
-        #self.client.get_state("XXX")
-
+    def test_badstate(self):
+        pass
+        #self.client.get_state("XYZ")
+    
     def test_methods(self):
         # Races
         race_list = self.iowa.races
