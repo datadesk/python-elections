@@ -127,6 +127,7 @@ class APTest(BaseTest):
             self.assertTrue(isinstance(cand.is_winner, bool))
             self.assertTrue(isinstance(cand.is_runoff, bool))
             self.assertTrue(isinstance(cand.delegates, int))
+            self.assertTrue(isinstance(cand.name, basestring))
         
         # FTP hits
         self.assertEqual(self.client._ftp_hits, 1)
