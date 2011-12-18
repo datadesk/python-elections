@@ -41,10 +41,12 @@ Install the library from PyPI
 
 <pre><code>$ pip install python-elections</code></pre>
 
-Current API:
+Connect to the AP's service with your credentials.
+
 <pre><code>>>> from elections import AP
->>> client = AP(uname, pwd)
->>> ia = client.get_state('IA')
+>>> client = AP(uname, pwd)</code></pre>
+
+<pre><code>>>> ia = client.get_state('IA')
 >>> ia.races[0]
 <Race: President>
 >>> ia.races[0].candidates[4]
