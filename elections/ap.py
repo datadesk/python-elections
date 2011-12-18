@@ -564,6 +564,7 @@ class State(object):
                 reporting_unit.update_result(result)
                 
             # Update the reporting unit's precincts status
+            print reporting_unit, row['precincts_reporting']
             reporting_unit.precincts_reporting = int(row['precincts_reporting'])
             reporting_unit.precincts_reporting_percent = calculate.percentage(
                 reporting_unit.precincts_reporting,

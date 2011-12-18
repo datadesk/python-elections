@@ -83,16 +83,18 @@ class APTest(BaseTest):
         ru_list = self.iowa.races[0].reporting_units
         self.assertTrue(isinstance(ru_list, list))
         self.assertTrue(len(ru_list) > 0)
-        self.assertTrue(isinstance(ru_list[0], ReportingUnit))
-        self.assertTrue(isinstance(ru_list[0].ap_number, basestring))
-        self.assertTrue(isinstance(ru_list[0].name, basestring))
-        self.assertTrue(isinstance(ru_list[0].abbrev, basestring))
-        self.assertTrue(isinstance(ru_list[0].fips, basestring))
-        self.assertTrue(isinstance(ru_list[0].num_reg_voters, int))
-        self.assertTrue(isinstance(ru_list[0].precincts_total, int))
-        self.assertTrue(isinstance(ru_list[0].precincts_reporting, int))
-        self.assertTrue(isinstance(ru_list[0].precincts_reporting_percent, float))
-        self.assertTrue(isinstance(ru_list[0].results[0], Result))
+        for ru in ru_list:
+            self.assertTrue(isinstance(ru, ReportingUnit))
+            self.assertTrue(isinstance(ru.ap_number, basestring))
+            self.assertTrue(isinstance(ru.name, basestring))
+            self.assertTrue(isinstance(ru.abbrev, basestring))
+            self.assertTrue(isinstance(ru.fips, basestring))
+            self.assertTrue(isinstance(ru.num_reg_voters, int))
+            print ru, ru.precincts_reporting
+            self.assertTrue(isinstance(ru.precincts_total, int))
+            self.assertTrue(isinstance(ru.precincts_reporting, int))
+            self.assertTrue(isinstance(ru.precincts_reporting_percent, float))
+            self.assertTrue(isinstance(ru.results[0], Result))
         
         # Counties
         county_list = self.iowa.races[0].counties
