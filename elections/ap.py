@@ -95,7 +95,15 @@ class AP(object):
         cmd = 'RETR %s' % path
         # Connect to the FTP server, issue the command and catch the data
         # in our buffer file object.
-        self.ftp.retrbinary(cmd, buffer_.write)
+        try:
+            self.ftp.retrbinary(cmd, buffer_.write)
+        except Exception, e:
+            if "550 The system cannot find the path specified" in e.message:
+                raise FileDoesNotExistError("The file you've requested does not exist." +
+                    " If you're looking for data about a state, make sure you" +
+                    " input valid postal codes.")
+            else:
+                raise e
         # Return the file object
         return StringIO(buffer_.getvalue())
     
@@ -805,13 +813,26 @@ class Result(object):
         self.reporting_unit = reporting_unit
         self.vote_total = vote_total
         self.vote_total_percent = vote_total_percent
-
+    
     def __unicode__(self):
         return u'%s, %s, %s' % (self.candidate, self.reporting_unit,
                                 self.vote_total)
-
+    
     def __str__(self):
         return self.__unicode__().encode("utf-8")
-
+    
     def __repr__(self):
         return '<%s: %s>' % (self.__class__.__name__, self.__unicode__())
+
+#
+# Errors
+#
+
+class FileDoesNotExistError(Exception):
+    
+   def __init__(self, value):
+       self.parameter = value
+    
+   def __str__(self):
+       return repr(self.parameter)
+

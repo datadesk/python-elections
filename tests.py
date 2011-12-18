@@ -10,6 +10,7 @@ import os
 import unittest
 from elections import AP
 from elections.ap import Candidate, Race, ReportingUnit, Result
+from elections.ap import FileDoesNotExistError
 from private_settings import AP_USERNAME, AP_PASSWORD
 
 #
@@ -20,16 +21,16 @@ class BaseTest(unittest.TestCase):
     
     def setUp(self):
         self.client = AP(AP_USERNAME, AP_PASSWORD)
-        self.iowa = self.client.get_state("IA")
-
 
 class StateTest(BaseTest):
     
     def test_badstate(self):
-        pass
-        #self.client.get_state("XYZ")
+        self.assertRaises(FileDoesNotExistError, self.client.get_state, "XYZ")
     
-    def test_methods(self):
+    def test_getstate(self):
+        # Pull state
+        self.iowa = self.client.get_state("IA")
+        
         # Races
         race_list = self.iowa.races
         self.assertEqual(type(race_list), type([]))
@@ -42,7 +43,6 @@ class StateTest(BaseTest):
             race_list[0],
         )
         
-
 #        self.assertEqual(
 #            len(self.iowa.filter_races(office_name='President', party='Dem')),
 #            0,
