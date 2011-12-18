@@ -46,8 +46,13 @@ Connect to the AP's service with your credentials.
 <pre><code>>>> from elections import AP
 >>> client = AP(uname, pwd)</code></pre>
 
-<pre><code>>>> ia = client.get_state('IA')
->>> ia.races[0]
+# Request all the data available for a particular state by providing its postal code. This will return a state object.
+
+<pre><code>>>> iowa = client.get_state('IA')
+>>> iowa
+<State: IA></code></pre>
+
+<pre><code>>>> ia.races[0]
 <Race: President>
 >>> ia.races[0].candidates[4]
 <Candidate: Rick Santorum>
