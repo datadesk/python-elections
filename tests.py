@@ -90,7 +90,6 @@ class APTest(BaseTest):
             self.assertTrue(isinstance(ru.abbrev, basestring))
             self.assertTrue(isinstance(ru.fips, basestring))
             self.assertTrue(isinstance(ru.num_reg_voters, int))
-            print ru, ru.precincts_reporting
             self.assertTrue(isinstance(ru.precincts_total, int))
             self.assertTrue(isinstance(ru.precincts_reporting, int))
             self.assertTrue(isinstance(ru.precincts_reporting_percent, float))

@@ -156,11 +156,12 @@ class AP(object):
             self._fetch(path),
             delimiter=";",
         )
-        # Slice off the last column since it's always empty
-        raw_data = list(reader)[:-1]
+        raw_data = list(reader)
         # Loop thorugh the raw data...
         prepped_data = []
         for row in raw_data:
+            # Slice off the last field since it's always empty
+            row = row[:-1]
             # Split out the basic fields
             basic_data = row[:len(basicfields)]
             # Load them into a new dictionary with the proper keys
@@ -564,7 +565,6 @@ class State(object):
                 reporting_unit.update_result(result)
                 
             # Update the reporting unit's precincts status
-            print reporting_unit, row['precincts_reporting']
             reporting_unit.precincts_reporting = int(row['precincts_reporting'])
             reporting_unit.precincts_reporting_percent = calculate.percentage(
                 reporting_unit.precincts_reporting,
