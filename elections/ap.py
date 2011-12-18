@@ -645,7 +645,7 @@ class Race(object):
             else:
                 name = '%s' % self.office_name
         if not self.is_general:
-            name = u'%s - %s' % (self.race_type_name, name)   
+            name = '%s - %s' % (self.race_type_name, name)
         return name
     
     @property
