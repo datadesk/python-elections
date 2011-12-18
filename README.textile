@@ -1,32 +1,48 @@
-<pre><code>              
-                         _
-                        (_)
-                       <___>
-                        | |______
-          _             | |* * * )
-        ,' '.           | | * * (_________
-       /     \          | |* * * |* *|####)
-     ^ |  _  | ^        | | * * *| * |   (________________            
-    | || / \ || |       | |* * * |* *|####|##############|
-    | |||.-.||| |       | | * * *| * |    |              |
-    | |||   ||| |       | |* * * |* *|####|##############|
-    | |||   ||| |       | |~~~~~~| * |    |              |
-    | |||   ||| |       | |######|* *|####|##############|
-    | |||   ||| |       | |      |~~~'    |              |
-    | ,'     '. |       | |######|########|##############|
-    ,'__     __`.       | |      |        |              |
-   /____  |  ____\      | |######|########|##############|
-    /_\ |_|_| /_\       | |~~~~~~|        |              |
-    .:   : :   :.       | |      |########|##############|
-    : .  : .  : :       | |      '~~~~~~~~|              |
-     ::   ::   ::       | |               |##############|
-                        | |               '~~~~~~~~~~~~~~~
-                        | |
-                        | |
-                        | |</code></pre>
+<pre><code>   _
+  (_)
+ <___>
+  | |______
+  | |* * * )
+  | | * * (_________
+  | |* * * |* *|####)
+  | | * * *| * |   (________________
+  | |* * * |* *|####|##############|
+  | | * * *| * |    |              |
+  | |* * * |* *|####|##############|
+  | |~~~~~~| * |    |              |
+  | |######|* *|####|##############|
+  | |      |~~~'    |              |
+  | |######|########|##############|
+  | |      |        |              |
+  | |######|########|##############|
+  | |~~~~~~|        |              |
+  | |      |########|##############|
+  | |      '~~~~~~~~|              |
+  | |               |##############|
+  | |               '~~~~~~~~~~~~~~~
+  | |
+  | |      PYTHON-ELECTIONS
+  | |
+  | |</code></pre>
 
+A Python wrapper for the Associated Press's U.S. election data service. 
+
+h2. Features
+
+* AP election results for U.S. states and counties.
 
 Feel free to screw with, destroy, rebuild, rename whatever I've got right now. Just getting something down on paper, so to speak.
+
+h2. Requirements
+
+In order to use this library, you must pay AP for access to the data. More information can be found on the "AP's web site":http://www.apdigitalnews.com/ap_elections.html
+or by contacting Anthony Marquez at "amarquez@ap.org":mailto:amarquez@ap.org.
+
+h2. Getting Started
+
+Install the library from PyPI
+
+<pre><code>$ pip install python-elections</code></pre>
 
 Current API:
 <pre><code>>>> from elections import AP
@@ -80,3 +96,7 @@ else:
 
 for result in gop_caucus.state.results:
     print result</code></pre>
+
+h2. Credits
+
+ASCII art by Joan Stark
