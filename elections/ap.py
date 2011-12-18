@@ -61,21 +61,21 @@ class AP(object):
             self._ftp_hits += 1
         return self._ftp
     
-    def get_state(self, state=None, *args, **kwargs):
+    def get_state(self, *args, **kwargs):
         """
         Takes a single state postal code, returns an APResult
         object for that state.
         """
-        result = State(self, state, *args, **kwargs)
+        result = State(self, args[0], **kwargs)
         self.ftp.quit()
         return result
     
-    def get_states(self, states=[], *args, **kwargs):
+    def get_states(self, *args, **kwargs):
         """
         Takes a list of state postal codes, returns a list of APResult
         objects.
         """
-        results = [State(self, state, *args, **kwargs) for state in states]
+        results = [State(self, state, **kwargs) for state in args]
         self.ftp.quit()
         return results
     

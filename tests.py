@@ -9,7 +9,7 @@ a file called private_settings.py with AP_USERNAME and AP_PASSWORD
 import os
 import unittest
 from elections import AP
-from elections.ap import Candidate, Race, ReportingUnit, Result
+from elections.ap import Candidate, Race, ReportingUnit, Result, State
 from elections.ap import FileDoesNotExistError
 from private_settings import AP_USERNAME, AP_PASSWORD
 
@@ -71,6 +71,16 @@ class StateTest(BaseTest):
         state = self.iowa.races[0].state
         self.assertEqual(type(state), ReportingUnit)
         self.assertEqual(state.is_state, True)
+        
+        # FTP hits
+        self.assertEqual(self.client._ftp_hits, 1)
+    
+    def test_getstates(self):
+        # Pull states
+        self.first_two = self.client.get_states("IA", "NH")
+        self.assertEqual(type(self.first_two), type([]))
+        self.assertEqual(len(self.first_two), 2)
+        [self.assertEqual(type(i), State) for i in self.first_two]
         
         # FTP hits
         self.assertEqual(self.client._ftp_hits, 1)
