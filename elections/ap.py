@@ -97,7 +97,7 @@ class AP(object):
         # in our buffer file object.
         self.ftp.retrbinary(cmd, buffer_.write)
         # Return the file object
-        return buffer_
+        return StringIO(buffer_.getvalue())
     
     def _fetch_csv(self, path, delimiter="|", fieldnames=None):
         """
@@ -107,11 +107,9 @@ class AP(object):
         
         Returns a list of dictionaries that's ready to roll.
         """
-        # Pull the file
-        buffer_ = self._fetch(path)
-        # Toss it into a CSV DictReader
+        # Fetch the data and stuff it in a CSV DictReaddr
         reader = csv.DictReader(
-            StringIO(buffer_.getvalue()),
+            self._fetch(path),
             delimiter=delimiter,
             fieldnames=fieldnames
         )
@@ -145,11 +143,9 @@ class AP(object):
               for each candidate in the data set.
         
         """
-        # Pull the file
-        buffer_ = self._fetch(path)
-        # Toss it in a CSV reader
+        # Fetch the data and toss it in a CSV reader
         reader = csv.reader(
-            StringIO(buffer_.getvalue()),
+            self._fetch(path),
             delimiter=";",
         )
         # Slice off the last column since it's always empty
