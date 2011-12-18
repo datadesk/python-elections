@@ -688,23 +688,26 @@ class Race(object):
         Returns all the counties that report results for this race as a list
         of ReportingUnit objects.
         """
-        return [o for o in self.reporting_units if o.fips and not o.is_state]
-
+        return sorted(
+            [o for o in self.reporting_units if o.fips and not o.is_state],
+            key=lambda x: x.name
+        )
+    
     @property
     def race_type_name(self):
         """
         Returns a descriptive name for the race_type.
         """
         return self._race_types.get(self.race_type, None)
-
+    
     @property
     def is_primary(self):
         return self.race_type in ('D', 'R',)
-
+    
     @property
     def is_caucus(self):
         return self.race_type in ('E', 'S',)
-
+    
     @property
     def is_general(self):
         return self.race_type == 'G'
