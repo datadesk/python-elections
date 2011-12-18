@@ -31,8 +31,6 @@ h2. Features
 
 * AP election results for U.S. states and counties.
 
-Feel free to screw with, destroy, rebuild, rename whatever I've got right now. Just getting something down on paper, so to speak.
-
 h2. Requirements
 
 In order to use this library, you must pay AP for access to the data. More information can be found on the "AP's web site":http://www.apdigitalnews.com/ap_elections.html
