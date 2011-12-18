@@ -94,6 +94,13 @@ class APTest(BaseTest):
             self.assertTrue(isinstance(ru.precincts_reporting, int))
             self.assertTrue(isinstance(ru.precincts_reporting_percent, float))
             self.assertTrue(isinstance(ru.results[0], Result))
+            # Results
+            for result in ru.results:
+                self.assertTrue(isinstance(result, Result))
+                self.assertTrue(isinstance(result.candidate, Candidate))
+                self.assertEqual(result.reporting_unit, ru)
+                self.assertTrue(isinstance(result.vote_total, int))
+                self.assertTrue(isinstance(result.vote_total_percent, float))
         
         # Counties
         county_list = self.iowa.races[0].counties
