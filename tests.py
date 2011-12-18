@@ -23,8 +23,8 @@ class BaseTest(unittest.TestCase):
 
 class APTest(BaseTest):
     
-#    def test_badstate(self):
-#        self.assertRaises(FileDoesNotExistError, self.client.get_state, "XYZ")
+    def test_badstate(self):
+        self.assertRaises(FileDoesNotExistError, self.client.get_state, "XYZ")
     
     def test_getstate(self):
         # Pull state
@@ -139,15 +139,15 @@ class APTest(BaseTest):
         # FTP hits
         self.assertEqual(self.client._ftp_hits, 1)
     
-#    def test_getstates(self):
-#        # Pull states
-#        self.first_two = self.client.get_states("IA", "NH")
-#        self.assertEqual(type(self.first_two), type([]))
-#        self.assertEqual(len(self.first_two), 2)
-#        [self.assertEqual(type(i), State) for i in self.first_two]
-#        
-#        # FTP hits
-#        self.assertEqual(self.client._ftp_hits, 1)
+    def test_getstates(self):
+        # Pull states
+        self.first_two = self.client.get_states("IA", "NH")
+        self.assertEqual(type(self.first_two), type([]))
+        self.assertEqual(len(self.first_two), 2)
+        [self.assertEqual(type(i), State) for i in self.first_two]
+        
+        # FTP hits
+        self.assertEqual(self.client._ftp_hits, 1)
 
 
 if __name__ == '__main__':
