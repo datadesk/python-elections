@@ -61,31 +61,22 @@ client = AP(AP_USERNAME, AP_PASSWORD)
 
 # Pull the data on the Iowa GOP caucus
 iowa = client.get_state("IA")
-gop_caucus = iowa.races[0]
+gop_caucus = iowa.filter_races(office_name='President', party='GOP')[0]
 
 print gop_caucus.office_name
 print "%s/%s (%s percent)" % (
-    gop_caucus.precincts_reporting,
-    gop_caucus.precincts_total,
-    gop_caucus.precincts_reporting_percent,
+    gop_caucus.state.precincts_reporting,
+    gop_caucus.state.precincts_total,
+    gop_caucus.state.precincts_reporting_percent,
 )
-print "%s votes cast" % gop_caucus.votes_cast
+print "%s votes cast" % gop_caucus.state.votes_cast
 
-state_results = [(
-    i.vote_total,
-    i.vote_total_percent,
-    i.candidate.__unicode__(),
-    i.candidate.is_winner,
-    ) for i in gop_caucus.state_results]
-
-state_results.sort(key=itemgetter(0,2))
-
-vote_totals = [i[0] for i in state_results]
+vote_totals = [i.vote_total for i in gop_caucus.state.results]
 margin_of_victory = calculate.margin_of_victory(vote_totals)
 if margin_of_victory:
-    print "%s leads by %s votes" % (state_results[0][2], margin_of_victory)
+    print "%s leads by %s votes" % (gop_caucus.state.results[0].candidate, margin_of_victory)
 else:
     print "It's a tie."
 
-for cand in state_results:
-    print cand[2], cand[1], cand[0], cand[3]</code></pre>
+for result in gop_caucus.state.results:
+    print result</code></pre>
