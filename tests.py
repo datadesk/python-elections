@@ -13,14 +13,12 @@ from elections.ap import Candidate, Race, ReportingUnit, Result
 from elections.ap import FileDoesNotExistError
 from private_settings import AP_USERNAME, AP_PASSWORD
 
-#
-# Tests
-#
 
 class BaseTest(unittest.TestCase):
     
     def setUp(self):
         self.client = AP(AP_USERNAME, AP_PASSWORD)
+
 
 class StateTest(BaseTest):
     
