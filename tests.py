@@ -78,7 +78,6 @@ class StateTest(BaseTest):
         self.assertEqual(self.client._ftp_hits, 1)
 
 
-
 if __name__ == '__main__':
     unittest.main()
 
