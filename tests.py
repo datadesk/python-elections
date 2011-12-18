@@ -110,8 +110,23 @@ class APTest(BaseTest):
         # Candidates
         cand_list = self.iowa.races[0].candidates
         self.assertTrue(isinstance(race.candidates, list))
-        self.assertTrue(isinstance(race.candidates[0], Candidate))
         self.assertTrue(len(cand_list) > 0)
+        for cand in cand_list:
+            self.assertTrue(isinstance(cand, Candidate))
+            self.assertTrue(isinstance(cand.first_name, basestring))
+            self.assertTrue(isinstance(cand.middle_name, basestring))
+            self.assertTrue(isinstance(cand.last_name, basestring))
+            self.assertTrue(isinstance(cand.abbrev_name, basestring))
+            self.assertTrue(isinstance(cand.suffix, basestring))
+            self.assertTrue(isinstance(cand.use_suffix, bool))
+            self.assertTrue(isinstance(cand.ap_natl_number, basestring))
+            self.assertTrue(isinstance(cand.ap_polra_number, basestring))
+            self.assertTrue(isinstance(cand.ap_pol_number, basestring))
+            self.assertTrue(isinstance(cand.combined_id, type(None)))
+            self.assertTrue(isinstance(cand.party, basestring))
+            self.assertTrue(isinstance(cand.is_winner, bool))
+            self.assertTrue(isinstance(cand.is_runoff, bool))
+            self.assertTrue(isinstance(cand.delegates, int))
         
         # FTP hits
         self.assertEqual(self.client._ftp_hits, 1)
