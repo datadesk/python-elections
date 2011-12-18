@@ -89,9 +89,14 @@ class AP(object):
         
         Provide a path, get back a file obj with your data.
         """
+        # Make a file object to store our target
         buffer_ = StringIO()
+        # Craft an FTP command that can pull the file
         cmd = 'RETR %s' % path
+        # Connect to the FTP server, issue the command and catch the data
+        # in our buffer file object.
         self.ftp.retrbinary(cmd, buffer_.write)
+        # Return the file object
         return buffer_
     
     def _fetch_csv(self, path, delimiter="|", fieldnames=None):
