@@ -102,6 +102,9 @@ class AP(object):
                 raise FileDoesNotExistError("The file you've requested does not exist." +
                     " If you're looking for data about a state, make sure you" +
                     " input valid postal codes.")
+            elif "530 User cannot log in" in e.message:
+                raise BadCredentialsError("The username and password you submitted" +
+                " are not accepted by the AP's FTP.")
             else:
                 raise e
         # Return the file object
@@ -839,4 +842,14 @@ class FileDoesNotExistError(Exception):
     
    def __str__(self):
        return repr(self.parameter)
+
+
+class BadCredentialsError(Exception):
+    
+   def __init__(self, value):
+       self.parameter = value
+    
+   def __str__(self):
+       return repr(self.parameter)
+
 

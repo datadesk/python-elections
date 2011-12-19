@@ -11,7 +11,7 @@ import unittest
 from elections import AP
 from datetime import date
 from elections.ap import Candidate, Race, ReportingUnit, Result, State
-from elections.ap import FileDoesNotExistError
+from elections.ap import FileDoesNotExistError, BadCredentialsError
 from private_settings import AP_USERNAME, AP_PASSWORD
 
 
@@ -23,6 +23,10 @@ class BaseTest(unittest.TestCase):
 
 class APTest(BaseTest):
     
+    def test_badlogin(self):
+        client = AP("foo", "bar")
+        self.assertRaises(BadCredentialsError, client.get_state, "IA")
+
     def test_badstate(self):
         self.assertRaises(FileDoesNotExistError, self.client.get_state, "XYZ")
     
