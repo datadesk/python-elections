@@ -52,54 +52,30 @@ Request all the data available for a particular state by providing its postal co
 >>> iowa
 <State: IA></code></pre>
 
-<pre><code>>>> ia.races[0]
-<Race: President>
->>> ia.races[0].candidates[4]
-<Candidate: Rick Santorum>
->>> ia.races[0].candidates[4].vote_total
-0
->>> ia.races[0].candidates[4].is_winner
-False
->>> ia.races[0].state_results[:3]
-[<Result: Other, Iowa (state), 0>, <Result: Jon Huntsman, Iowa (state), 0>, <Result: Newt Gingrich, Iowa (state), 0>]
->>> ia.races[0].counties[10].results[:3]
-[<Result: Other, Wright, 0>, <Result: Jon Huntsman, Wright, 0>, <Result: Newt Gingrich, Wright, 0>]
->>> ia.fetch_delegates() # Gets delegate totals for all candidates in a primary race
->>> ia.races[0].candidates[4].delegates
-0
-</code></pre>
+Among other things, the state has a list of races.
 
-Pull Iowa GOP results
+<pre><code>>>> iowa.races
+[<Race: GOP Caucus - President>]</code></pre>
 
-<pre><code>import calculate
-from elections import AP
-from operator import itemgetter
-from private_settings import *
+The race contains a list of candidates.
 
-# Log into AP
-client = AP(AP_USERNAME, AP_PASSWORD)
+<pre><code>>>> iowa.races[0].candidates
+[<Candidate: Other>, <Candidate: Jon Huntsman>, <Candidate: Newt Gingrich>, <Candidate: Herman Cain>, <Candidate: Rick Santorum>, <Candidate: Mitt Romney>, <Candidate: Rick Perry>, <Candidate: Ron Paul>, <Candidate: Michele Bachmann>, <Candidate: Gary Johnson>, <Candidate: Buddy Roemer>]</code></pre>
 
-# Pull the data on the Iowa GOP caucus
-iowa = client.get_state("IA")
-gop_caucus = iowa.filter_races(office_name='President', party='GOP')[0]
+You can find results for the whole state.
 
-print gop_caucus.office_name
-print "%s/%s (%s percent)" % (
-    gop_caucus.state.precincts_reporting,
-    gop_caucus.state.precincts_total,
-    gop_caucus.state.precincts_reporting_percent,
-)
-print "%s votes cast" % gop_caucus.state.votes_cast
+<pre><code>>>> iowa.races[0].state.results
+[<Result: Newt Gingrich, Iowa (state), 896249>, <Result: Michele Bachmann, Iowa (state), 879444>, <Result: Rick Perry, Iowa (state), 65426>, <Result: Rick Santorum, Iowa (state), 63409>, <Result: Ron Paul, Iowa (state), 57136>, <Result: Gary Johnson, Iowa (state), 56688>, <Result: Other, Iowa (state), 48173>, <Result: Mitt Romney, Iowa (state), 46828>, <Result: Herman Cain, Iowa (state), 45485>, <Result: Buddy Roemer, Iowa (state), 41899>, <Result: Jon Huntsman, Iowa (state), 39884>]</code></pre>
 
-vote_totals = [i.vote_total for i in gop_caucus.state.results]
-margin_of_victory = calculate.margin_of_victory(vote_totals)
-if margin_of_victory:
-    print "%s leads by %s votes" % (gop_caucus.state.results[0].candidate, margin_of_victory)
-else:
-    print "It's a tie."
+You can get all counties in the state.
 
-for result in gop_caucus.state.results:
-    print result</code></pre>
+<pre><code>>>> iowa.races[0].counties
+[<ReportingUnit: Adair>, <ReportingUnit: Adams>, <ReportingUnit: Allamakee>, <ReportingUnit: Appanoose>, <ReportingUnit: Audubon>, <ReportingUnit: Benton>, <ReportingUnit: Black Hawk>, <ReportingUnit: Boone>, ... etc ...]</code></pre>
+
+And, of course, the results in each county.
+
+<pre><code>iowa.races[0].counties[0].results
+[<Result: Michele Bachmann, Adair, 2496>, <Result: Newt Gingrich, Adair, 2219>, <Result: Rick Santorum, Adair, 191>, <Result: Rick Perry, Adair, 156>, <Result: Gary Johnson, Adair, 155>, <Result: Other, Adair, 137>, <Result: Ron Paul, Adair, 134>, <Result: Mitt Romney, Adair, 129>, <Result: Herman Cain, Adair, 127>, <Result: Buddy Roemer, Adair, 117>, <Result: Jon Huntsman, Adair, 112>]</code></pre>
 
 h2. Credits
 
