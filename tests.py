@@ -133,7 +133,6 @@ class APTest(BaseTest):
             self.assertTrue(isinstance(cand.ap_natl_number, basestring))
             self.assertTrue(isinstance(cand.ap_polra_number, basestring))
             self.assertTrue(isinstance(cand.ap_pol_number, basestring))
-            self.assertTrue(isinstance(cand.combined_id, type(None)))
             self.assertTrue(isinstance(cand.party, basestring))
             self.assertTrue(isinstance(cand.is_winner, bool))
             self.assertTrue(isinstance(cand.is_runoff, bool))

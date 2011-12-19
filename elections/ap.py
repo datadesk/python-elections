@@ -774,7 +774,7 @@ class Candidate(object):
     def __init__(self, first_name=None, middle_name=None, last_name=None,
                  abbrev_name=None, suffix=None, use_suffix=False, 
                  ap_natl_number=None, ap_polra_number=None, ap_race_number=None,
-                 combined_id=None, party=None, ap_pol_number=None, is_winner=None,
+                 party=None, ap_pol_number=None, is_winner=None,
                  is_runoff=None, delegates=None):
         self.first_name = first_name
         self.middle_name = middle_name
@@ -786,7 +786,6 @@ class Candidate(object):
         self.ap_polra_number = ap_polra_number
         self.ap_race_number = ap_race_number
         self.ap_pol_number = ap_pol_number
-        self.combined_id = combined_id
         self.party = party
         self.is_winner = is_winner
         self.is_runoff = is_runoff
