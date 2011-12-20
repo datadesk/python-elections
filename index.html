@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Welcome to python-elections’s documentation! &mdash; python-elections 0.1 documentation</title>
+    <title>Features &mdash; python-elections 0.1 documentation</title>
     <link rel="stylesheet" href="_static/latimes.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -41,21 +41,48 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="welcome-to-python-elections-s-documentation">
-<h1>Welcome to python-elections&#8217;s documentation!<a class="headerlink" href="#welcome-to-python-elections-s-documentation" title="Permalink to this headline">¶</a></h1>
-<p>Contents:</p>
-<div class="toctree-wrapper compound">
+  <blockquote class="epigraph">
+<div>A Python wrapper for the Associated Press&#8217; U.S. election data service</div></blockquote>
+<div class="section" id="features">
+<h1>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
+<li>Easy access to AP election results for races in U.S. states and counties.</li>
 </ul>
 </div>
+<div class="section" id="requirements">
+<h1>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h1>
+<p>In order to use this library, you must pay AP for access to the data. More information can be found on <a class="reference external" href="http://www.apdigitalnews.com/ap_elections.html">the AP’s web site</a> or by contacting Anthony Marquez at <a class="reference external" href="mailto:amarquez&#37;&#52;&#48;ap&#46;org">amarquez<span>&#64;</span>ap<span>&#46;</span>org</a>.</p>
 </div>
-<div class="section" id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
-<ul class="simple">
-<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
-<li><a class="reference internal" href="py-modindex.html"><em>Module Index</em></a></li>
-<li><a class="reference internal" href="search.html"><em>Search Page</em></a></li>
-</ul>
+<div class="section" id="getting-started">
+<h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<p>Install the library from PyPI.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>pip install python-elections
+</pre></div>
+</div>
+<p>Connect to the AP&#8217;s service with your credentials.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">elections</span> <span class="kn">import</span> <span class="n">AP</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">AP</span><span class="p">(</span><span class="n">uname</span><span class="p">,</span> <span class="n">pwd</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># Request all the data available for a particular state by providing its postal code. This will return a state object.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iowa</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="s">&#39;IA&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iowa</span>
+<span class="go">&lt;State: IA&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># Among other things, the state has a list of races.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iowa</span><span class="o">.</span><span class="n">races</span>
+<span class="go">[&lt;Race: GOP Caucus - President&gt;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># The race contains a list of candidates.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iowa</span><span class="o">.</span><span class="n">races</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">candidates</span>
+<span class="go">[&lt;Candidate: Other&gt;, &lt;Candidate: Jon Huntsman&gt;, &lt;Candidate: Newt Gingrich&gt;, &lt;Candidate: Herman Cain&gt;, &lt;Candidate: Rick Santorum&gt; ...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># You can find results for the whole state.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iowa</span><span class="o">.</span><span class="n">races</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">results</span>
+<span class="go">[&lt;Result: Newt Gingrich, Iowa (state), 896249&gt;, &lt;Result: Michele Bachmann, Iowa (state), 879444&gt;, &lt;Result: Rick Perry, Iowa (state), 65426&gt;, ...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># You can get all counties in the state.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iowa</span><span class="o">.</span><span class="n">races</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">counties</span>
+<span class="go">[&lt;ReportingUnit: Adair&gt;, &lt;ReportingUnit: Adams&gt;, &lt;ReportingUnit: Allamakee&gt;, &lt;ReportingUnit: Appanoose&gt;, &lt;ReportingUnit: Audubon&gt;, ...]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># And, of course, the results in each county.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iowa</span><span class="o">.</span><span class="n">races</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">counties</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">results</span>
+<span class="go">[&lt;Result: Michele Bachmann, Adair, 2496&gt;, &lt;Result: Newt Gingrich, Adair, 2219&gt;, &lt;Result: Rick Santorum, Adair, 191&gt;, ...</span>
+</pre></div>
+</div>
 </div>
 
 
@@ -66,10 +93,9 @@
         <div class="sphinxsidebarwrapper">
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Welcome to python-elections&#8217;s documentation!</a><ul>
-</ul>
-</li>
-<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+<li><a class="reference internal" href="#">Features</a></li>
+<li><a class="reference internal" href="#requirements">Requirements</a></li>
+<li><a class="reference internal" href="#getting-started">Getting Started</a></li>
 </ul>
 
   <h3>This Page</h3>
