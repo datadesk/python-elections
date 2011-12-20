@@ -21,7 +21,7 @@ Install the library from PyPI.
 
     $ pip install python-elections
 
-Connect to the AP's service with your credentials.
+Once it's installed you can immediately begin accessing data with your AP login credentials. Here is quick example.
 
 .. code-block:: python
 
