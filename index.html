@@ -48,20 +48,31 @@
 <ul class="simple">
 <li>Easy access to AP election results for races in U.S. states and counties.</li>
 </ul>
-</div>
+<hr></div>
 <div class="section" id="requirements">
 <h1>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h1>
 <p>In order to use this library, you must pay AP for access to the data. More information can be found on <a class="reference external" href="http://www.apdigitalnews.com/ap_elections.html">the AP’s web site</a> or by contacting Anthony Marquez at <a class="reference external" href="mailto:amarquez&#37;&#52;&#48;ap&#46;org">amarquez<span>&#64;</span>ap<span>&#46;</span>org</a>.</p>
-</div>
+<hr></div>
 <div class="section" id="getting-started">
 <h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
-<p>Install the library from PyPI.</p>
+<p><strong>Installation</strong></p>
+<p>Provided that you have <a class="reference external" href="http://pypi.python.org/pypi/pip">pip</a> installed, you can install the library like so.</p>
 <div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>pip install python-elections
 </pre></div>
 </div>
-<p>Once it&#8217;s installed you can immediately begin accessing data with your AP login credentials. Here is a quick example.</p>
+<p>If you&#8217;d rather work on the source code, you can clone it from GitHub using the usual methods.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>git clone https://github.com/datadesk/python-elections.git
+</pre></div>
+</div>
+<hr><p><strong>Creating a client</strong></p>
+<p>Before you can interact with AP&#8217;s data, you first must import the library and initialize a client to talk with the FTP on your behalf.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">elections</span> <span class="kn">import</span> <span class="n">AP</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">AP</span><span class="p">(</span><span class="n">uname</span><span class="p">,</span> <span class="n">pwd</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">AP</span><span class="p">(</span><span class="n">USERNAME</span><span class="p">,</span> <span class="n">PASSWORD</span><span class="p">)</span>
+</pre></div>
+</div>
+<hr><p>Once it&#8217;s installed you can immediately begin accessing data with your AP login credentials.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="go">&gt;&gt;&gt;</span>
+<span class="go">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c"># Request all the data available for a particular state by providing its postal code. This will return a state object.</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">iowa</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="s">&#39;IA&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">iowa</span>

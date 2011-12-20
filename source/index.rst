@@ -7,26 +7,58 @@ Features
 
 * Easy access to AP election results for races in U.S. states and counties.
 
+.. raw:: html
+
+   <hr>
+
 Requirements
 ============
 
 In order to use this library, you must pay AP for access to the data. More information can be found on `the AP’s web site <http://www.apdigitalnews.com/ap_elections.html>`_ or by contacting Anthony Marquez at `amarquez@ap.org <mailto:amarquez@ap.org>`_.
 
+.. raw:: html
+
+   <hr>
+
 Getting Started
 ===============
 
-Install the library from PyPI.
+**Installation**  
+
+Provided that you have `pip <http://pypi.python.org/pypi/pip>`_ installed, you can install the library like so.
 
 .. code-block:: bash
 
     $ pip install python-elections
 
-Once it's installed you can immediately begin accessing data with your AP login credentials. Here is a quick example.
+If you'd rather work on the source code, you can clone it from GitHub using the usual methods.
+
+.. code-block:: bash
+
+    $ git clone https://github.com/datadesk/python-elections.git
+
+.. raw:: html
+
+   <hr>
+
+**Creating a client**
+
+Before you can interact with AP's data, you first must import the library and initialize a client to talk with the FTP on your behalf. ::
+
+    >>> from elections import AP
+    >>> client = AP(USERNAME, PASSWORD)
+
+.. raw:: html
+
+   <hr>
+
+
+Once it's installed you can immediately begin accessing data with your AP login credentials.
 
 .. code-block:: python
 
-    >>> from elections import AP
-    >>> client = AP(uname, pwd)
+    >>> 
+    >>> 
     >>> # Request all the data available for a particular state by providing its postal code. This will return a state object.
     >>> iowa = client.get_state('IA')
     >>> iowa
