@@ -1,5 +1,4 @@
 scratch.py
-fabfile.py
 private_settings.py
 *.swp
 *.pyc
