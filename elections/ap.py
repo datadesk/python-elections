@@ -263,17 +263,18 @@ class State(object):
     def filter_races(self, **kwargs):
         """
         Takes a series of keyword arguments and returns any Race objects
-        that match. Works an OR query and returns anything that matches
-        any of the provided kwargs. 
+        that match. Works an AND query and returns anything that matches
+        all of the provided kwargs. 
         
         ex:
             >>> iowa.filter_races(office_name='President', party='GOP')
             [<Race: President>]
         """
-        s = set()
+        races = self.races
         for k in kwargs.keys():
-            s.update(filter(lambda x: getattr(x, k) == kwargs[k], self.races))
-        return list(s)
+            races = filter(lambda x: getattr(x, k) == kwargs[k], races)
+        return races
+        
 
     @property
     def reporting_units(self):
@@ -389,8 +390,7 @@ class State(object):
                 race._reporting_units.update({ru.fips: ru})
             # We add a set of reportingunits for the State object
             # so you can get county and state voter info from the
-            # State object itself. We null out results, since there
-            # shouldn't ever be any for these.
+            # State object itself. 
             ru = ReportingUnit(
                 name = r['ru_name'],
                 ap_number = r['ru_number'],
