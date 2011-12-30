@@ -297,7 +297,16 @@ class State(object):
         """
         Gets all reporting units that can be defined as counties.
         """
-        return [o for o in self.reporting_units if o.fips and not o.is_state]
+        # Filter out the state level data
+        ru_list = [o for o in self.reporting_units if o.fips and not o.is_state]
+        # If the AP reports sub-County data for this state, as they do for some
+        # New England states, we'll need to aggregate it here. If not, we can
+        # just pass out the data "as is."
+        print self.name
+        if self.name in COUNTY_CROSSWALK.keys():
+            pass
+        else:
+            return ru_list
 
     def fetch_results(self):
         """
@@ -692,10 +701,18 @@ class Race(object):
         Returns all the counties that report results for this race as a list
         of ReportingUnit objects.
         """
-        return sorted(
+        ru_list = sorted(
             [o for o in self.reporting_units if o.fips and not o.is_state],
             key=lambda x: x.name
         )
+        # If the AP reports sub-County data for this state, as they do for some
+        # New England states, we'll need to aggregate it here. If not, we can
+        # just pass out the data "as is."
+        if self.state.abbrev in COUNTY_CROSSWALK.keys():
+            print "WOO"
+            pass
+        else:
+            return ru_list
     
     @property
     def race_type_name(self):
