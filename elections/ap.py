@@ -851,4 +851,24 @@ class BadCredentialsError(Exception):
    def __str__(self):
        return repr(self.parameter)
 
+#
+# Town-to-county crosswalk
+#
+
+COUNTY_CROSSWALK = {
+    'NH': {
+        33001: 'Belknap',
+        33003: 'Carroll',
+        33005: 'Chesire',
+        33007: 'Coos',
+        33009: 'Grafton',
+        33011: 'Hillborough',
+        33013: 'Merrimack',
+        33015: 'Rockingham',
+        33017: 'Strafford',
+        33019: 'Sullivan',
+    }
+}
+
+
 
