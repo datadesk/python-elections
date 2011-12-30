@@ -298,7 +298,6 @@ class State(object):
         """
         Gets all reporting units that can be defined as counties.
         """
-        from pprint import pprint
         # Filter out the state level data
         ru_list = [o for o in self.reporting_units if o.fips and not o.is_state]
         # If the AP reports sub-County data for this state, as they do for some
@@ -322,7 +321,7 @@ class State(object):
                     num_reg_voters = sum([int(i.num_reg_voters) for i in units]),
                 )
                 county_list.append(ru)
-            pprint([i.__dict__ for i in county_list])
+            return county_list
         else:
             return ru_list
 

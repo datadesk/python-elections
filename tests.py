@@ -32,7 +32,11 @@ class APTest(BaseTest):
     
     def test_county_aggregates(self):
         self.nh = self.client.get_state("NH")
-        self.nh.counties
+        county_list = self.nh.counties
+        self.assertEqual(type(county_list), type([]))
+        self.assertEqual(len(county_list) == 10, True)
+        [self.assertEqual(type(i), ReportingUnit) for i in county_list]
+        [self.assertEqual(i.is_state, False) for i in county_list]
 
 #    def test_getstate(self):
 #        # Pull state
