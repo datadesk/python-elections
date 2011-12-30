@@ -148,6 +148,7 @@ class AP(object):
         data set.
         
         Provide:
+            
             * The path of the file you want
             * The list of basic fields that start each row
             * The list of candidate fields that will repeat outwards to the right 
@@ -297,14 +298,31 @@ class State(object):
         """
         Gets all reporting units that can be defined as counties.
         """
+        from pprint import pprint
         # Filter out the state level data
         ru_list = [o for o in self.reporting_units if o.fips and not o.is_state]
         # If the AP reports sub-County data for this state, as they do for some
         # New England states, we'll need to aggregate it here. If not, we can
         # just pass out the data "as is."
-        print self.name
         if self.name in COUNTY_CROSSWALK.keys():
-            pass
+            d = {}
+            for ru in ru_list:
+                try:
+                    d[ru.fips].append(ru)
+                except:
+                    d[ru.fips] = [ru]
+            county_list = []
+            for county, units in d.items():
+                ru = ReportingUnit(
+                    name = COUNTY_CROSSWALK[self.name][county],
+                    ap_number = '',
+                    fips = county,
+                    abbrev = self.name,
+                    precincts_total = sum([int(i.precincts_total) for i in units]),
+                    num_reg_voters = sum([int(i.num_reg_voters) for i in units]),
+                )
+                county_list.append(ru)
+            pprint([i.__dict__ for i in county_list])
         else:
             return ru_list
 
@@ -314,14 +332,16 @@ class State(object):
         it will simply run through and update all of the results with 
         the most fresh data from the AP.
         """
-        self._get_flat_results()
+        #self._get_flat_results()
+        pass
 
     def fetch_delegates(self):
         """
         This will fetch and fill out the delegate_total variable on 
         the candidate models with the statewide results.
         """
-        self._get_flat_delegates()
+        #self._get_flat_delegates()
+        pass
     
     # 
     # Private methods
@@ -396,7 +416,7 @@ class State(object):
                     num_reg_voters = int(r['ru_reg_voters']),
                 )
                 # And add them to the global store
-                race._reporting_units.update({ru.fips: ru})
+                race._reporting_units.update({ru.ap_number: ru})
             # We add a set of reportingunits for the State object
             # so you can get county and state voter info from the
             # State object itself. 
@@ -408,7 +428,7 @@ class State(object):
                 precincts_total = int(r['ru_precincts']),
                 num_reg_voters = int(r['ru_reg_voters']),
             )
-            self._reporting_units.update({ru.fips: ru})
+            self._reporting_units.update({ru.ap_number: ru})
     
     def _get_flat_delegates(self):
         """
@@ -674,11 +694,11 @@ class Race(object):
     def add_candidate(self, candidate):
         self._candidates.update({candidate.ap_polra_number: candidate})
 
-    def get_reporting_unit(self, fips):
+    def get_reporting_unit(self, number):
         """
         Get a single ReportingUnit
         """
-        return self._reporting_units.get(fips, None)
+        return self._reporting_units.get(number, None)
     
     @property
     def reporting_units(self):
@@ -710,6 +730,7 @@ class Race(object):
         # just pass out the data "as is."
         if self.state.abbrev in COUNTY_CROSSWALK.keys():
             print "WOO"
+            # COUNTY_CROSSWALK 
             pass
         else:
             return ru_list
@@ -874,16 +895,16 @@ class BadCredentialsError(Exception):
 
 COUNTY_CROSSWALK = {
     'NH': {
-        33001: 'Belknap',
-        33003: 'Carroll',
-        33005: 'Chesire',
-        33007: 'Coos',
-        33009: 'Grafton',
-        33011: 'Hillborough',
-        33013: 'Merrimack',
-        33015: 'Rockingham',
-        33017: 'Strafford',
-        33019: 'Sullivan',
+        '33001': 'Belknap',
+        '33003': 'Carroll',
+        '33005': 'Chesire',
+        '33007': 'Coos',
+        '33009': 'Grafton',
+        '33011': 'Hillborough',
+        '33013': 'Merrimack',
+        '33015': 'Rockingham',
+        '33017': 'Strafford',
+        '33019': 'Sullivan',
     }
 }
 
