@@ -331,16 +331,14 @@ class State(object):
         it will simply run through and update all of the results with 
         the most fresh data from the AP.
         """
-        #self._get_flat_results()
-        pass
+        self._get_flat_results()
 
     def fetch_delegates(self):
         """
         This will fetch and fill out the delegate_total variable on 
         the candidate models with the statewide results.
         """
-        #self._get_flat_delegates()
-        pass
+        self._get_flat_delegates()
     
     # 
     # Private methods
@@ -545,17 +543,18 @@ class State(object):
             # Figure out if it's a state or a county
             fips =row['fips']
             is_state = row['county_number'] == '1'
+            county_number = str(row['county_number'])
             
             # AP stupidly strips leading 0s in the FIPS for the 
             # results file. This fixes em.
-            if is_state:
-                fips = '00000'
-            else:
-                if self.leading_zero_fips and fips[0] != '0':
-                    fips = '0' + fips
+#            if is_state:
+#                fips = '00000'
+#            else:
+#                if self.leading_zero_fips and fips[0] != '0':
+#                    fips = '0' + fips
             
             # Pull the reporting unit
-            reporting_unit = race.get_reporting_unit(fips)
+            reporting_unit = race.get_reporting_unit(county_number)
             
             # Loop through all the candidates
             votes_cast = 0
@@ -712,7 +711,7 @@ class Race(object):
         """
         Returns the state-level results for this race as a ReportingUnit object.
         """
-        return self.get_reporting_unit('00000')
+        return [o for o in self.reporting_units if o.is_state][0]
     
     @property
     def counties(self):
@@ -727,12 +726,56 @@ class Race(object):
         # If the AP reports sub-County data for this state, as they do for some
         # New England states, we'll need to aggregate it here. If not, we can
         # just pass out the data "as is."
+        from pprint import pprint
         if self.state.abbrev in COUNTY_CROSSWALK.keys():
-            print "WOO"
-            # COUNTY_CROSSWALK 
-            pass
+            d = {}
+            for ru in ru_list:
+                try:
+                    d[ru.fips].append(ru)
+                except:
+                    d[ru.fips] = [ru]
+            county_list = []
+            for county, units in d.items():
+                ru = ReportingUnit(
+                    name = COUNTY_CROSSWALK[self.state.abbrev][county],
+                    ap_number = '',
+                    fips = county,
+                    abbrev = self.name,
+                    precincts_reporting = sum([int(i.precincts_reporting) for i in units]),
+                    precincts_total = sum([int(i.precincts_total) for i in units]),
+                    num_reg_voters = sum([int(i.num_reg_voters) for i in units]),
+                    votes_cast = sum([int(i.votes_cast) for i in units])
+                )
+                ru.precincts_reporting_percent = calculate.percentage(
+                    ru.precincts_reporting,
+                    ru.precincts_total
+                )
+                # Group all the candidates
+                cands = {}
+                for unit in units:
+                    for result in unit.results:
+                        try:
+                            cands[result.candidate.ap_polra_number].append(result)
+                        except:
+                            cands[result.candidate.ap_polra_number] = [result]
+                for ap_polra_number, results in cands.items():
+                    combined = Result(
+                        candidate = results[0].candidate,
+                        reporting_unit = ru,
+                        vote_total = sum([i.vote_total for i in results]),
+                        vote_total_percent = calculate.percentage(
+                            sum([i.vote_total for i in results]),
+                            ru.votes_cast
+                        )
+                    )
+                    # Update result connected to the reporting unit
+                    ru.update_result(combined)
+                # Load the finished county into our list
+                county_list.append(ru)
+            return county_list
         else:
             return ru_list
+        return ru_list
     
     @property
     def race_type_name(self):
