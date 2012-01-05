@@ -80,5 +80,8 @@ setup(name='python-elections',
       cmdclass = cmdclasses,
       data_files=data_files,
       include_package_data=True,
+      install_requires=[
+        'latimes-calculate==0.1.8',
+        ],
      )
 
