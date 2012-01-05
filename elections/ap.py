@@ -726,7 +726,6 @@ class Race(object):
         # If the AP reports sub-County data for this state, as they do for some
         # New England states, we'll need to aggregate it here. If not, we can
         # just pass out the data "as is."
-        from pprint import pprint
         if self.state.abbrev in COUNTY_CROSSWALK.keys():
             d = {}
             for ru in ru_list:
