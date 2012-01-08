@@ -681,7 +681,7 @@ class Race(object):
     
     @property
     def candidates(self):
-        return self._candidates.values()
+        return sorted(self._candidates.values(), key=lambda x: x.last_name)
     
     def get_candidate(self, ap_polra_num):
         """
@@ -831,9 +831,15 @@ class ReportingUnit(object):
     @property
     def results(self):
         """
-        Returns the Result objects sorted by total votes (highest first)
+        Returns the Result objects sorted by total votes (highest first).
+        
+        If no votes are in, it returns the candidates in alphabetical order.
         """
-        return sorted(self._results.values(), key=lambda x: x.vote_total, reverse=True)
+        if self.precincts_reporting:
+            return sorted(self._results.values(), key=lambda x: x.vote_total,
+                reverse=True)
+        else:
+            return sorted(self._results.values(), key=lambda x: x.candidate.last_name)
     
     def update_result(self, result):
         self._results[result.candidate.ap_polra_number] = result
