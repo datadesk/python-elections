@@ -79,6 +79,15 @@ class AP(object):
         self.ftp.quit()
         return results
     
+    def get_nation(self, election_date, **kwargs):
+        """
+        Takes a date in the format YYYYMMDD and returns the results for that
+        primary
+        """
+        result = Nation(self, election_date, **kwargs)
+        self.ftp.quit()
+        return result
+    
     #
     # Private methods
     #
@@ -223,6 +232,11 @@ class State(object):
             self.leading_zero_fips = False
         self._races = {}
         self._reporting_units = {}
+        self.results_file_path = "/%(name)s/flat/%(name)s.txt" % {'name': name}
+        self.delegates_file_path = "/%(name)s/flat/%(name)s_D.txt" % {'name': name}
+        self.race_file_path = "/inits/%(name)s/%(name)s_race.txt" % {'name': name}
+        self.reporting_unit_file_path = "/inits/%(name)s/%(name)s_ru.txt" % {'name': name}
+        self.candidate_file_path = "/inits/%(name)s/%(name)s_pol.txt" % {'name': name}
         self._init_races()
         self._init_reporting_units()
         self._init_candidates()
@@ -349,7 +363,7 @@ class State(object):
         Download the state's candidate file and load the data.
         """
         # Fetch the data from the FTP
-        candidate_list = self.client._fetch_csv("/inits/%(name)s/%(name)s_pol.txt" % self.__dict__)
+        candidate_list = self.client._fetch_csv(self.candidate_file_path)
         # Loop through it...
         for cand in candidate_list:
             # Create a Candidate...
@@ -373,7 +387,7 @@ class State(object):
         Download all the races in the state and load the data.
         """
         # Get the data
-        race_list = self.client._fetch_csv("/inits/%(name)s/%(name)s_race.txt" % self.__dict__)
+        race_list = self.client._fetch_csv(self.race_file_path)
         # Loop through it all
         for race in race_list:
             # Create a Race object...
@@ -399,7 +413,7 @@ class State(object):
         Download all the reporting units and load the data.
         """
         # Get the data
-        ru_list = self.client._fetch_csv("/inits/%(name)s/%(name)s_ru.txt" % self.__dict__)
+        ru_list = self.client._fetch_csv(self.reporting_unit_file_path)
         # Loop through them all
         for r in ru_list:
             # Create ReportingUnit objects for each race
@@ -433,7 +447,7 @@ class State(object):
         """
         # Pull the data
         flat_list = self.client._fetch_flatfile(
-            "/%(name)s/flat/%(name)s_D.txt" % self.__dict__,
+            self.delegates_file_path,
             [ # First the basic fields that will the same in each row
                 'test',
                 'election_date',
@@ -493,7 +507,7 @@ class State(object):
         """
         # Download the data
         flat_list = self.client._fetch_flatfile(
-            "/%(name)s/flat/%(name)s.txt" % self.__dict__,
+            self.results_file_path,
             [ # First the basic fields that will the same in each row
                 'test',
                 'election_date',
@@ -611,6 +625,49 @@ class State(object):
                     result.vote_total, 
                     votes_cast
                 )
+
+class Nation(State):
+    """
+    These United States.
+    
+    Returned by the AP client in response to a `get_national`
+    call. Contains, among its attributes, the results for all races recorded
+    by the AP.
+    """
+    def __init__(self, client, name, results=True, delegates=True):
+        self.client = client
+        self.name = name
+        # The AP results files for these 7 states are missing
+        # the leading 0 on the county FIPS codes.
+        if self.name in ('AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT'):
+            self.leading_zero_fips = True
+        else:
+            self.leading_zero_fips = False
+        self.results_file_path = "/Delegate_Tracking/US/flat/US_%(name)s.txt" % {'name': name}
+        self.delegates_file_path = "/Delegate_Tracking/US/flat/US_%(name)s_d.txt" % {'name': name}
+        self.race_file_path = "/inits/US/US_%(name)s_race.txt" % {'name': name}
+        self.reporting_unit_file_path = "/inits/US/US_%(name)s_ru.txt" % {'name': name}
+        self.candidate_file_path = "/inits/US/US_%(name)s_pol.txt" % {'name': name}
+        self._races = {}
+        self._reporting_units = {}
+        self._init_races()
+        self._init_reporting_units()
+        self._init_candidates()
+        
+        if results:
+            self.fetch_results()
+        # Fetches delegates for any Primary or Caucus races
+        if delegates and self.filter_races(is_general=False):
+            self.fetch_delegates()
+
+    def __unicode__(self):
+        return unicode(self.name)
+
+    def __str__(self):
+        return self.__unicode__().encode("utf-8")
+
+    def __repr__(self):
+        return '<%s: %s>' % (self.__class__.__name__, self.__unicode__())
 
 
 class Race(object):
