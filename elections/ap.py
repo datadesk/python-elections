@@ -289,7 +289,6 @@ class State(object):
         for k in kwargs.keys():
             races = filter(lambda x: getattr(x, k) == kwargs[k], races)
         return races
-        
 
     @property
     def reporting_units(self):
