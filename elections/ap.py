@@ -835,7 +835,7 @@ class ReportingUnit(object):
         
         If no votes are in, it returns the candidates in alphabetical order.
         """
-        if self.precincts_reporting:
+        if self.votes_cast:
             return sorted(self._results.values(), key=lambda x: x.vote_total,
                 reverse=True)
         else:
