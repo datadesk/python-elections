@@ -70,7 +70,7 @@ if len(sys.argv) > 1 and sys.argv[1] == 'bdist_wininst':
     for file_info in data_files:
         file_info[0] = '\\PURELIB\\%s' % file_info[0]
 
-setup(name='python-elections'
+setup(name='python-elections',
       version='0.12',
       description='A Python wrapper for the Associated Press\'s U.S. election data service.',
       author='The Los Angeles Times Data Desk',
