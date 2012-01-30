@@ -398,6 +398,7 @@ class State(object):
                 race_type = race['race_id'],
                 seat_name = race['se_name'],
                 seat_number = race['se_number'],
+                state_postal = race.get('st_postal', None),
                 scope = race['of_scope'],
                 date = date(*map(int, [race['el_date'][:4], race['el_date'][4:6], race['el_date'][6:]])),
                 num_winners = int(race['ra_num_winners']),
@@ -415,8 +416,12 @@ class State(object):
         ru_list = self.client._fetch_csv(self.reporting_unit_file_path)
         # Loop through them all
         for r in ru_list:
+            # if `st_postal` is in the dict, we're getting Top of the Ticket data,
+            # so we want to put reportingunits in the state they belong to.
+            # otherwise stuff the RUs into all of the races, as they're all in the same state.
+            races = self.filter_races(state_postal=r.get('st_postal', None)) or self.races
             # Create ReportingUnit objects for each race
-            for race in self.races:
+            for race in races:
                 ru = ReportingUnit(
                     name = r['ru_name'],
                     ap_number = r['ru_number'],
@@ -426,7 +431,7 @@ class State(object):
                     num_reg_voters = int(r['ru_reg_voters']),
                 )
                 # And add them to the global store
-                race._reporting_units.update({ru.ap_number: ru})
+                race._reporting_units.update({ru.key: ru})
             # We add a set of reportingunits for the State object
             # so you can get county and state voter info from the
             # State object itself. 
@@ -438,7 +443,7 @@ class State(object):
                 precincts_total = int(r['ru_precincts']),
                 num_reg_voters = int(r['ru_reg_voters']),
             )
-            self._reporting_units.update({ru.ap_number: ru})
+            self._reporting_units.update({ru.key: ru})
     
     def _get_flat_delegates(self):
         """
@@ -567,8 +572,7 @@ class State(object):
 #                    fips = '0' + fips
             
             # Pull the reporting unit
-            reporting_unit = race.get_reporting_unit(county_number)
-            
+            reporting_unit = race.get_reporting_unit("%s%s" % (row['county_name'], county_number))
             # Loop through all the candidates
             votes_cast = 0
             for cand in row['candidates']:
@@ -629,7 +633,7 @@ class Nation(State):
     """
     These United States.
     
-    Returned by the AP client in response to a `get_national`
+    Returned by the AP client in response to a `get_topofticket`
     call. Contains, among its attributes, the results for all races recorded
     by the AP.
     """
@@ -658,6 +662,10 @@ class Nation(State):
         # Fetches delegates for any Primary or Caucus races
         if delegates and self.filter_races(is_general=False):
             self.fetch_delegates()
+
+    @property
+    def states(self):
+        return [o for o in self._reporting_units.values() if o.is_state]
 
     def __unicode__(self):
         return unicode(self.name)
@@ -689,7 +697,7 @@ class Race(object):
     }
 
     def __init__(self, ap_race_number=None, office_name=None, office_description=None,
-                 office_id=None, seat_name=None, seat_number=None, scope=None,
+                 office_id=None, seat_name=None, seat_number=None, state_postal=None, scope=None,
                  date=None, num_winners=None, race_type=None, party=None, uncontested=None,
                  precincts_total=None, precincts_reporting=None,
                  precincts_reporting_percent=None, votes_cast=None):
@@ -699,6 +707,7 @@ class Race(object):
         self.office_id = office_id
         self.seat_name = seat_name
         self.seat_number = seat_number
+        self.state_postal = state_postal
         self.scope = scope
         self.date = date
         self.num_winners = num_winners
@@ -883,6 +892,10 @@ class ReportingUnit(object):
     
     def __repr__(self):
         return '<%s: %s>' % (self.__class__.__name__, self.__unicode__())
+
+    @property
+    def key(self):
+        return "%(name)s%(ap_number)s" % self.__dict__
     
     @property
     def results(self):
