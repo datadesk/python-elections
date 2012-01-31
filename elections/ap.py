@@ -79,12 +79,12 @@ class AP(object):
         self.ftp.quit()
         return results
     
-    def get_nation(self, election_date, **kwargs):
+    def get_topofticket(self, election_date, **kwargs):
         """
         Takes a date in the format YYYYMMDD and returns the results for that
         primary
         """
-        result = Nation(self, election_date, **kwargs)
+        result = TopOfTicket(self, election_date, **kwargs)
         self.ftp.quit()
         return result
     
@@ -212,13 +212,18 @@ class AP(object):
         return list(itertools.izip_longest(*args, fillvalue=fillvalue))
 
 
-class State(object):
+class BaseAPResults(object):
     """
-    One of these United States.
-    
-    Returned by the AP client in response to a `get_state` or `get_states`
-    call. Contains, among its attributes, the results for all races recorded
-    by the AP.
+    Base class that defines the methods to retrieve AP CSV 
+    data and shared properties and methods for State and 
+    TopOfTicket objects.
+    Any class that inherits from BaseAPResults must define
+    these paths before it calls the parent __init__:
+        * self.results_file_path
+        * self.delegates_file_path
+        * self.race_file_path
+        * self.reporting_unit_file_path
+        * self.candidate_file_path
     """
     
     def __init__(self, client, name, results=True, delegates=True):
@@ -232,11 +237,6 @@ class State(object):
             self.leading_zero_fips = False
         self._races = {}
         self._reporting_units = {}
-        self.results_file_path = "/%(name)s/flat/%(name)s.txt" % {'name': name}
-        self.delegates_file_path = "/%(name)s/flat/%(name)s_D.txt" % {'name': name}
-        self.race_file_path = "/inits/%(name)s/%(name)s_race.txt" % {'name': name}
-        self.reporting_unit_file_path = "/inits/%(name)s/%(name)s_ru.txt" % {'name': name}
-        self.candidate_file_path = "/inits/%(name)s/%(name)s_pol.txt" % {'name': name}
         self._init_races()
         self._init_reporting_units()
         self._init_candidates()
@@ -262,7 +262,7 @@ class State(object):
     @property
     def races(self):
         """
-        Returns a list of all the races reporting results in this state.
+        Returns a list of all the races reporting results.
         """
         return self._races.values()
 
@@ -309,7 +309,9 @@ class State(object):
     @property
     def counties(self):
         """
-        Gets all reporting units that can be defined as counties.
+        Gets all reporting units that can be defined as counties (read: !states).
+        Also does a crosswalk to aggregate New England ReportingUnits into their
+        respective counties. 
         """
         # Filter out the state level data
         ru_list = [o for o in self.reporting_units if o.fips and not o.is_state]
@@ -629,7 +631,25 @@ class State(object):
                     votes_cast
                 )
 
-class Nation(State):
+class State(BaseAPResults):
+    """
+    One of these United States.
+    
+    Returned by the AP client in response to a `get_state` or `get_states`
+    call. Contains, among its attributes, the results for all races recorded
+    by the AP.
+    """
+
+    def __init__(self, client, name, results=True, delegates=True):
+        self.results_file_path = "/%(name)s/flat/%(name)s.txt" % {'name': name}
+        self.delegates_file_path = "/%(name)s/flat/%(name)s_D.txt" % {'name': name}
+        self.race_file_path = "/inits/%(name)s/%(name)s_race.txt" % {'name': name}
+        self.reporting_unit_file_path = "/inits/%(name)s/%(name)s_ru.txt" % {'name': name}
+        self.candidate_file_path = "/inits/%(name)s/%(name)s_pol.txt" % {'name': name}
+        super(State, self).__init__(client, name, results, delegates)
+
+
+class TopOfTicket(BaseAPResults):
     """
     These United States.
     
@@ -638,43 +658,16 @@ class Nation(State):
     by the AP.
     """
     def __init__(self, client, name, results=True, delegates=True):
-        self.client = client
-        self.name = name
-        # The AP results files for these 7 states are missing
-        # the leading 0 on the county FIPS codes.
-        if self.name in ('AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT'):
-            self.leading_zero_fips = True
-        else:
-            self.leading_zero_fips = False
         self.results_file_path = "/Delegate_Tracking/US/flat/US_%(name)s.txt" % {'name': name}
         self.delegates_file_path = "/Delegate_Tracking/US/flat/US_%(name)s_d.txt" % {'name': name}
         self.race_file_path = "/inits/US/US_%(name)s_race.txt" % {'name': name}
         self.reporting_unit_file_path = "/inits/US/US_%(name)s_ru.txt" % {'name': name}
         self.candidate_file_path = "/inits/US/US_%(name)s_pol.txt" % {'name': name}
-        self._races = {}
-        self._reporting_units = {}
-        self._init_races()
-        self._init_reporting_units()
-        self._init_candidates()
-        
-        if results:
-            self.fetch_results()
-        # Fetches delegates for any Primary or Caucus races
-        if delegates and self.filter_races(is_general=False):
-            self.fetch_delegates()
+        super(TopOfTicket, self).__init__(client, name, results, delegates)
 
     @property
     def states(self):
         return [o for o in self._reporting_units.values() if o.is_state]
-
-    def __unicode__(self):
-        return unicode(self.name)
-
-    def __str__(self):
-        return self.__unicode__().encode("utf-8")
-
-    def __repr__(self):
-        return '<%s: %s>' % (self.__class__.__name__, self.__unicode__())
 
 
 class Race(object):
