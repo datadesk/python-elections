@@ -86,7 +86,7 @@ class APTest(BaseTest):
         self.assertTrue(isinstance(ru_list, list))
         self.assertTrue(len(ru_list) > 0)
         self.assertTrue(isinstance(ru_list[0], ReportingUnit))
-        self.assertEqual(self.iowa.get_reporting_unit(ru_list[0].ap_number), ru_list[0])
+        self.assertEqual(self.iowa.get_reporting_unit(ru_list[0].key), ru_list[0])
         self.assertRaises(KeyError, self.iowa.get_reporting_unit, 'foo')
         self.assertTrue(isinstance(ru_list[0], ReportingUnit))
         self.assertTrue(isinstance(ru_list[0].ap_number, basestring))
