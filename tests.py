@@ -168,7 +168,13 @@ class APTest(BaseTest):
         # Pull Feb. 7, 2012 primaries (Santorum 'hat trick')
         self.feb7 = self.client.get_topofticket("2012-02-07")
         self.assertEqual(len(self.feb7.races), 5)
-        self.assertEqual(len(self.feb7.filter_races(office_name='President', party='GOP')), 3)
+        self.assertEqual(len(self.feb7.filter_races(office_name='President',
+            party='GOP')), 3)
+        self.assertEqual(len(self.feb7.filter_races(office_name='President',
+            party='GOP', state_postal='CO')), 1)
+        # Test custom properties
+        self.assertEqual(len(self.feb7.states), 3)
+        [self.assertEqual(type(i), ReportingUnit) for i in self.feb7.states]
         # Pull some bum dates
         self.assertRaises(FileDoesNotExistError, self.client.get_topofticket, "2011-02-07")
         self.assertRaises(ValueError, self.client.get_topofticket, 'abcdef')
