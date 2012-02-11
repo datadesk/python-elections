@@ -110,7 +110,8 @@ class AP(object):
             if "550 The system cannot find the" in e.message:
                 raise FileDoesNotExistError("The file you've requested does not exist." +
                     " If you're looking for data about a state, make sure you" +
-                    " input valid postal codes.")
+                    " input valid postal codes. If you're looking for a date," +
+                    " make sure it's correct.")
             elif "530 User cannot log in" in e.message:
                 raise BadCredentialsError("The username and password you submitted" +
                 " are not accepted by the AP's FTP.")
