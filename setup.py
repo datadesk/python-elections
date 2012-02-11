@@ -82,6 +82,7 @@ setup(name='python-elections',
       include_package_data=True,
       install_requires=[
         'latimes-calculate==0.1.8',
+        'python-dateutil==1.5',
         ],
      )
 

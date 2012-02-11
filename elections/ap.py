@@ -16,6 +16,7 @@ import calculate
 from ftplib import FTP
 from datetime import date
 from cStringIO import StringIO
+from dateutil.parser import parse as dateparse
 
 
 class AP(object):
@@ -81,10 +82,14 @@ class AP(object):
     
     def get_topofticket(self, election_date, **kwargs):
         """
-        Takes a date in the format YYYYMMDD and returns the results for that
-        primary
+        Takes a date in any common format (YYYY-MM-DD is preferred) 
+        and returns the results for that date.
         """
-        result = TopOfTicket(self, election_date, **kwargs)
+        try:
+            dt = dateparse(election_date)
+        except ValueError:
+            raise ValueError("The election date you've submitted could not be parsed. Try submitting it in YYYY-MM-DD format.")
+        result = TopOfTicket(self, dt.strftime("%Y%m%d"), **kwargs)
         self.ftp.quit()
         return result
     
