@@ -26,7 +26,7 @@ class APTest(BaseTest):
     def test_badlogin(self):
         client = AP("foo", "bar")
         self.assertRaises(BadCredentialsError, client.get_state, "IA")
-
+    
     def test_badstate(self):
         self.assertRaises(FileDoesNotExistError, self.client.get_state, "XYZ")
     
@@ -42,7 +42,7 @@ class APTest(BaseTest):
         self.assertEqual(len(county_list) == 10, True)
         [self.assertEqual(type(i), ReportingUnit) for i in county_list]
         [self.assertEqual(i.is_state, False) for i in county_list]
-
+    
     def test_getstate(self):
         # Pull state
         self.iowa = self.client.get_state("IA")
@@ -58,10 +58,6 @@ class APTest(BaseTest):
             self.iowa.filter_races(office_name='President', party='GOP')[0],
             race_list[0],
         )
-#        self.assertEqual(
-#            len(self.iowa.filter_races(office_name='President', party='Dem')),
-#            0,
-#        )
         race = self.iowa.races[0]
         self.assertTrue(isinstance(race.ap_race_number, basestring))
         self.assertTrue(isinstance(race.office_name, basestring))

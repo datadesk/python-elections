@@ -107,7 +107,7 @@ class AP(object):
         try:
             self.ftp.retrbinary(cmd, buffer_.write)
         except Exception, e:
-            if "550 The system cannot find the path specified" in e.message:
+            if "550 The system cannot find the" in e.message:
                 raise FileDoesNotExistError("The file you've requested does not exist." +
                     " If you're looking for data about a state, make sure you" +
                     " input valid postal codes.")
@@ -217,8 +217,10 @@ class BaseAPResults(object):
     Base class that defines the methods to retrieve AP CSV 
     data and shared properties and methods for State and 
     TopOfTicket objects.
+    
     Any class that inherits from BaseAPResults must define
     these paths before it calls the parent __init__:
+        
         * self.results_file_path
         * self.delegates_file_path
         * self.race_file_path
@@ -664,7 +666,7 @@ class TopOfTicket(BaseAPResults):
         self.reporting_unit_file_path = "/inits/US/US_%(name)s_ru.txt" % {'name': name}
         self.candidate_file_path = "/inits/US/US_%(name)s_pol.txt" % {'name': name}
         super(TopOfTicket, self).__init__(client, name, results, delegates)
-
+    
     @property
     def states(self):
         return [o for o in self._reporting_units.values() if o.is_state]
@@ -686,7 +688,8 @@ class Race(object):
         'R': 'GOP Primary',
         'G': 'General Election',
         'E': 'Dem Caucus',
-        'S': 'GOP Caucus'
+        'S': 'GOP Caucus',
+        'L': 'Libertarian', # Not documented by the AP, but that's what it appears to be.
     }
 
     def __init__(self, ap_race_number=None, office_name=None, office_description=None,
