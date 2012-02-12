@@ -178,6 +178,16 @@ class APTest(BaseTest):
         # Pull some bum dates
         self.assertRaises(FileDoesNotExistError, self.client.get_topofticket, "2011-02-07")
         self.assertRaises(ValueError, self.client.get_topofticket, 'abcdef')
+        # Test the results against a get_state method to verify they are the same
+        self.iowa_tt = self.client.get_topofticket("2012-01-03")
+        self.iowa_st = self.client.get_state("ia")
+        self.race_tt = self.iowa_tt.filter_races(office_name='President', party='GOP')[0]
+        self.race_st = self.iowa_st.filter_races(office_name='President', party='GOP')[0]
+        self.assertEqual(
+            [i.vote_total for i in self.race_tt.state.results],
+            [i.vote_total for i in self.race_st.state.results]
+        )
+
 
 if __name__ == '__main__':
     unittest.main()
