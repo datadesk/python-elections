@@ -9,7 +9,7 @@ a file called private_settings.py with AP_USERNAME and AP_PASSWORD
 import os
 import unittest
 from elections import AP
-from datetime import date
+from datetime import date, datetime
 from elections.ap import Candidate, Race, ReportingUnit, Result, State
 from elections.ap import FileDoesNotExistError, BadCredentialsError
 from private_settings import AP_USERNAME, AP_PASSWORD
@@ -26,7 +26,7 @@ class APTest(BaseTest):
     def test_badlogin(self):
         client = AP("foo", "bar")
         self.assertRaises(BadCredentialsError, client.get_state, "IA")
-
+    
     def test_badstate(self):
         self.assertRaises(FileDoesNotExistError, self.client.get_state, "XYZ")
     
@@ -42,7 +42,7 @@ class APTest(BaseTest):
         self.assertEqual(len(county_list) == 10, True)
         [self.assertEqual(type(i), ReportingUnit) for i in county_list]
         [self.assertEqual(i.is_state, False) for i in county_list]
-
+    
     def test_getstate(self):
         # Pull state
         self.iowa = self.client.get_state("IA")
@@ -58,10 +58,6 @@ class APTest(BaseTest):
             self.iowa.filter_races(office_name='President', party='GOP')[0],
             race_list[0],
         )
-#        self.assertEqual(
-#            len(self.iowa.filter_races(office_name='President', party='Dem')),
-#            0,
-#        )
         race = self.iowa.races[0]
         self.assertTrue(isinstance(race.ap_race_number, basestring))
         self.assertTrue(isinstance(race.office_name, basestring))
@@ -86,7 +82,7 @@ class APTest(BaseTest):
         self.assertTrue(isinstance(ru_list, list))
         self.assertTrue(len(ru_list) > 0)
         self.assertTrue(isinstance(ru_list[0], ReportingUnit))
-        self.assertEqual(self.iowa.get_reporting_unit(ru_list[0].ap_number), ru_list[0])
+        self.assertEqual(self.iowa.get_reporting_unit(ru_list[0].key), ru_list[0])
         self.assertRaises(KeyError, self.iowa.get_reporting_unit, 'foo')
         self.assertTrue(isinstance(ru_list[0], ReportingUnit))
         self.assertTrue(isinstance(ru_list[0].ap_number, basestring))
@@ -167,6 +163,30 @@ class APTest(BaseTest):
         
         # FTP hits
         self.assertEqual(self.client._ftp_hits, 1)
+    
+    def test_topofticket(self):
+        # Pull Feb. 7, 2012 primaries (Santorum 'hat trick')
+        self.feb7 = self.client.get_topofticket("20120207")
+        self.assertEqual(len(self.feb7.races), 5)
+        self.assertEqual(len(self.feb7.filter_races(office_name='President',
+            party='GOP')), 3)
+        self.assertEqual(len(self.feb7.filter_races(office_name='President',
+            party='GOP', state_postal='CO')), 1)
+        # Test custom properties
+        self.assertEqual(len(self.feb7.states), 3)
+        [self.assertEqual(type(i), ReportingUnit) for i in self.feb7.states]
+        # Pull some bum dates
+        self.assertRaises(FileDoesNotExistError, self.client.get_topofticket, "2011-02-07")
+        self.assertRaises(ValueError, self.client.get_topofticket, 'abcdef')
+        # Test the results against a get_state method to verify they are the same
+        self.iowa_tt = self.client.get_topofticket("2012-01-03")
+        self.iowa_st = self.client.get_state("ia")
+        self.race_tt = self.iowa_tt.filter_races(office_name='President', party='GOP')[0]
+        self.race_st = self.iowa_st.filter_races(office_name='President', party='GOP')[0]
+        self.assertEqual(
+            [i.vote_total for i in self.race_tt.state.results],
+            [i.vote_total for i in self.race_st.state.results]
+        )
 
 
 if __name__ == '__main__':

@@ -71,7 +71,7 @@ if len(sys.argv) > 1 and sys.argv[1] == 'bdist_wininst':
         file_info[0] = '\\PURELIB\\%s' % file_info[0]
 
 setup(name='python-elections',
-      version='0.1',
+      version='0.20',
       description='A Python wrapper for the Associated Press\'s U.S. election data service.',
       author='The Los Angeles Times Data Desk',
       author_email='datadesk@latimes.com',
@@ -82,6 +82,7 @@ setup(name='python-elections',
       include_package_data=True,
       install_requires=[
         'latimes-calculate==0.1.8',
+        'python-dateutil==1.5',
         ],
      )
 
