@@ -79,29 +79,75 @@
 <span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">AP</span><span class="p">(</span><span class="n">USERNAME</span><span class="p">,</span> <span class="n">PASSWORD</span><span class="p">)</span>
 </pre></div>
 </div>
-<hr><p>Once it&#8217;s installed you can immediately begin accessing data with your AP login credentials.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># Request all the data available for a particular state by providing its postal code. This will return a state object.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">iowa</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="s">&#39;IA&#39;</span><span class="p">)</span>
+<hr><p><strong>Some basics</strong></p>
+<p>Request all the data available for a particular state by providing its postal code. This will return a state object.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">iowa</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="s">&#39;IA&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">iowa</span>
 <span class="go">&lt;State: IA&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c"># Among other things, the state has a list of races.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">iowa</span><span class="o">.</span><span class="n">races</span>
+</pre></div>
+</div>
+<p>Among other things, the state has a list of races.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">iowa</span><span class="o">.</span><span class="n">races</span>
 <span class="go">[&lt;Race: GOP Caucus - President&gt;]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c"># The race contains a list of candidates.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">iowa</span><span class="o">.</span><span class="n">races</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">candidates</span>
+</pre></div>
+</div>
+<p>The race contains a list of candidates.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">iowa</span><span class="o">.</span><span class="n">races</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">candidates</span>
 <span class="go">[&lt;Candidate: Other&gt;, &lt;Candidate: Jon Huntsman&gt;, &lt;Candidate: Newt Gingrich&gt;, &lt;Candidate: Herman Cain&gt;, &lt;Candidate: Rick Santorum&gt; ...</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c"># You can find results for the whole state.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">iowa</span><span class="o">.</span><span class="n">races</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">results</span>
+</pre></div>
+</div>
+<p>You can find results for the whole state.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">iowa</span><span class="o">.</span><span class="n">races</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">results</span>
 <span class="go">[&lt;Result: Newt Gingrich, Iowa (state), 896249&gt;, &lt;Result: Michele Bachmann, Iowa (state), 879444&gt;, &lt;Result: Rick Perry, Iowa (state), 65426&gt;, ...</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c"># You can get all counties in the state.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">iowa</span><span class="o">.</span><span class="n">races</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">counties</span>
+</pre></div>
+</div>
+<p>You can get all counties in the state.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">iowa</span><span class="o">.</span><span class="n">races</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">counties</span>
 <span class="go">[&lt;ReportingUnit: Adair&gt;, &lt;ReportingUnit: Adams&gt;, &lt;ReportingUnit: Allamakee&gt;, &lt;ReportingUnit: Appanoose&gt;, &lt;ReportingUnit: Audubon&gt;, ...</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c"># And, of course, the results in each county.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">iowa</span><span class="o">.</span><span class="n">races</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">counties</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">results</span>
+</pre></div>
+</div>
+<p>And, of course, the results in each county.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">iowa</span><span class="o">.</span><span class="n">races</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">counties</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">results</span>
 <span class="go">[&lt;Result: Michele Bachmann, Adair, 2496&gt;, &lt;Result: Newt Gingrich, Adair, 2219&gt;, &lt;Result: Rick Santorum, Adair, 191&gt;, ...</span>
 </pre></div>
 </div>
+<hr><p><strong>A working example</strong></p>
+<p>Let’s say the GOP is hold­ing its caucuses in Iowa, and your news or­gan­iz­a­tion bought ac­cess to the AP’s FTP ser­vice. Your boss wants you to write a simple wid­get that will sit on the homepage and out­put live res­ults. All you need are the can­did­ate names, their vote totals and per­cent­ages, the num­ber of pre­cincts re­port­ing, the num­ber of del­eg­ates won and wheth­er the AP has called a win­ner yet. How do you feed it? Here&#8217;s how.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">elections</span> <span class="kn">import</span> <span class="n">AP</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">json</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">simplejson</span> <span class="kn">as</span> <span class="nn">json</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">AP</span><span class="p">(</span><span class="n">uname</span><span class="p">,</span> <span class="n">pwd</span><span class="p">)</span>
+<span class="n">iowa</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="s">&#39;IA&#39;</span><span class="p">)</span>
+<span class="c"># Now the iowa variable holds all of the AP result data</span>
+<span class="n">caucus</span> <span class="o">=</span> <span class="n">iowa</span><span class="o">.</span><span class="n">filter_races</span><span class="p">(</span><span class="n">office_name</span><span class="o">=</span><span class="s">&#39;President&#39;</span><span class="p">,</span> <span class="n">party</span><span class="o">=</span><span class="s">&#39;GOP&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="c"># caucus is a Race object containing the results of the GOP caucuses</span>
+
+<span class="c"># Set up the main data dict and set the percent of precincts reporting</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&#39;precincts_reporting_percent&#39;</span><span class="p">:</span> <span class="n">caucus</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">precincts_reporting_percent</span><span class="p">,</span>
+    <span class="s">&#39;candidates&#39;</span><span class="p">:</span> <span class="p">[]</span>
+<span class="p">}</span>
+
+<span class="c"># Loop through the statewide candidate results, and append them</span>
+<span class="c"># in a format we like into the data dict&#39;s candidate list.</span>
+<span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">caucus</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">results</span><span class="p">:</span>
+    <span class="n">data</span><span class="p">[</span><span class="s">&#39;candidates&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+        <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">candidate</span><span class="o">.</span><span class="n">last_name</span><span class="p">,</span>
+        <span class="s">&#39;vote_total&#39;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">vote_total</span><span class="p">,</span>
+        <span class="s">&#39;vote_percent&#39;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">vote_total_percent</span><span class="p">,</span>
+        <span class="s">&#39;delegate_total&#39;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">candidate</span><span class="o">.</span><span class="n">delegates</span><span class="p">,</span>
+        <span class="s">&#39;is_winner&#39;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">candidate</span><span class="o">.</span><span class="n">is_winner</span><span class="p">,</span>
+    <span class="p">})</span>
+
+<span class="c"># Then dump the data dict out as JSON</span>
+<span class="k">print</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
 </div>
+<p>There you have it: a simple JSON dump in about 20 lines of code. From here, you can set this script to up­load the JSON file every few minutes to Amazon S3 or a sim­il­ar file-serving ser­vice. Then point your front-end wid­get to pull from there.</p>
+<hr></div>
 
 
           </div>
