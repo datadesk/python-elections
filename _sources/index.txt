@@ -352,6 +352,42 @@ Reporting Units
 
 An area or unit that groups votes into a total. For instance, a state, a congressional district, a county.
 
+.. attribute:: obj.ap_number
+
+    The unique number for this reporting unit created by AP.
+
+.. attribute:: obj.name
+
+    The name of the reporting unit
+
+.. attribute:: obj.abbrev
+
+    The abbreviation of the name.
+
+.. attribute:: obj.fips
+
+    The FIPS code for this reporting unit.
+
+.. attribute:: obj.num_reg_voters
+
+    The number of registered votes who live in this reporting unit.
+
+.. attribute:: obj.votes_cast
+
+    The number of votes cast in this reporting unit.
+
+.. attribute:: obj.precincts_total
+
+    The number of voting precincts in this reporting unit.
+
+.. attribute:: obj.precincts_reporting
+
+    The number of precincts that have already provided results.
+
+.. attribute:: obj.precincts_reporting_percent
+
+    The percentage of precincts that have already provided results.
+
 .. attribute:: obj.results
 
     Returns a list of result objects sorted by total votes (highest first). If no votes are in, it returns the candidates in alphabetical order.

@@ -398,6 +398,60 @@
 <h1>Reporting Units<a class="headerlink" href="#reporting-units" title="Permalink to this headline">¶</a></h1>
 <p>An area or unit that groups votes into a total. For instance, a state, a congressional district, a county.</p>
 <dl class="attribute">
+<dt id="obj.ap_number">
+<tt class="descclassname">obj.</tt><tt class="descname">ap_number</tt><a class="headerlink" href="#obj.ap_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>The unique number for this reporting unit created by AP.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descclassname">obj.</tt><tt class="descname">name</tt></dt>
+<dd><p>The name of the reporting unit</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.abbrev">
+<tt class="descclassname">obj.</tt><tt class="descname">abbrev</tt><a class="headerlink" href="#obj.abbrev" title="Permalink to this definition">¶</a></dt>
+<dd><p>The abbreviation of the name.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.fips">
+<tt class="descclassname">obj.</tt><tt class="descname">fips</tt><a class="headerlink" href="#obj.fips" title="Permalink to this definition">¶</a></dt>
+<dd><p>The FIPS code for this reporting unit.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.num_reg_voters">
+<tt class="descclassname">obj.</tt><tt class="descname">num_reg_voters</tt><a class="headerlink" href="#obj.num_reg_voters" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of registered votes who live in this reporting unit.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.votes_cast">
+<tt class="descclassname">obj.</tt><tt class="descname">votes_cast</tt><a class="headerlink" href="#obj.votes_cast" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of votes cast in this reporting unit.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.precincts_total">
+<tt class="descclassname">obj.</tt><tt class="descname">precincts_total</tt><a class="headerlink" href="#obj.precincts_total" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of voting precincts in this reporting unit.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.precincts_reporting">
+<tt class="descclassname">obj.</tt><tt class="descname">precincts_reporting</tt><a class="headerlink" href="#obj.precincts_reporting" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of precincts that have already provided results.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.precincts_reporting_percent">
+<tt class="descclassname">obj.</tt><tt class="descname">precincts_reporting_percent</tt><a class="headerlink" href="#obj.precincts_reporting_percent" title="Permalink to this definition">¶</a></dt>
+<dd><p>The percentage of precincts that have already provided results.</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="obj.results">
 <tt class="descclassname">obj.</tt><tt class="descname">results</tt><a class="headerlink" href="#obj.results" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a list of result objects sorted by total votes (highest first). If no votes are in, it returns the candidates in alphabetical order.</p>
