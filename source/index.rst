@@ -36,8 +36,6 @@ In The Wild
 Getting Started
 ===============
 
-**Installation**  
-
 Provided that you have `pip <http://pypi.python.org/pypi/pip>`_ installed, you can install the library like so.
 
 .. code-block:: bash
@@ -54,7 +52,8 @@ If you'd rather work on the source code, you can clone it from GitHub using the 
 
    <hr>
 
-**Creating a client**
+Creating a client
+-----------------
 
 Before you can interact with AP's data, you first must import the library and initialize a client to talk with the FTP on your behalf. ::
 
@@ -65,7 +64,8 @@ Before you can interact with AP's data, you first must import the library and in
 
    <hr>
 
-**Some basics**
+Some basics
+-----------
 
 Request all the data available for a particular state by providing its postal code. This will return a state object.
 
@@ -114,7 +114,8 @@ And, of course, the results in each county.
 
    <hr>
 
-**A working example**
+A working example
+-----------------
 
 Let’s say the GOP is hold­ing its caucuses in Iowa, and your news or­gan­iz­a­tion bought ac­cess to the AP’s FTP ser­vice. Your boss wants you to write a simple wid­get that will sit on the homepage and out­put live res­ults. All you need are the can­did­ate names, their vote totals and per­cent­ages, the num­ber of pre­cincts re­port­ing, the num­ber of del­eg­ates won and wheth­er the AP has called a win­ner yet. How do you feed it? Here's how.
 

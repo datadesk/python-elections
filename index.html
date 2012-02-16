@@ -64,7 +64,6 @@
 <hr></div>
 <div class="section" id="getting-started">
 <h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
-<p><strong>Installation</strong></p>
 <p>Provided that you have <a class="reference external" href="http://pypi.python.org/pypi/pip">pip</a> installed, you can install the library like so.</p>
 <div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>pip install python-elections
 </pre></div>
@@ -73,13 +72,16 @@
 <div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>git clone https://github.com/datadesk/python-elections.git
 </pre></div>
 </div>
-<hr><p><strong>Creating a client</strong></p>
+<hr><div class="section" id="creating-a-client">
+<h2>Creating a client<a class="headerlink" href="#creating-a-client" title="Permalink to this headline">¶</a></h2>
 <p>Before you can interact with AP&#8217;s data, you first must import the library and initialize a client to talk with the FTP on your behalf.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">elections</span> <span class="kn">import</span> <span class="n">AP</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">AP</span><span class="p">(</span><span class="n">USERNAME</span><span class="p">,</span> <span class="n">PASSWORD</span><span class="p">)</span>
 </pre></div>
 </div>
-<hr><p><strong>Some basics</strong></p>
+<hr></div>
+<div class="section" id="some-basics">
+<h2>Some basics<a class="headerlink" href="#some-basics" title="Permalink to this headline">¶</a></h2>
 <p>Request all the data available for a particular state by providing its postal code. This will return a state object.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">iowa</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="s">&#39;IA&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">iowa</span>
@@ -111,7 +113,9 @@
 <span class="go">[&lt;Result: Michele Bachmann, Adair, 2496&gt;, &lt;Result: Newt Gingrich, Adair, 2219&gt;, &lt;Result: Rick Santorum, Adair, 191&gt;, ...</span>
 </pre></div>
 </div>
-<hr><p><strong>A working example</strong></p>
+<hr></div>
+<div class="section" id="a-working-example">
+<h2>A working example<a class="headerlink" href="#a-working-example" title="Permalink to this headline">¶</a></h2>
 <p>Let’s say the GOP is hold­ing its caucuses in Iowa, and your news or­gan­iz­a­tion bought ac­cess to the AP’s FTP ser­vice. Your boss wants you to write a simple wid­get that will sit on the homepage and out­put live res­ults. All you need are the can­did­ate names, their vote totals and per­cent­ages, the num­ber of pre­cincts re­port­ing, the num­ber of del­eg­ates won and wheth­er the AP has called a win­ner yet. How do you feed it? Here&#8217;s how.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">elections</span> <span class="kn">import</span> <span class="n">AP</span>
 <span class="k">try</span><span class="p">:</span>
@@ -148,6 +152,7 @@
 </div>
 <p>There you have it: a simple JSON dump in about 20 lines of code. From here, you can set this script to up­load the JSON file every few minutes to Amazon S3 or a sim­il­ar file-serving ser­vice. Then point your front-end wid­get to pull from there.</p>
 <hr></div>
+</div>
 <div class="section" id="authors">
 <h1>Authors<a class="headerlink" href="#authors" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
@@ -168,7 +173,12 @@
 <li><a class="reference internal" href="#">Features</a></li>
 <li><a class="reference internal" href="#requirements">Requirements</a></li>
 <li><a class="reference internal" href="#in-the-wild">In The Wild</a></li>
-<li><a class="reference internal" href="#getting-started">Getting Started</a></li>
+<li><a class="reference internal" href="#getting-started">Getting Started</a><ul>
+<li><a class="reference internal" href="#creating-a-client">Creating a client</a></li>
+<li><a class="reference internal" href="#some-basics">Some basics</a></li>
+<li><a class="reference internal" href="#a-working-example">A working example</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#authors">Authors</a></li>
 </ul>
 
