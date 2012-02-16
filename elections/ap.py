@@ -731,7 +731,7 @@ class Race(object):
             for ru in ru_list:
                 try:
                     d[ru.fips].append(ru)
-                except:
+                except KeyError:
                     d[ru.fips] = [ru]
             county_list = []
             for county, units in d.items():
@@ -755,7 +755,7 @@ class Race(object):
                     for result in unit.results:
                         try:
                             cands[result.candidate.ap_polra_number].append(result)
-                        except:
+                        except KeyError:
                             cands[result.candidate.ap_polra_number] = [result]
                 for ap_polra_number, results in cands.items():
                     combined = Result(
