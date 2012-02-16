@@ -37,45 +37,8 @@ In order to use this library, you must pay AP for access to the data. More infor
 
 h2. Getting Started
 
-Install the library from PyPI
-
-<pre><code>$ pip install python-elections</code></pre>
-
-Connect to the AP's service with your credentials.
-
-<pre><code>>>> from elections import AP
->>> client = AP(uname, pwd)</code></pre>
-
-Request all the data available for a particular state by providing its postal code. This will return a state object.
-
-<pre><code>>>> iowa = client.get_state('IA')
->>> iowa
-<State: IA></code></pre>
-
-Among other things, the state has a list of races.
-
-<pre><code>>>> iowa.races
-[<Race: GOP Caucus - President>]</code></pre>
-
-The race contains a list of candidates.
-
-<pre><code>>>> iowa.races[0].candidates
-[<Candidate: Other>, <Candidate: Jon Huntsman>, <Candidate: Newt Gingrich>, <Candidate: Herman Cain>, <Candidate: Rick Santorum>, <Candidate: Mitt Romney>, <Candidate: Rick Perry>, <Candidate: Ron Paul>, <Candidate: Michele Bachmann>, <Candidate: Gary Johnson>, <Candidate: Buddy Roemer>]</code></pre>
-
-You can find results for the whole state.
-
-<pre><code>>>> iowa.races[0].state.results
-[<Result: Newt Gingrich, Iowa (state), 896249>, <Result: Michele Bachmann, Iowa (state), 879444>, <Result: Rick Perry, Iowa (state), 65426>, <Result: Rick Santorum, Iowa (state), 63409>, <Result: Ron Paul, Iowa (state), 57136>, <Result: Gary Johnson, Iowa (state), 56688>, <Result: Other, Iowa (state), 48173>, <Result: Mitt Romney, Iowa (state), 46828>, <Result: Herman Cain, Iowa (state), 45485>, <Result: Buddy Roemer, Iowa (state), 41899>, <Result: Jon Huntsman, Iowa (state), 39884>]</code></pre>
-
-You can get all counties in the state.
-
-<pre><code>>>> iowa.races[0].counties
-[<ReportingUnit: Adair>, <ReportingUnit: Adams>, <ReportingUnit: Allamakee>, <ReportingUnit: Appanoose>, <ReportingUnit: Audubon>, <ReportingUnit: Benton>, <ReportingUnit: Black Hawk>, <ReportingUnit: Boone>, ... etc ...]</code></pre>
-
-And, of course, the results in each county.
-
-<pre><code>iowa.races[0].counties[0].results
-[<Result: Michele Bachmann, Adair, 2496>, <Result: Newt Gingrich, Adair, 2219>, <Result: Rick Santorum, Adair, 191>, <Result: Rick Perry, Adair, 156>, <Result: Gary Johnson, Adair, 155>, <Result: Other, Adair, 137>, <Result: Ron Paul, Adair, 134>, <Result: Mitt Romney, Adair, 129>, <Result: Herman Cain, Adair, 127>, <Result: Buddy Roemer, Adair, 117>, <Result: Jon Huntsman, Adair, 112>]</code></pre>
+* "Documentation":http://datadesk.github.com/python-elections/
+* "Introductory blog post":http://datadesk.latimes.com/posts/2012/01/introducing-python-elections/
 
 h2. Credits
 
