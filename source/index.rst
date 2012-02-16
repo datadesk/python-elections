@@ -302,10 +302,6 @@ A contest being decided by voters choosing between candidates. This object is th
 
     A unique number give to the office at stake by AP.
 
-.. attribute:: obj.party
-
-    Candidate's party abbreviation.
-
 .. attribute:: obj.race_type_name
 
     Returns a descriptive name for the race_type.
@@ -398,6 +394,59 @@ An area or unit that groups votes into a total. For instance, a state, a congres
 .. attribute:: obj.is_state
 
     Return `True` if the reporting unit is a state, rather than some other unit like a county.
+
+.. raw:: html
+
+   <hr>
+
+Candidates
+==========
+
+A choice for voters in a race. In the presidential race, a person, like Barack Obama. In a ballot measure, a direction, like Yes or No.
+
+.. attribute:: obj.abbrev_name
+
+    The abbreviated name of the candidate.
+
+.. attribute:: obj.delegates
+
+    The number of delegates the candidate has won in this state, according to AP's estimates.
+
+.. attribute:: obj.first_name
+
+    The first name of the candidate.
+
+.. attribute:: obj.is_winner
+
+    Returns `True` if the candidate has won the race.
+
+.. attribute:: obj.is_runoff
+
+    Returns `True` is the candidate is advancing to a runoff.
+
+.. attribute:: obj.last_name
+
+    The last name of the candidate.
+
+.. attribute:: obj.middle_name
+
+    The middle name of the candidate.
+
+.. attribute:: obj.name
+
+    The full name of candidate.
+
+.. attribute:: obj.party
+
+    Candidate's party abbreviation.
+
+.. attribute:: obj.suffix
+
+    The suffix to the candidate's name.
+
+.. attribute:: obj.use_suffix
+
+    Returns `True` if you should use the suffix with the name.
 
 .. raw:: html
 

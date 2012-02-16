@@ -334,12 +334,6 @@
 </dd></dl>
 
 <dl class="attribute">
-<dt id="obj.party">
-<tt class="descclassname">obj.</tt><tt class="descname">party</tt><a class="headerlink" href="#obj.party" title="Permalink to this definition">¶</a></dt>
-<dd><p>Candidate&#8217;s party abbreviation.</p>
-</dd></dl>
-
-<dl class="attribute">
 <dt id="obj.race_type_name">
 <tt class="descclassname">obj.</tt><tt class="descname">race_type_name</tt><a class="headerlink" href="#obj.race_type_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a descriptive name for the race_type.</p>
@@ -468,6 +462,76 @@
 </dd></dl>
 
 <hr></div>
+<div class="section" id="candidates">
+<h1>Candidates<a class="headerlink" href="#candidates" title="Permalink to this headline">¶</a></h1>
+<p>A choice for voters in a race. In the presidential race, a person, like Barack Obama. In a ballot measure, a direction, like Yes or No.</p>
+<dl class="attribute">
+<dt id="obj.abbrev_name">
+<tt class="descclassname">obj.</tt><tt class="descname">abbrev_name</tt><a class="headerlink" href="#obj.abbrev_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The abbreviated name of the candidate.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.delegates">
+<tt class="descclassname">obj.</tt><tt class="descname">delegates</tt><a class="headerlink" href="#obj.delegates" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of delegates the candidate has won in this state, according to AP&#8217;s estimates.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.first_name">
+<tt class="descclassname">obj.</tt><tt class="descname">first_name</tt><a class="headerlink" href="#obj.first_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The first name of the candidate.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.is_winner">
+<tt class="descclassname">obj.</tt><tt class="descname">is_winner</tt><a class="headerlink" href="#obj.is_winner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <cite>True</cite> if the candidate has won the race.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.is_runoff">
+<tt class="descclassname">obj.</tt><tt class="descname">is_runoff</tt><a class="headerlink" href="#obj.is_runoff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <cite>True</cite> is the candidate is advancing to a runoff.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.last_name">
+<tt class="descclassname">obj.</tt><tt class="descname">last_name</tt><a class="headerlink" href="#obj.last_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The last name of the candidate.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.middle_name">
+<tt class="descclassname">obj.</tt><tt class="descname">middle_name</tt><a class="headerlink" href="#obj.middle_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The middle name of the candidate.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descclassname">obj.</tt><tt class="descname">name</tt></dt>
+<dd><p>The full name of candidate.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.party">
+<tt class="descclassname">obj.</tt><tt class="descname">party</tt><a class="headerlink" href="#obj.party" title="Permalink to this definition">¶</a></dt>
+<dd><p>Candidate&#8217;s party abbreviation.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.suffix">
+<tt class="descclassname">obj.</tt><tt class="descname">suffix</tt><a class="headerlink" href="#obj.suffix" title="Permalink to this definition">¶</a></dt>
+<dd><p>The suffix to the candidate&#8217;s name.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.use_suffix">
+<tt class="descclassname">obj.</tt><tt class="descname">use_suffix</tt><a class="headerlink" href="#obj.use_suffix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <cite>True</cite> if you should use the suffix with the name.</p>
+</dd></dl>
+
+<hr></div>
 <div class="section" id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="id1">
@@ -513,6 +577,7 @@
 <li><a class="reference internal" href="#result-collections">Result Collections</a></li>
 <li><a class="reference internal" href="#races">Races</a></li>
 <li><a class="reference internal" href="#reporting-units">Reporting Units</a></li>
+<li><a class="reference internal" href="#candidates">Candidates</a></li>
 <li><a class="reference internal" href="#changelog">Changelog</a><ul>
 <li><a class="reference internal" href="#id1">0.20</a></li>
 <li><a class="reference internal" href="#beta">beta</a></li>
