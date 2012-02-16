@@ -270,6 +270,13 @@ A contest being decided by voters choosing between candidates. This object is th
         >>> obj.counties
         [<ReportingUnit: Adair>, <ReportingUnit: Adams>, <ReportingUnit: Allamakee>, <ReportingUnit: Appanoose>, <ReportingUnit: Audubon>, <ReportingUnit: Benton>, <ReportingUnit: Black Hawk>, <ReportingUnit: Boone>, <ReportingUnit: Bremer>, <ReportingUnit: Buchanan>, ...
 
+.. attribute:: obj.date
+
+    The date of the election in Python's datetime format.
+
+        >>> obj.date
+        datetime.date(2012, 1, 3)
+
 .. attribute:: obj.is_primary
 
     Returns `True` if the race is a primary.
@@ -311,6 +318,10 @@ A contest being decided by voters choosing between candidates. This object is th
 
     Single character Office Type ID. Only top-of-the-ticket races (President, Governor, US Senate, and US House) are guaranteed to be unique on a national level. All other office types are guaranteed to be unique only within a state. A full list of the office identifiers can be found in AP's documentation.
 
+.. attribute:: obj.party
+
+    Name of party to which race applies, i.e., GOP if a Republican Primary.
+
 .. attribute:: obj.race_type_name
 
     Returns a descriptive name for the race_type.
@@ -324,6 +335,13 @@ A contest being decided by voters choosing between candidates. This object is th
 
         >>> obj.reporting_units
         [<ReportingUnit: Guthrie>, <ReportingUnit: Union>, <ReportingUnit: Crawford>, <ReportingUnit: Wright>, <ReportingUnit: Tama>, <ReportingUnit: Hamilton>, <ReportingUnit: Worth>, <ReportingUnit: Hancock>, <ReportingUnit: Cherokee>, <ReportingUnit: Carroll>, ...
+
+.. attribute:: obj.scope
+
+    Office scope – whether the race is a Local (L) or Statewide (S) race
+
+        >>> obj.scope
+        'S'
 
 .. attribute:: obj.state
 
