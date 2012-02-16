@@ -153,6 +153,46 @@
 <p>There you have it: a simple JSON dump in about 20 lines of code. From here, you can set this script to up­load the JSON file every few minutes to Amazon S3 or a sim­il­ar file-serving ser­vice. Then point your front-end wid­get to pull from there.</p>
 <hr></div>
 </div>
+<div class="section" id="the-ap-client">
+<h1>The AP Client<a class="headerlink" href="#the-ap-client" title="Permalink to this headline">¶</a></h1>
+<p>The AP client is public class you can use to connect to the AP&#8217;s data feed.</p>
+<dl class="function">
+<dt id="client.get_state">
+<tt class="descclassname">client.</tt><tt class="descname">get_state</tt><big>(</big><em>state_postal_code</em><big>)</big><a class="headerlink" href="#client.get_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a single state postal code, returns that state&#8217;s results.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">elections</span> <span class="kn">import</span> <span class="n">AP</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">AP</span><span class="p">(</span><span class="n">USERNAME</span><span class="p">,</span> <span class="n">PASSWORD</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="s">&#39;IA&#39;</span><span class="p">)</span>
+<span class="go">&lt;State: IA&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="client.get_states">
+<tt class="descclassname">client.</tt><tt class="descname">get_states</tt><big>(</big><em>*state_postal_codes</em><big>)</big><a class="headerlink" href="#client.get_states" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes one to many state postal codes as arguments, returns a list of results for the requested states.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">elections</span> <span class="kn">import</span> <span class="n">AP</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">AP</span><span class="p">(</span><span class="n">USERNAME</span><span class="p">,</span> <span class="n">PASSWORD</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">get_states</span><span class="p">(</span><span class="s">&#39;IA&#39;</span><span class="p">,</span> <span class="s">&#39;NH&#39;</span><span class="p">)</span>
+<span class="go">[&lt;State: IA&gt;, &lt;State: NH&gt;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="client.get_topofticket">
+<tt class="descclassname">client.</tt><tt class="descname">get_topofticket</tt><big>(</big><em>election_date</em><big>)</big><a class="headerlink" href="#client.get_topofticket" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a date in any common format (YYYY-MM-DD is preferred) and returns all results for that date. May be required if you havn&#8217;t purchased the detailed state level result files harvested by the methods above.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">elections</span> <span class="kn">import</span> <span class="n">AP</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">AP</span><span class="p">(</span><span class="n">USERNAME</span><span class="p">,</span> <span class="n">PASSWORD</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">feb7</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">get_topofticket</span><span class="p">(</span><span class="s">&#39;2012-02-07&#39;</span><span class="p">)</span>
+<span class="go">&lt;TopOfTicket: 20120207&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<hr></div>
 <div class="section" id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="id1">
@@ -194,6 +234,7 @@
 <li><a class="reference internal" href="#a-working-example">A working example</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#the-ap-client">The AP Client</a></li>
 <li><a class="reference internal" href="#changelog">Changelog</a><ul>
 <li><a class="reference internal" href="#id1">0.20</a></li>
 <li><a class="reference internal" href="#beta">beta</a></li>

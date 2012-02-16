@@ -32,7 +32,6 @@ In The Wild
 
    <hr>
 
-
 Getting Started
 ===============
 
@@ -154,6 +153,43 @@ Let’s say the GOP is hold­ing its caucuses in Iowa, and your news or­gan­iz
     print json.dumps(data, indent=4)
 
 There you have it: a simple JSON dump in about 20 lines of code. From here, you can set this script to up­load the JSON file every few minutes to Amazon S3 or a sim­il­ar file-serving ser­vice. Then point your front-end wid­get to pull from there.
+
+.. raw:: html
+
+   <hr>
+
+
+The AP Client
+=============
+
+The AP client is public class you can use to connect to the AP's data feed.
+
+.. function:: client.get_state(state_postal_code)
+
+   Takes a single state postal code, returns that state's results. ::
+
+        >>> from elections import AP
+        >>> client = AP(USERNAME, PASSWORD)
+        >>> client.documents.get_state('IA')
+        <State: IA>
+
+.. function:: client.get_states(*state_postal_codes)
+
+   Takes one to many state postal codes as arguments, returns a list of results for the requested states. ::
+
+        >>> from elections import AP
+        >>> client = AP(USERNAME, PASSWORD)
+        >>> client.documents.get_states('IA', 'NH')
+        [<State: IA>, <State: NH>]
+
+.. function:: client.get_topofticket(election_date)
+
+   Takes a date in any common format (YYYY-MM-DD is preferred) and returns all results for that date. May be required if you havn't purchased the detailed state level result files harvested by the methods above. ::
+
+        >>> from elections import AP
+        >>> client = AP(USERNAME, PASSWORD)
+        >>> feb7 = client.documents.get_topofticket('2012-02-07')
+        <TopOfTicket: 20120207>
 
 .. raw:: html
 
