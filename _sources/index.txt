@@ -442,10 +442,38 @@ A choice for voters in a race. In the presidential race, a person, like Barack O
 
 .. attribute:: obj.abbrev_name
 
-    The abbreviated name of the candidate.
+    Candidate's abbreviated name, usually last name with some vowels removed if too long.
 
         >>> obj.abbrev_name
         'Bchmnn'
+
+.. attribute:: obj.ap_natl_number
+
+    Unique ID to identify this politician across states and races.
+
+        >>> obj.ap_natl_number
+        '302'
+
+.. attribute:: obj.ap_pol_number
+
+    Unique ID within a state for this candidate.
+
+        >>> obj.ap_pol_number
+        '18538'
+
+.. attribute:: obj.ap_polra_number
+
+    Unique ID within a state for this candidate for this race for their party.
+
+        >>> obj.ap_polra_number
+        '21304'
+
+.. attribute:: obj.ap_race_number
+
+    Unique ID within a state for the race object this candidate object is linked to.
+
+        >>> obj.ap_race_number
+        '16957'
 
 .. attribute:: obj.delegates
 
