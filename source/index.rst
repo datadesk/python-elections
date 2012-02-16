@@ -452,6 +452,31 @@ A choice for voters in a race. In the presidential race, a person, like Barack O
 
    <hr>
 
+Result
+======
+
+The vote count for a candidate in a race in a particular reporting unit.
+
+.. attribute:: obj.candidate
+
+    The candidate this result is for.
+
+.. attribute:: obj.reporting_unit
+
+    The reporting unit this result is for.
+
+.. attribute:: obj.vote_total
+
+    The number of votes the candidate has collected in this reporting unit.
+
+.. attribute:: obj.vote_total_percent
+
+    The percentage of the tpta; votes the candidate has collected in this reporting unit.
+
+.. raw:: html
+
+   <hr>
+
 Changelog
 =========
 
