@@ -193,6 +193,65 @@
 </dd></dl>
 
 <hr></div>
+<div class="section" id="result-collections">
+<h1>Result collections<a class="headerlink" href="#result-collections" title="Permalink to this headline">¶</a></h1>
+<p>Depending on which client method you use to harvest data, results may be returned as <cite>State</cite> or <cite>TopOfTicket</cite> objects. Don&#8217;t worry about the distinction, because they act pretty much the same. They share the following attributes for you to use.</p>
+<dl class="attribute">
+<dt id="obj.counties">
+<tt class="descclassname">obj.</tt><tt class="descname">counties</tt><a class="headerlink" href="#obj.counties" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of all the counties from the pool of reporting units.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="s">&#39;IA&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">counties</span>
+<span class="go">[&lt;ReportingUnit: Guthrie&gt;, &lt;ReportingUnit: Union&gt;, &lt;ReportingUnit: Crawford&gt;, &lt;ReportingUnit: Wright&gt;, &lt;ReportingUnit: Tama&gt;, &lt;ReportingUnit: Hamilton&gt;, &lt;ReportingUnit: Worth&gt;, &lt;ReportingUnit: Hancock&gt;, &lt;ReportingUnit: Cherokee&gt;, &lt;ReportingUnit: Carroll&gt;, &lt;ReportingUnit: Webster&gt;, &lt;ReportingUnit: Clarke&gt;, ...]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="obj.filter_races">
+<tt class="descclassname">obj.</tt><tt class="descname">filter_races</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#obj.filter_races" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a series of keyword arguments and returns any races that match.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="s">&#39;IA&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">filter_races</span><span class="p">(</span><span class="n">office_name</span><span class="o">=</span><span class="s">&#39;President&#39;</span><span class="p">,</span> <span class="n">party</span><span class="o">=</span><span class="s">&#39;GOP&#39;</span><span class="p">)</span>
+<span class="go">[&lt;Race: GOP Caucus - President&gt;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.races">
+<tt class="descclassname">obj.</tt><tt class="descname">races</tt><a class="headerlink" href="#obj.races" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of all the races reporting results.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="s">&#39;IA&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">races</span>
+<span class="go">[&lt;Race: GOP Caucus - President&gt;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.reporting_units">
+<tt class="descclassname">obj.</tt><tt class="descname">reporting_units</tt><a class="headerlink" href="#obj.reporting_units" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of all reporting units in the result collection.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="s">&quot;IA&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">reporting_units</span>
+<span class="go">[&lt;ReportingUnit: Guthrie&gt;, &lt;ReportingUnit: Union&gt;, &lt;ReportingUnit: Crawford&gt;, &lt;ReportingUnit: Wright&gt;, &lt;ReportingUnit: Tama&gt;, &lt;ReportingUnit: Hamilton&gt;, &lt;ReportingUnit: Worth&gt;, &lt;ReportingUnit: Hancock&gt;, &lt;ReportingUnit: Cherokee&gt;, &lt;ReportingUnit: Carroll&gt;, &lt;ReportingUnit: Webster&gt;, &lt;ReportingUnit: Clarke&gt;, ...]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.states">
+<tt class="descclassname">obj.</tt><tt class="descname">states</tt><a class="headerlink" href="#obj.states" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of all the states from the pool of reporting units. Only available on <cite>TopOfTicket</cite> result collections.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_topofticket</span><span class="p">(</span><span class="s">&#39;2012-02-07&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">states</span>
+<span class="go">[&lt;ReportingUnit: Missouri (state)&gt;, &lt;ReportingUnit: Minnesota (state)&gt;, &lt;ReportingUnit: Colorado (state)&gt;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<hr></div>
 <div class="section" id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="id1">
@@ -235,6 +294,7 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#the-ap-client">The AP Client</a></li>
+<li><a class="reference internal" href="#result-collections">Result collections</a></li>
 <li><a class="reference internal" href="#changelog">Changelog</a><ul>
 <li><a class="reference internal" href="#id1">0.20</a></li>
 <li><a class="reference internal" href="#beta">beta</a></li>

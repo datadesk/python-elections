@@ -195,6 +195,55 @@ The AP client is public class you can use to connect to the AP's data feed.
 
    <hr>
 
+Result collections
+==================
+
+Depending on which client method you use to harvest data, results may be returned as `State` or `TopOfTicket` objects. Don't worry about the distinction, because they act pretty much the same. They share the following attributes for you to use.
+
+.. attribute:: obj.counties
+
+    Returns a list of all the counties from the pool of reporting units.
+
+        >>> obj = client.get_state('IA')
+        >>> obj.counties
+        [<ReportingUnit: Guthrie>, <ReportingUnit: Union>, <ReportingUnit: Crawford>, <ReportingUnit: Wright>, <ReportingUnit: Tama>, <ReportingUnit: Hamilton>, <ReportingUnit: Worth>, <ReportingUnit: Hancock>, <ReportingUnit: Cherokee>, <ReportingUnit: Carroll>, <ReportingUnit: Webster>, <ReportingUnit: Clarke>, ...]
+
+.. function:: obj.filter_races(**kwargs)
+
+   Takes a series of keyword arguments and returns any races that match.
+        
+        >>> obj = client.get_state('IA')
+        >>> obj.filter_races(office_name='President', party='GOP')
+        [<Race: GOP Caucus - President>]
+
+.. attribute:: obj.races
+
+    Returns a list of all the races reporting results.
+
+        >>> obj = client.get_state('IA')
+        >>> obj.races
+        [<Race: GOP Caucus - President>]
+
+.. attribute:: obj.reporting_units
+
+    Returns a list of all reporting units in the result collection.
+
+        >>> obj = client.get_state("IA")
+        >>> obj.reporting_units
+        [<ReportingUnit: Guthrie>, <ReportingUnit: Union>, <ReportingUnit: Crawford>, <ReportingUnit: Wright>, <ReportingUnit: Tama>, <ReportingUnit: Hamilton>, <ReportingUnit: Worth>, <ReportingUnit: Hancock>, <ReportingUnit: Cherokee>, <ReportingUnit: Carroll>, <ReportingUnit: Webster>, <ReportingUnit: Clarke>, ...]
+
+.. attribute:: obj.states
+
+      Returns a list of all the states from the pool of reporting units. Only available on `TopOfTicket` result collections.
+
+        >>> obj = client.get_topofticket('2012-02-07')
+        >>> obj.states
+        [<ReportingUnit: Missouri (state)>, <ReportingUnit: Minnesota (state)>, <ReportingUnit: Colorado (state)>]
+
+.. raw:: html
+
+   <hr>
+
 Changelog
 =========
 
