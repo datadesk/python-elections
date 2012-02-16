@@ -244,6 +244,66 @@ Depending on which client method you use to harvest data, results may be returne
 
    <hr>
 
+Races
+=====
+
+A contest being decided by voters choosing between candidates. This object is the key to everything about it. It is often found in the `races` attribute of a result collection.
+
+.. attribute:: obj.candidates
+
+    The list of candidates participating in the race.
+
+        >>> obj.candidates
+        [<Candidate: Michele Bachmann>, <Candidate: Herman Cain>, <Candidate: Newt Gingrich>, <Candidate: Jon Huntsman>, <Candidate: No Preference>, <Candidate: Other>, <Candidate: Ron Paul>, <Candidate: Rick Perry>, <Candidate: Buddy Roemer>, <Candidate: Mitt Romney>, <Candidate: Rick Santorum>]
+
+.. attribute:: obj.counties
+
+    Returns all the counties that report results for this race as a list.
+
+        >>> obj.counties
+        [<ReportingUnit: Adair>, <ReportingUnit: Adams>, <ReportingUnit: Allamakee>, <ReportingUnit: Appanoose>, <ReportingUnit: Audubon>, <ReportingUnit: Benton>, <ReportingUnit: Black Hawk>, <ReportingUnit: Boone>, <ReportingUnit: Bremer>, <ReportingUnit: Buchanan>, ...
+
+.. attribute:: obj.is_primary
+
+    Returns `True` if the race is a primary.
+
+.. attribute:: obj.is_caucus
+
+    Returns `True` if the race is a caucus.
+
+.. attribute:: obj.is_general
+
+    Returns `True` if the race is part of a general election.
+
+.. attribute:: obj.name
+
+    The name of the race.
+
+        >>> obj.name
+        'GOP Caucus - President'
+
+.. attribute:: obj.race_type_name
+
+    Returns a descriptive name for the race_type.
+
+        >>> obj.race_type_name
+        'GOP Caucus'
+
+.. attribute:: obj.reporting_units
+
+    Returns all reporting units that belong to this race as a list.
+
+        >>> obj.reporting_units
+        [<ReportingUnit: Guthrie>, <ReportingUnit: Union>, <ReportingUnit: Crawford>, <ReportingUnit: Wright>, <ReportingUnit: Tama>, <ReportingUnit: Hamilton>, <ReportingUnit: Worth>, <ReportingUnit: Hancock>, <ReportingUnit: Cherokee>, <ReportingUnit: Carroll>, ...
+
+.. attribute:: obj.state
+
+    Returns the state-level results for this race as a ReportingUnit object.
+
+        >>> obj.state
+        <ReportingUnit: Iowa (state)>
+
+
 Changelog
 =========
 
