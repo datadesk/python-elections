@@ -247,7 +247,11 @@ Depending on which client method you use to harvest data, results may be returne
 Races
 =====
 
-A contest being decided by voters choosing between candidates. This object is the key to everything about it. It is often found in the `races` attribute a result collection.
+A contest being decided by voters choosing between candidates. This object is the key to everything about it. It is often found in the `races` attribute of a result collection.
+
+.. attribute:: obj.ap_race_number
+
+    The unique number given to this race by AP.
 
 .. attribute:: obj.candidates
 
@@ -282,6 +286,26 @@ A contest being decided by voters choosing between candidates. This object is th
         >>> obj.name
         'GOP Caucus - President'
 
+.. attribute:: obj.num_winners
+
+    Integer giving the maximum number of winners.
+
+.. attribute:: obj.office_name
+
+    Character string for office name (e.g., U.S. House, Governor, etc.).
+
+.. attribute:: obj.office_description
+
+    A description of the office.
+
+.. attribute:: obj.office_id
+
+    A unique number give to the office at stake by AP.
+
+.. attribute:: obj.party
+
+    Candidate's party abbreviation.
+
 .. attribute:: obj.race_type_name
 
     Returns a descriptive name for the race_type.
@@ -303,6 +327,45 @@ A contest being decided by voters choosing between candidates. This object is th
         >>> obj.state
         <ReportingUnit: Iowa (state)>
 
+.. attribute:: obj.seat_name
+
+    Character string giving the district or initiative name (e.g., District 46, 1A-Gay Marriage, etc.) This may be empty for a statewide race (e.g., a Governor race).
+
+.. attribute:: obj.seat_number
+
+    Integer indicating district number or an initiative number. This may be zero (0) for a statewide race.
+
+.. attribute:: obj.state_postal
+
+    Two character state postal string (e.g., IA, LA, etc.).
+
+.. attribute:: self.uncontested
+
+    Returns `True` is the race is uncontested.
+
+.. raw:: html
+
+   <hr>
+
+Reporting Units
+===============
+
+An area or unit that groups votes into a total. For instance, a state, a congressional district, a county.
+
+.. attribute:: obj.results
+
+    Returns a list of result objects sorted by total votes (highest first). If no votes are in, it returns the candidates in alphabetical order.
+
+    >>> obj.results
+    [<Result: Rick Santorum, Iowa (state), 29839>, <Result: Mitt Romney, Iowa (state), 29805>, <Result: Ron Paul, Iowa (state), 26036>, <Result: Newt Gingrich, Iowa (state), 16163>, <Result: Rick Perry, Iowa (state), 12557>, <Result: Michele Bachmann, Iowa (state), 6046>, <Result: Jon Huntsman, Iowa (state), 739>, <Result: No Preference, Iowa (state), 147>, <Result: Other, Iowa (state), 107>, <Result: Herman Cain, Iowa (state), 45>, <Result: Buddy Roemer, Iowa (state), 17>]
+
+.. attribute:: obj.is_state
+
+    Return `True` if the reporting unit is a state, rather than some other unit like a county.
+
+.. raw:: html
+
+   <hr>
 
 Changelog
 =========

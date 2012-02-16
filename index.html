@@ -254,7 +254,13 @@
 <hr></div>
 <div class="section" id="races">
 <h1>Races<a class="headerlink" href="#races" title="Permalink to this headline">¶</a></h1>
-<p>A contest being decided by voters choosing between candidates. This object is the key to everything about it. It is often found in the <cite>races</cite> attribute a result collection.</p>
+<p>A contest being decided by voters choosing between candidates. This object is the key to everything about it. It is often found in the <cite>races</cite> attribute of a result collection.</p>
+<dl class="attribute">
+<dt id="obj.ap_race_number">
+<tt class="descclassname">obj.</tt><tt class="descname">ap_race_number</tt><a class="headerlink" href="#obj.ap_race_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>The unique number given to this race by AP.</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="obj.candidates">
 <tt class="descclassname">obj.</tt><tt class="descname">candidates</tt><a class="headerlink" href="#obj.candidates" title="Permalink to this definition">¶</a></dt>
@@ -304,6 +310,36 @@
 </dd></dl>
 
 <dl class="attribute">
+<dt id="obj.num_winners">
+<tt class="descclassname">obj.</tt><tt class="descname">num_winners</tt><a class="headerlink" href="#obj.num_winners" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integer giving the maximum number of winners.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.office_name">
+<tt class="descclassname">obj.</tt><tt class="descname">office_name</tt><a class="headerlink" href="#obj.office_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Character string for office name (e.g., U.S. House, Governor, etc.).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.office_description">
+<tt class="descclassname">obj.</tt><tt class="descname">office_description</tt><a class="headerlink" href="#obj.office_description" title="Permalink to this definition">¶</a></dt>
+<dd><p>A description of the office.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.office_id">
+<tt class="descclassname">obj.</tt><tt class="descname">office_id</tt><a class="headerlink" href="#obj.office_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A unique number give to the office at stake by AP.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.party">
+<tt class="descclassname">obj.</tt><tt class="descname">party</tt><a class="headerlink" href="#obj.party" title="Permalink to this definition">¶</a></dt>
+<dd><p>Candidate&#8217;s party abbreviation.</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="obj.race_type_name">
 <tt class="descclassname">obj.</tt><tt class="descname">race_type_name</tt><a class="headerlink" href="#obj.race_type_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a descriptive name for the race_type.</p>
@@ -333,7 +369,51 @@
 </div>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="obj.seat_name">
+<tt class="descclassname">obj.</tt><tt class="descname">seat_name</tt><a class="headerlink" href="#obj.seat_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Character string giving the district or initiative name (e.g., District 46, 1A-Gay Marriage, etc.) This may be empty for a statewide race (e.g., a Governor race).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.seat_number">
+<tt class="descclassname">obj.</tt><tt class="descname">seat_number</tt><a class="headerlink" href="#obj.seat_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integer indicating district number or an initiative number. This may be zero (0) for a statewide race.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.state_postal">
+<tt class="descclassname">obj.</tt><tt class="descname">state_postal</tt><a class="headerlink" href="#obj.state_postal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Two character state postal string (e.g., IA, LA, etc.).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="self.uncontested">
+<tt class="descclassname">self.</tt><tt class="descname">uncontested</tt><a class="headerlink" href="#self.uncontested" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <cite>True</cite> is the race is uncontested.</p>
+</dd></dl>
+
+<hr></div>
+<div class="section" id="reporting-units">
+<h1>Reporting Units<a class="headerlink" href="#reporting-units" title="Permalink to this headline">¶</a></h1>
+<p>An area or unit that groups votes into a total. For instance, a state, a congressional district, a county.</p>
+<dl class="attribute">
+<dt id="obj.results">
+<tt class="descclassname">obj.</tt><tt class="descname">results</tt><a class="headerlink" href="#obj.results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of result objects sorted by total votes (highest first). If no votes are in, it returns the candidates in alphabetical order.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">results</span>
+<span class="go">[&lt;Result: Rick Santorum, Iowa (state), 29839&gt;, &lt;Result: Mitt Romney, Iowa (state), 29805&gt;, &lt;Result: Ron Paul, Iowa (state), 26036&gt;, &lt;Result: Newt Gingrich, Iowa (state), 16163&gt;, &lt;Result: Rick Perry, Iowa (state), 12557&gt;, &lt;Result: Michele Bachmann, Iowa (state), 6046&gt;, &lt;Result: Jon Huntsman, Iowa (state), 739&gt;, &lt;Result: No Preference, Iowa (state), 147&gt;, &lt;Result: Other, Iowa (state), 107&gt;, &lt;Result: Herman Cain, Iowa (state), 45&gt;, &lt;Result: Buddy Roemer, Iowa (state), 17&gt;]</span>
+</pre></div>
 </div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.is_state">
+<tt class="descclassname">obj.</tt><tt class="descname">is_state</tt><a class="headerlink" href="#obj.is_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return <cite>True</cite> if the reporting unit is a state, rather than some other unit like a county.</p>
+</dd></dl>
+
+<hr></div>
 <div class="section" id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="id1">
@@ -378,6 +458,7 @@
 <li><a class="reference internal" href="#the-ap-client">The AP Client</a></li>
 <li><a class="reference internal" href="#result-collections">Result Collections</a></li>
 <li><a class="reference internal" href="#races">Races</a></li>
+<li><a class="reference internal" href="#reporting-units">Reporting Units</a></li>
 <li><a class="reference internal" href="#changelog">Changelog</a><ul>
 <li><a class="reference internal" href="#id1">0.20</a></li>
 <li><a class="reference internal" href="#beta">beta</a></li>
