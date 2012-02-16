@@ -195,7 +195,7 @@ The AP client is public class you can use to connect to the AP's data feed.
 
    <hr>
 
-Result collections
+Result Collections
 ==================
 
 Depending on which client method you use to harvest data, results may be returned as `State` or `TopOfTicket` objects. Don't worry about the distinction, because they act pretty much the same. They share the following attributes for you to use.
