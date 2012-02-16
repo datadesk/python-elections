@@ -408,13 +408,22 @@ A choice for voters in a race. In the presidential race, a person, like Barack O
 
     The abbreviated name of the candidate.
 
+        >>> obj.abbrev_name
+        'Bchmnn'
+
 .. attribute:: obj.delegates
 
     The number of delegates the candidate has won in this state, according to AP's estimates.
 
+        >>> obj.delegates
+        0
+
 .. attribute:: obj.first_name
 
     The first name of the candidate.
+
+        >>> obj.first_name
+        'Michele'
 
 .. attribute:: obj.is_winner
 
@@ -428,21 +437,36 @@ A choice for voters in a race. In the presidential race, a person, like Barack O
 
     The last name of the candidate.
 
+        >>> obj.last_name
+        'Bachmann'
+
 .. attribute:: obj.middle_name
 
-    The middle name of the candidate.
+    The middle name of the candidate. Might not always exist.
+
+        >>> obj.middle_name
+        'J.'
 
 .. attribute:: obj.name
 
     The full name of candidate.
 
+        >>> obj.name
+        u'Michele Bachmann'
+
 .. attribute:: obj.party
 
     Candidate's party abbreviation.
 
+        >>> obj.party
+        'GOP'
+
 .. attribute:: obj.suffix
 
-    The suffix to the candidate's name.
+    The suffix to the candidate's name. Might not exist.
+
+        >>> obj.suffix
+        'Jr.'
 
 .. attribute:: obj.use_suffix
 
