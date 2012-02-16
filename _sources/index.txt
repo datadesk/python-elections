@@ -461,17 +461,29 @@ The vote count for a candidate in a race in a particular reporting unit.
 
     The candidate this result is for.
 
+        >>> obj.candidate
+        <Candidate: Rick Santorum>
+
 .. attribute:: obj.reporting_unit
 
     The reporting unit this result is for.
+
+        >>> obj.reporting_unit
+        <ReportingUnit: Iowa (state)>
 
 .. attribute:: obj.vote_total
 
     The number of votes the candidate has collected in this reporting unit.
 
+        >>> obj.vote_total
+        29839
+
 .. attribute:: obj.vote_total_percent
 
     The percentage of the tpta; votes the candidate has collected in this reporting unit.
+
+        >>> obj.vote_total_percent
+        24.558645607855077
 
 .. raw:: html
 
