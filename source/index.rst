@@ -251,7 +251,10 @@ A contest being decided by voters choosing between candidates. This object is th
 
 .. attribute:: obj.ap_race_number
 
-    The unique number given to this race by AP.
+    AP-assigned race number. Race numbers are guaranteed to be unique only within a state.
+
+        >>> obj.ap_race_number
+        '16957'
 
 .. attribute:: obj.candidates
 
@@ -290,17 +293,23 @@ A contest being decided by voters choosing between candidates. This object is th
 
     Integer giving the maximum number of winners.
 
+        >>> obj.num_winners
+        1
+
 .. attribute:: obj.office_name
 
-    Character string for office name (e.g., U.S. House, Governor, etc.).
+    Character string for office name (e.g., U.S. House, Governor, etc.)
+
+        >>> obj.office_name
+        'President'
 
 .. attribute:: obj.office_description
 
-    A description of the office.
+    Character string further describing the office type. May be empty.
 
 .. attribute:: obj.office_id
 
-    A unique number give to the office at stake by AP.
+    Single character Office Type ID. Only top-of-the-ticket races (President, Governor, US Senate, and US House) are guaranteed to be unique on a national level. All other office types are guaranteed to be unique only within a state. A full list of the office identifiers can be found in AP's documentation.
 
 .. attribute:: obj.race_type_name
 
@@ -348,41 +357,68 @@ Reporting Units
 
 An area or unit that groups votes into a total. For instance, a state, a congressional district, a county.
 
+.. attribute:: obj.abbrev
+
+    Short Name of reporting unit
+
+        >>> obj.abbrev
+        'Poweshiek'
+
 .. attribute:: obj.ap_number
 
-    The unique number for this reporting unit created by AP.
+    Unique ID within a state for reporting unit.
+
+        >>> obj.ap_number
+        '16079'
 
 .. attribute:: obj.name
 
-    The name of the reporting unit
+    The full name of the reporting unit
 
-.. attribute:: obj.abbrev
-
-    The abbreviation of the name.
+        >>> obj.name
+        'Poweshiek'
 
 .. attribute:: obj.fips
 
-    The FIPS code for this reporting unit.
+    The unique FIPS code for this reporting unit, assigned by the U.S. government.
+
+        >>> obj.fips
+        '19157'
 
 .. attribute:: obj.num_reg_voters
 
     The number of registered votes who live in this reporting unit.
 
+        >>> obj.num_reg_voters
+        3897
+
 .. attribute:: obj.votes_cast
 
     The number of votes cast in this reporting unit.
+
+        >>> obj.votes_cast
+        709
 
 .. attribute:: obj.precincts_total
 
     The number of voting precincts in this reporting unit.
 
+        >>> obj.precincts_total
+        10
+
 .. attribute:: obj.precincts_reporting
 
     The number of precincts that have already provided results.
 
+        >>> obj.precincts_reporting
+        10
+
 .. attribute:: obj.precincts_reporting_percent
 
     The percentage of precincts that have already provided results.
+
+        >>> obj.precincts_reporting_percent
+        100.0
 
 .. attribute:: obj.results
 

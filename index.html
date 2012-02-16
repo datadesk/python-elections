@@ -258,7 +258,11 @@
 <dl class="attribute">
 <dt id="obj.ap_race_number">
 <tt class="descclassname">obj.</tt><tt class="descname">ap_race_number</tt><a class="headerlink" href="#obj.ap_race_number" title="Permalink to this definition">¶</a></dt>
-<dd><p>The unique number given to this race by AP.</p>
+<dd><p>AP-assigned race number. Race numbers are guaranteed to be unique only within a state.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">ap_race_number</span>
+<span class="go">&#39;16957&#39;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="attribute">
@@ -313,24 +317,32 @@
 <dt id="obj.num_winners">
 <tt class="descclassname">obj.</tt><tt class="descname">num_winners</tt><a class="headerlink" href="#obj.num_winners" title="Permalink to this definition">¶</a></dt>
 <dd><p>Integer giving the maximum number of winners.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">num_winners</span>
+<span class="go">1</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="obj.office_name">
 <tt class="descclassname">obj.</tt><tt class="descname">office_name</tt><a class="headerlink" href="#obj.office_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Character string for office name (e.g., U.S. House, Governor, etc.).</p>
+<dd><p>Character string for office name (e.g., U.S. House, Governor, etc.)</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">office_name</span>
+<span class="go">&#39;President&#39;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="obj.office_description">
 <tt class="descclassname">obj.</tt><tt class="descname">office_description</tt><a class="headerlink" href="#obj.office_description" title="Permalink to this definition">¶</a></dt>
-<dd><p>A description of the office.</p>
+<dd><p>Character string further describing the office type. May be empty.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="obj.office_id">
 <tt class="descclassname">obj.</tt><tt class="descname">office_id</tt><a class="headerlink" href="#obj.office_id" title="Permalink to this definition">¶</a></dt>
-<dd><p>A unique number give to the office at stake by AP.</p>
+<dd><p>Single character Office Type ID. Only top-of-the-ticket races (President, Governor, US Senate, and US House) are guaranteed to be unique on a national level. All other office types are guaranteed to be unique only within a state. A full list of the office identifiers can be found in AP&#8217;s documentation.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -392,57 +404,93 @@
 <h1>Reporting Units<a class="headerlink" href="#reporting-units" title="Permalink to this headline">¶</a></h1>
 <p>An area or unit that groups votes into a total. For instance, a state, a congressional district, a county.</p>
 <dl class="attribute">
+<dt id="obj.abbrev">
+<tt class="descclassname">obj.</tt><tt class="descname">abbrev</tt><a class="headerlink" href="#obj.abbrev" title="Permalink to this definition">¶</a></dt>
+<dd><p>Short Name of reporting unit</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">abbrev</span>
+<span class="go">&#39;Poweshiek&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="obj.ap_number">
 <tt class="descclassname">obj.</tt><tt class="descname">ap_number</tt><a class="headerlink" href="#obj.ap_number" title="Permalink to this definition">¶</a></dt>
-<dd><p>The unique number for this reporting unit created by AP.</p>
+<dd><p>Unique ID within a state for reporting unit.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">ap_number</span>
+<span class="go">&#39;16079&#39;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="attribute">
 <dt>
 <tt class="descclassname">obj.</tt><tt class="descname">name</tt></dt>
-<dd><p>The name of the reporting unit</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="obj.abbrev">
-<tt class="descclassname">obj.</tt><tt class="descname">abbrev</tt><a class="headerlink" href="#obj.abbrev" title="Permalink to this definition">¶</a></dt>
-<dd><p>The abbreviation of the name.</p>
+<dd><p>The full name of the reporting unit</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">name</span>
+<span class="go">&#39;Poweshiek&#39;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="obj.fips">
 <tt class="descclassname">obj.</tt><tt class="descname">fips</tt><a class="headerlink" href="#obj.fips" title="Permalink to this definition">¶</a></dt>
-<dd><p>The FIPS code for this reporting unit.</p>
+<dd><p>The unique FIPS code for this reporting unit, assigned by the U.S. government.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">fips</span>
+<span class="go">&#39;19157&#39;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="obj.num_reg_voters">
 <tt class="descclassname">obj.</tt><tt class="descname">num_reg_voters</tt><a class="headerlink" href="#obj.num_reg_voters" title="Permalink to this definition">¶</a></dt>
 <dd><p>The number of registered votes who live in this reporting unit.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">num_reg_voters</span>
+<span class="go">3897</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="obj.votes_cast">
 <tt class="descclassname">obj.</tt><tt class="descname">votes_cast</tt><a class="headerlink" href="#obj.votes_cast" title="Permalink to this definition">¶</a></dt>
 <dd><p>The number of votes cast in this reporting unit.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">votes_cast</span>
+<span class="go">709</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="obj.precincts_total">
 <tt class="descclassname">obj.</tt><tt class="descname">precincts_total</tt><a class="headerlink" href="#obj.precincts_total" title="Permalink to this definition">¶</a></dt>
 <dd><p>The number of voting precincts in this reporting unit.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">precincts_total</span>
+<span class="go">10</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="obj.precincts_reporting">
 <tt class="descclassname">obj.</tt><tt class="descname">precincts_reporting</tt><a class="headerlink" href="#obj.precincts_reporting" title="Permalink to this definition">¶</a></dt>
 <dd><p>The number of precincts that have already provided results.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">precincts_reporting</span>
+<span class="go">10</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="obj.precincts_reporting_percent">
 <tt class="descclassname">obj.</tt><tt class="descname">precincts_reporting_percent</tt><a class="headerlink" href="#obj.precincts_reporting_percent" title="Permalink to this definition">¶</a></dt>
 <dd><p>The percentage of precincts that have already provided results.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">precincts_reporting_percent</span>
+<span class="go">100.0</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="attribute">
