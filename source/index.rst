@@ -57,8 +57,6 @@ Once it's installed you can immediately begin accessing data with your AP login 
 
 .. code-block:: python
 
-    >>> 
-    >>> 
     >>> # Request all the data available for a particular state by providing its postal code. This will return a state object.
     >>> iowa = client.get_state('IA')
     >>> iowa
