@@ -157,3 +157,12 @@ There you have it: a simple JSON dump in about 20 lines of code. From here, you 
 .. raw:: html
 
    <hr>
+
+
+Authors
+=======
+
+* Ken Schwencke
+* `Ben Welsh <http://palewire.com/who-is-ben-welsh/>`_
+* Corey Oordt
+
