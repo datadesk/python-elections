@@ -159,6 +159,22 @@ There you have it: a simple JSON dump in about 20 lines of code. From here, you 
 
    <hr>
 
+Changelog
+=========
+
+0.20
+----
+
+* Added `get_topofticket` methods thanks to contributions by Corey Oordt.
+
+beta
+----
+
+* Added all the basic features for the first release
+
+.. raw:: html
+
+   <hr>
 
 Authors
 =======
