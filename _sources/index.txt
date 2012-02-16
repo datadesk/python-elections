@@ -20,6 +20,19 @@ In order to use this library, you must pay AP for access to the data. More infor
 
    <hr>
 
+In The Wild
+===========
+
+* `Los Angeles Times <http://graphics.latimes.com/2012-election-gop-primary-overview/>`_ 
+* `Chicago Tribune <http://media.apps.chicagotribune.com/2012-elections/nh-primary.html>`_ 
+* `Washington Times <http://www.washingtontimes.com/campaign-2012/FL/live-map/>`_ 
+* `Palm Beach Post <http://www.palmbeachpost.com/news/see-results-from-every-florida-county-on-our-2140533.html>`_ 
+
+.. raw:: html
+
+   <hr>
+
+
 Getting Started
 ===============
 
