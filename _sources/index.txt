@@ -184,7 +184,7 @@ The AP client is public class you can use to connect to the AP's data feed.
 
 .. function:: client.get_topofticket(election_date)
 
-   Takes a date in any common format (YYYY-MM-DD is preferred) and returns all results for that date. May be required if you havn't purchased the detailed state level result files harvested by the methods above. ::
+   Top of the ticket is an AP data service that provides limited results on the top races for all 50 states (i.e. President, Governor, US Senate, and US House). It requires a date in any common format, YYYY-MM-DD is preferred, and returns all results for that date. ::
 
         >>> from elections import AP
         >>> client = AP(USERNAME, PASSWORD)
