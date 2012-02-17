@@ -192,7 +192,7 @@ The AP client is public class you can use to connect to the AP's data feed.
         <TopOfTicket: 20120207>
 
 .. raw:: html
-
+ 
    <hr>
 
 Result Collections
