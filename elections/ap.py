@@ -1023,6 +1023,22 @@ COUNTY_CROSSWALK = {
         '33015': 'Rockingham',
         '33017': 'Strafford',
         '33019': 'Sullivan',
+    },
+    'VT': {
+        '50001': 'Addison',
+        '50003': 'Bennington',
+        '50005': 'Caledonia',
+        '50007': 'Chittenden',
+        '50009': 'Essex',
+        '50011': 'Franklin',
+        '50013': 'Grand Isle',
+        '50015': 'Lamoille',
+        '50017': 'Orange',
+        '50019': 'Orleans',
+        '50021': 'Rutland',
+        '50023': 'Washington',
+        '50025': 'Windham',
+        '50027': 'Windsor',
     }
 }
 
