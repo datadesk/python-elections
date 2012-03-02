@@ -712,26 +712,53 @@ class DelegateSummary(object):
         return '<%s: %s>' % (self.__class__.__name__, self.__unicode__())
     
     def fetch(self):
+        # Pull the nationwide summary file
         summary = self.client._fetch(self.summary_file_path)
         summarysoup = BeautifulStoneSoup(summary)
+        # Pull the state-by-state summary file
+        states = self.client._fetch(self.state_file_path)
+        statesoup = BeautifulStoneSoup(states)
+        # Loop through the parties in the nationwide summary
         for party in summarysoup.find("delsum").findAll("del"):
+            # Create a nomination object for each
             nom = Nomination(
                 party = party['pid'],
                 delegates_needed = int(party['dneed']),
                 delegates_total = int(party['dvotes']),
                 delegates_chosen = int(party['dchosen']),
             )
+            # Loop through the nationwide totals for each candidate
             for cand in party.findAll("cand"):
+                # And create a candidate object with that nationwide total
                 cand_obj = Candidate(
                     ap_natl_number = cand['cid'],
                     last_name = cand['cname'],
                     delegates = int(cand['dtot'])
                 )
                 nom._candidates.append(cand_obj)
+            # Loop through the state data
+            for stateparty in statesoup.find("delstate").findAll("del"):
+                # If the party matches our current nationwide loop...
+                if stateparty['pid'] == party['pid']:
+                    # Then loop through all the states
+                    for state in stateparty.findAll("state"):
+                        state_obj = StateDelegation(
+                            name = state['sid'],
+                        )
+                        # Now loop through the candidates in this state
+                        for statecand in state.findAll("cand"):
+                            cand_obj = Candidate(
+                                ap_natl_number = statecand['cid'],
+                                last_name = statecand['cname'],
+                                delegates = int(statecand['dtot'])
+                            )
+                            state_obj._candidates.append(cand_obj)
+                        nom._states.append(state_obj)
+            # Add the nomination to our finished list now that it's got data
             self.nominations.append(nom)
 
 #
-# Result objects
+# Delegate result objects
 #
 
 class Nomination(object):
@@ -750,7 +777,7 @@ class Nomination(object):
             delegates_total
         )
         self._candidates = []
-        
+        self._states = []
     
     def __unicode__(self):
         return unicode(self.party)
@@ -764,7 +791,37 @@ class Nomination(object):
     @property
     def candidates(self):
         return sorted(self._candidates, key=lambda x: x.delegates, reverse=True)
+    
+    @property
+    def states(self):
+        return sorted(self._states, key=lambda x: x.name)
 
+
+class StateDelegation(object):
+    """
+    A state's delegation and who they choose to be a party's presidential nominee.
+    """
+    def __init__(self, name):
+        self.name = name
+        self._candidates = []
+    
+    def __unicode__(self):
+        return unicode(self.name)
+    
+    def __str__(self):
+        return self.__unicode__().encode("utf-8")
+    
+    def __repr__(self):
+        return '<%s: %s>' % (self.__class__.__name__, self.__unicode__())
+    
+    @property
+    def candidates(self):
+        return sorted(self._candidates, key=lambda x: x.delegates, reverse=True)
+
+
+#
+# Election result objects
+#
 
 class Race(object):
     """
