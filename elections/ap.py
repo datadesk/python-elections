@@ -218,7 +218,7 @@ class AP(object):
         return list(itertools.izip_longest(*args, fillvalue=fillvalue))
 
 
-class BaseAPResults(object):
+class BaseAPResultCollection(object):
     """
     Base class that defines the methods to retrieve AP CSV 
     data and shared properties and methods for State and 
@@ -639,7 +639,7 @@ class BaseAPResults(object):
                     votes_cast
                 )
 
-class State(BaseAPResults):
+class State(BaseAPResultCollection):
     """
     One of these United States.
     
@@ -657,7 +657,7 @@ class State(BaseAPResults):
         super(State, self).__init__(client, name, results, delegates)
 
 
-class TopOfTicket(BaseAPResults):
+class TopOfTicket(BaseAPResultCollection):
     """
     These United States.
     
