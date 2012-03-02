@@ -16,6 +16,7 @@ import calculate
 from ftplib import FTP
 from datetime import date
 from cStringIO import StringIO
+from BeautifulSoup import BeautifulStoneSoup
 from dateutil.parser import parse as dateparse
 
 
@@ -93,6 +94,12 @@ class AP(object):
         self.ftp.quit()
         return result
     
+    def get_delegate_summary(self):
+        """
+        Return a nationwide summary for delegate totals.
+        """
+        return DelegateSummary(self).nominations
+
     #
     # Private methods
     #
@@ -217,6 +224,10 @@ class AP(object):
         args = [iter(iterable)] * n
         return list(itertools.izip_longest(*args, fillvalue=fillvalue))
 
+
+#
+# Result collections
+#
 
 class BaseAPResultCollection(object):
     """
@@ -678,6 +689,83 @@ class TopOfTicket(BaseAPResultCollection):
         return [o for o in self._reporting_units.values() if o.is_state]
 
 
+class DelegateSummary(object):
+    """
+    A result collection that contains a summary of delegates won by candidates
+    seeking a party's presidential nomination.
+    """
+    summary_file_path = "Delegate_Tracking/Reports/delsum.xml"
+    state_file_path = "Delegate_Tracking/Reports/delstate.xml"
+    
+    def __init__(self, client):
+        self.client = client
+        self.nominations = []
+        self.fetch()
+    
+    def __unicode__(self):
+        return unicode(self.name)
+    
+    def __str__(self):
+        return self.__unicode__().encode("utf-8")
+     
+    def __repr__(self):
+        return '<%s: %s>' % (self.__class__.__name__, self.__unicode__())
+    
+    def fetch(self):
+        summary = self.client._fetch(self.summary_file_path)
+        summarysoup = BeautifulStoneSoup(summary)
+        for party in summarysoup.find("delsum").findAll("del"):
+            nom = Nomination(
+                party = party['pid'],
+                delegates_needed = int(party['dneed']),
+                delegates_total = int(party['dvotes']),
+                delegates_chosen = int(party['dchosen']),
+            )
+            for cand in party.findAll("cand"):
+                cand_obj = Candidate(
+                    ap_natl_number = cand['cid'],
+                    last_name = cand['cname'],
+                    delegates = int(cand['dtot'])
+                )
+                nom._candidates.append(cand_obj)
+            self.nominations.append(nom)
+
+#
+# Result objects
+#
+
+class Nomination(object):
+    """
+    A contest to be the presidential nominee of one of the two major parties.
+    
+    Results are determined by delegates, not by votes.
+    """
+    def __init__(self, party, delegates_needed, delegates_total, delegates_chosen):
+        self.party = party
+        self.delegates_needed = delegates_needed
+        self.delegates_total = delegates_total
+        self.delegates_chosen = delegates_chosen
+        self.delegates_chosen_percent = calculate.percentage(
+            delegates_chosen,
+            delegates_total
+        )
+        self._candidates = []
+        
+    
+    def __unicode__(self):
+        return unicode(self.party)
+    
+    def __str__(self):
+        return self.__unicode__().encode("utf-8")
+    
+    def __repr__(self):
+        return '<%s: %s>' % (self.__class__.__name__, self.__unicode__())
+    
+    @property
+    def candidates(self):
+        return sorted(self._candidates, key=lambda x: x.delegates, reverse=True)
+
+
 class Race(object):
     """
     A contest being decided by voters choosing between candidates.
@@ -959,7 +1047,7 @@ class Candidate(object):
     @property
     def name(self):
         if not self.last_name in ('Yes', 'No'):
-            s = u'%s %s' % (self.first_name, self.last_name)
+            s = " ".join([i for i in [self.first_name, self.last_name] if i])
             return s.strip()
         else:
             return u'%s' % self.last_name
