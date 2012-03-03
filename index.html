@@ -47,6 +47,7 @@
 <h1>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
 <li>Easy access to AP election results for races in U.S. states and counties.</li>
+<li>Easy access to AP’s delegate estimates in presidential nomination contests.</li>
 </ul>
 <hr></div>
 <div class="section" id="requirements">
@@ -194,7 +195,7 @@
 
 <dl class="function">
 <dt id="client.get_delegate_summary">
-<tt class="descclassname">client.</tt><tt class="descname">get_delegate_summary</tt><big>(</big><em>election_date</em><big>)</big><a class="headerlink" href="#client.get_delegate_summary" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">client.</tt><tt class="descname">get_delegate_summary</tt><big>(</big><big>)</big><a class="headerlink" href="#client.get_delegate_summary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a nationwide summary and state-level totals contain delegate counts for all the candidates in the presidential nomination contest held by the two major parties.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">elections</span> <span class="kn">import</span> <span class="n">AP</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">AP</span><span class="p">(</span><span class="n">USERNAME</span><span class="p">,</span> <span class="n">PASSWORD</span><span class="p">)</span>
@@ -734,8 +735,8 @@
 
 <hr></div>
 </div>
-<div class="section" id="id1">
-<h1>Election Result Collections<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="delegate-summary-collection">
+<h1>Delegate Summary Collection<a class="headerlink" href="#delegate-summary-collection" title="Permalink to this headline">¶</a></h1>
 <p>Calling delegate related methods, like <cite>get_delegate_summary</cite> will return a slightly different, and simpler, result collection. To start, you should receive a list containing two Nomination objects.</p>
 <hr><div class="section" id="nominations">
 <h2>Nominations<a class="headerlink" href="#nominations" title="Permalink to this headline">¶</a></h2>
@@ -795,8 +796,8 @@
 </dd></dl>
 
 <hr></div>
-<div class="section" id="statedelegation">
-<h2>StateDelegation<a class="headerlink" href="#statedelegation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="state-delegations">
+<h2>State Delegations<a class="headerlink" href="#state-delegations" title="Permalink to this headline">¶</a></h2>
 <p>A state&#8217;s delegation and who they choose to be a party&#8217;s presidential nominee.</p>
 <dl class="attribute">
 <dt>
@@ -822,14 +823,14 @@
 </div>
 <div class="section" id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="id2">
-<h2>0.30<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h2>0.30<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>Added delegate summary method thanks to contributions of David Eads.</li>
 </ul>
 </div>
-<div class="section" id="id3">
-<h2>0.20<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id2">
+<h2>0.20<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>Added <cite>get_topofticket</cite> methods thanks to contributions by Corey Oordt.</li>
 </ul>
@@ -876,14 +877,14 @@
 <li><a class="reference internal" href="#result">Result</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id1">Election Result Collections</a><ul>
+<li><a class="reference internal" href="#delegate-summary-collection">Delegate Summary Collection</a><ul>
 <li><a class="reference internal" href="#nominations">Nominations</a></li>
-<li><a class="reference internal" href="#statedelegation">StateDelegation</a></li>
+<li><a class="reference internal" href="#state-delegations">State Delegations</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#changelog">Changelog</a><ul>
-<li><a class="reference internal" href="#id2">0.30</a></li>
-<li><a class="reference internal" href="#id3">0.20</a></li>
+<li><a class="reference internal" href="#id1">0.30</a></li>
+<li><a class="reference internal" href="#id2">0.20</a></li>
 <li><a class="reference internal" href="#beta">beta</a></li>
 </ul>
 </li>

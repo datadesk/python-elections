@@ -6,6 +6,7 @@ Features
 ========
 
 * Easy access to AP election results for races in U.S. states and counties.
+* Easy access to AP’s delegate estimates in presidential nomination contests.
 
 .. raw:: html
 
@@ -191,7 +192,7 @@ The AP client is public class you can use to connect to the AP's data feed.
         >>> client.get_topofticket('2012-02-07')
         <TopOfTicket: 20120207>
 
-.. function:: client.get_delegate_summary(election_date)
+.. function:: client.get_delegate_summary()
 
    Return a nationwide summary and state-level totals contain delegate counts for all the candidates in the presidential nomination contest held by the two major parties.
 
@@ -605,7 +606,7 @@ The vote count for a candidate in a race in a particular reporting unit.
    <hr>
 
 
-Election Result Collections
+Delegate Summary Collection
 ===========================
 
 Calling delegate related methods, like `get_delegate_summary` will return a slightly different, and simpler, result collection. To start, you should receive a list containing two Nomination objects.
@@ -660,8 +661,8 @@ A contest to be the presidential nominee of one of the two major parties.
 
    <hr>
 
-StateDelegation
----------------
+State Delegations
+-----------------
 
 A state's delegation and who they choose to be a party's presidential nominee.
 
