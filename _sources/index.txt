@@ -170,7 +170,7 @@ The AP client is public class you can use to connect to the AP's data feed.
 
         >>> from elections import AP
         >>> client = AP(USERNAME, PASSWORD)
-        >>> client.documents.get_state('IA')
+        >>> client.get_state('IA')
         <State: IA>
 
 .. function:: client.get_states(*state_postal_codes)
@@ -179,7 +179,7 @@ The AP client is public class you can use to connect to the AP's data feed.
 
         >>> from elections import AP
         >>> client = AP(USERNAME, PASSWORD)
-        >>> client.documents.get_states('IA', 'NH')
+        >>> client.get_states('IA', 'NH')
         [<State: IA>, <State: NH>]
 
 .. function:: client.get_topofticket(election_date)
@@ -188,15 +188,24 @@ The AP client is public class you can use to connect to the AP's data feed.
 
         >>> from elections import AP
         >>> client = AP(USERNAME, PASSWORD)
-        >>> feb7 = client.documents.get_topofticket('2012-02-07')
+        >>> client.get_topofticket('2012-02-07')
         <TopOfTicket: 20120207>
+
+.. function:: client.get_delegate_summary(election_date)
+
+   Return a nationwide summary and state-level totals contain delegate counts for all the candidates in the presidential nomination contest held by the two major parties.
+
+        >>> from elections import AP
+        >>> client = AP(USERNAME, PASSWORD)
+        >>> client.documents.get_delegate_summary()
+        [<Nomination: Dem>, <Nomination: GOP>]
 
 .. raw:: html
  
    <hr>
 
-Result Collections
-==================
+Election Result Collections
+===========================
 
 Depending on which client method you use to harvest data, results may be returned as `State` or `TopOfTicket` objects. Don't worry about the distinction, because they act pretty much the same. They share the following attributes for you to use.
 
@@ -245,7 +254,7 @@ Depending on which client method you use to harvest data, results may be returne
    <hr>
 
 Races
-=====
+-----
 
 A contest being decided by voters choosing between candidates. This object is the key to everything about it. It is often found in the `races` attribute of a result collection.
 
@@ -371,7 +380,7 @@ A contest being decided by voters choosing between candidates. This object is th
    <hr>
 
 Reporting Units
-===============
+---------------
 
 An area or unit that groups votes into a total. For instance, a state, a congressional district, a county.
 
@@ -454,7 +463,7 @@ An area or unit that groups votes into a total. For instance, a state, a congres
    <hr>
 
 Candidates
-==========
+----------
 
 A choice for voters in a race. In the presidential race, a person, like Barack Obama. In a ballot measure, a direction, like Yes or No.
 
@@ -559,7 +568,7 @@ A choice for voters in a race. In the presidential race, a person, like Barack O
    <hr>
 
 Result
-======
+------
 
 The vote count for a candidate in a race in a particular reporting unit.
 
@@ -595,8 +604,92 @@ The vote count for a candidate in a race in a particular reporting unit.
 
    <hr>
 
+
+Election Result Collections
+===========================
+
+Calling delegate related methods, like `get_delegate_summary` will return a slightly different, and simpler, result collection. To start, you should receive a list containing two Nomination objects.
+
+.. raw:: html
+
+   <hr>
+
+Nominations
+-----------
+
+A contest to be the presidential nominee of one of the two major parties.
+
+.. attribute:: obj.candidates
+
+    The list of candidates participating in the race.
+
+        >>> obj.candidates
+        [<Candidate: Michele Bachmann>, <Candidate: Herman Cain>, <Candidate: Newt Gingrich>, <Candidate: Jon Huntsman>, <Candidate: No Preference>, <Candidate: Other>, <Candidate: Ron Paul>, <Candidate: Rick Perry>, <Candidate: Buddy Roemer>, <Candidate: Mitt Romney>, <Candidate: Rick Santorum>]
+
+.. attribute:: obj.delegates_needed
+
+    The number of delegates needed to capture the nomination.
+
+.. attribute:: obj.delegates_total
+
+    The total number of delegates available.
+
+.. attribute:: obj.delegates_chosen
+
+    The total number of delegates that have been awarded.
+
+.. attribute:: obj.delegates_chosen_percent
+
+    The percentage of the total delegates that have been awarded.
+
+.. attribute:: obj.party
+
+    Candidate's party abbreviation.
+
+        >>> obj.party
+        'GOP'
+
+.. attribute:: obj.states
+
+      Returns a list of all the state delegates we have counts for.
+
+        >>> obj.states
+        [<StateDelegation: AK>, <StateDelegation: AL>, <StateDelegation: AR>, <StateDelegation: AS>, <StateDelegation: AZ>, <StateDelegation: CA>, <StateDelegation: CO>, <StateDelegation: CT>, <StateDelegation: DC>, <StateDelegation: DE>, <StateDelegation: FL>, <StateDelegation: GA>, <StateDelegation: GU>, <StateDelegation: HI>, <StateDelegation: IA>, <StateDelegation: ID>, <StateDelegation: IL>, <StateDelegation: IN>, ...]
+
+.. raw:: html
+
+   <hr>
+
+StateDelegation
+---------------
+
+A state's delegation and who they choose to be a party's presidential nominee.
+
+.. attribute:: obj.candidates
+
+    The list of candidates participating in the race.
+
+        >>> obj.candidates
+        [<Candidate: Michele Bachmann>, <Candidate: Herman Cain>, <Candidate: Newt Gingrich>, <Candidate: Jon Huntsman>, <Candidate: No Preference>, <Candidate: Other>, <Candidate: Ron Paul>, <Candidate: Rick Perry>, <Candidate: Buddy Roemer>, <Candidate: Mitt Romney>, <Candidate: Rick Santorum>]
+
+.. attribute:: obj.name
+
+    The name of the state. The AP only provides the postal code.
+
+        >>> obj.name
+        'IA'
+
+.. raw:: html
+
+   <hr>
+
 Changelog
 =========
+
+0.30
+----
+
+* Added delegate summary method thanks to contributions of David Eads.
 
 0.20
 ----
@@ -618,4 +711,5 @@ Authors
 * Ken Schwencke
 * `Ben Welsh <http://palewire.com/who-is-ben-welsh/>`_
 * Corey Oordt
+* David Eads
 
