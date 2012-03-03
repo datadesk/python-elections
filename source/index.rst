@@ -606,8 +606,8 @@ The vote count for a candidate in a race in a particular reporting unit.
    <hr>
 
 
-Delegate Summary Collection
-===========================
+Delegate Summary Collections
+============================
 
 Calling delegate related methods, like `get_delegate_summary` will return a slightly different, and simpler, result collection. To start, you should receive a list containing two Nomination objects.
 
