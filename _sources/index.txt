@@ -28,6 +28,7 @@ In The Wild
 * `Chicago Tribune <http://media.apps.chicagotribune.com/2012-elections/nh-primary.html>`_ 
 * `Washington Times <http://www.washingtontimes.com/campaign-2012/FL/live-map/>`_ 
 * `Palm Beach Post <http://www.palmbeachpost.com/news/see-results-from-every-florida-county-on-our-2140533.html>`_ 
+* `Tampa Bay Times <http://www.tampabay.com/specials/2012/reports/2012FloridaElectionResults/presidential_primary.shtml>`_ 
 
 .. raw:: html
 
@@ -606,8 +607,8 @@ The vote count for a candidate in a race in a particular reporting unit.
    <hr>
 
 
-Delegate Summary Collection
-===========================
+Delegate Summary Collections
+============================
 
 Calling delegate related methods, like `get_delegate_summary` will return a slightly different, and simpler, result collection. To start, you should receive a list containing two Nomination objects.
 

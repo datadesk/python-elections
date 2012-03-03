@@ -28,6 +28,7 @@ In The Wild
 * `Chicago Tribune <http://media.apps.chicagotribune.com/2012-elections/nh-primary.html>`_ 
 * `Washington Times <http://www.washingtontimes.com/campaign-2012/FL/live-map/>`_ 
 * `Palm Beach Post <http://www.palmbeachpost.com/news/see-results-from-every-florida-county-on-our-2140533.html>`_ 
+* `Tampa Bay Times <http://www.tampabay.com/specials/2012/reports/2012FloridaElectionResults/presidential_primary.shtml>`_ 
 
 .. raw:: html
 
