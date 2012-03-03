@@ -10,6 +10,7 @@ import os
 import unittest
 from elections import AP
 from datetime import date, datetime
+from elections.ap import Nomination, StateDelegation
 from elections.ap import Candidate, Race, ReportingUnit, Result, State
 from elections.ap import FileDoesNotExistError, BadCredentialsError
 from private_settings import AP_USERNAME, AP_PASSWORD
@@ -187,6 +188,14 @@ class APTest(BaseTest):
             [i.vote_total for i in self.race_tt.state.results],
             [i.vote_total for i in self.race_st.state.results]
         )
+    
+    def test_delegate_summary(self):
+        self.delsum = self.client.get_delegate_summary()
+        self.assertEqual(len(self.delsum), 2)
+        [self.assertEqual(type(i), Nomination) for i in self.delsum]
+        [self.assertEqual(type(i), Candidate) for i in self.delsum[0].candidates]
+        [self.assertEqual(type(i), StateDelegation) for i in self.delsum[0].states]
+        [self.assertEqual(type(i), Candidate) for i in self.delsum[0].states[0].candidates]
 
 
 if __name__ == '__main__':
