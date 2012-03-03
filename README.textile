@@ -30,6 +30,7 @@ A Python wrapper for the Associated Press's U.S. election data service.
 h2. Features
 
 * Easy access to AP election results for races in U.S. states and counties.
+* Easy access to AP's delegate estimates in presidential nomination contests
 
 h2. Requirements
 
