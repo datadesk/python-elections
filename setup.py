@@ -83,6 +83,7 @@ setup(name='python-elections',
       install_requires=[
         'latimes-calculate==0.1.8',
         'python-dateutil==1.5',
+        'BeautifulSoup==3.2.1',
         ],
      )
 
