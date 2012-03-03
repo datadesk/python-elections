@@ -96,7 +96,8 @@ class AP(object):
     
     def get_delegate_summary(self):
         """
-        Return a nationwide summary and state-level totals contain delegate counts for all the candidates in the presidential 
+        Return a nationwide summary and state-level totals contain 
+        delegate counts for all the candidates in the presidential 
         nomination contest held by the two major parties.
         """
         return DelegateSummary(self).nominations
