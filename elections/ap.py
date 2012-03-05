@@ -1159,6 +1159,22 @@ class BadCredentialsError(Exception):
 #
 
 COUNTY_CROSSWALK = {
+    'MA': {
+        '25001': 'Barnstable',
+        '25003': 'Berkshire',
+        '25005': 'Bristol',
+        '25007': 'Dukes',
+        '25009': 'Essex',
+        '25011': 'Franklin',
+        '25013': 'Hampden',
+        '25015': 'Hampshire',
+        '25017': 'Middlesex',
+        '25019': 'Nantucket',
+        '25021': 'Norfolk',
+        '25023': 'Plymouth',
+        '25025': 'Suffolk',
+        '25027': 'Worcester',
+    },
     'NH': {
         '33001': 'Belknap',
         '33003': 'Carroll',
