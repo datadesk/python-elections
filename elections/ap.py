@@ -335,7 +335,7 @@ class BaseAPResultCollection(object):
         respective counties. 
         """
         # Filter out the state level data
-        ru_list = [o for o in self.reporting_units if o.fips and not o.is_state]
+        ru_list = [o for o in self.reporting_units if o.fips and not o.is_state and o.fips != '00000']
         # If the AP reports sub-County data for this state, as they do for some
         # New England states, we'll need to aggregate it here. If not, we can
         # just pass out the data "as is."
@@ -934,7 +934,7 @@ class Race(object):
         of ReportingUnit objects.
         """
         ru_list = sorted(
-            [o for o in self.reporting_units if o.fips and not o.is_state],
+            [o for o in self.reporting_units if o.fips and not o.is_state and o.fips != '00000'],
             key=lambda x: x.name
         )
         # If the AP reports sub-County data for this state, as they do for some
@@ -1064,7 +1064,7 @@ class ReportingUnit(object):
     
     @property
     def is_state(self):
-        return self.fips == '00000'
+        return self.ap_number == '1'
 
 
 class Candidate(object):
