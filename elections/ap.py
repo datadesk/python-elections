@@ -586,14 +586,6 @@ class BaseAPResultCollection(object):
             is_state = row['county_number'] == '1'
             county_number = str(row['county_number'])
             
-            # AP stupidly strips leading 0s in the FIPS for the 
-            # results file. This fixes em.
-#            if is_state:
-#                fips = '00000'
-#            else:
-#                if self.leading_zero_fips and fips[0] != '0':
-#                    fips = '0' + fips
-            
             # Pull the reporting unit
             reporting_unit = race.get_reporting_unit("%s%s" % (row['county_name'], county_number))
             # Loop through all the candidates
