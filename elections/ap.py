@@ -647,6 +647,7 @@ class BaseAPResultCollection(object):
                     votes_cast
                 )
 
+
 class State(BaseAPResultCollection):
     """
     One of these United States.
