@@ -335,7 +335,7 @@ class BaseAPResultCollection(object):
         respective counties. 
         """
         # Filter out the state level data
-        ru_list = [o for o in self.reporting_units if o.fips and not o.is_state]
+        ru_list = [o for o in self.reporting_units if o.fips and not o.is_state and o.fips != '00000']
         # If the AP reports sub-County data for this state, as they do for some
         # New England states, we'll need to aggregate it here. If not, we can
         # just pass out the data "as is."
@@ -935,7 +935,7 @@ class Race(object):
         of ReportingUnit objects.
         """
         ru_list = sorted(
-            [o for o in self.reporting_units if o.fips and not o.is_state],
+            [o for o in self.reporting_units if o.fips and not o.is_state and o.fips != '00000'],
             key=lambda x: x.name
         )
         # If the AP reports sub-County data for this state, as they do for some
@@ -1065,7 +1065,7 @@ class ReportingUnit(object):
     
     @property
     def is_state(self):
-        return self.fips == '00000'
+        return self.ap_number == '1'
 
 
 class Candidate(object):
@@ -1160,6 +1160,22 @@ class BadCredentialsError(Exception):
 #
 
 COUNTY_CROSSWALK = {
+    'MA': {
+        '25001': 'Barnstable',
+        '25003': 'Berkshire',
+        '25005': 'Bristol',
+        '25007': 'Dukes',
+        '25009': 'Essex',
+        '25011': 'Franklin',
+        '25013': 'Hampden',
+        '25015': 'Hampshire',
+        '25017': 'Middlesex',
+        '25019': 'Nantucket',
+        '25021': 'Norfolk',
+        '25023': 'Plymouth',
+        '25025': 'Suffolk',
+        '25027': 'Worcester',
+    },
     'NH': {
         '33001': 'Belknap',
         '33003': 'Carroll',

@@ -43,6 +43,13 @@ class APTest(BaseTest):
         self.assertEqual(len(county_list) == 10, True)
         [self.assertEqual(type(i), ReportingUnit) for i in county_list]
         [self.assertEqual(i.is_state, False) for i in county_list]
+
+    def test_state_reporting_unit(self):
+        """
+        Makes sure Wyoming only has one 'state'-identified RU.
+        """
+        self.wy = self.client.get_state("WY")
+        self.assertEqual(type(self.wy.races[0].state), ReportingUnit)
     
     def test_getstate(self):
         # Pull state
