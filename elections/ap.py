@@ -635,6 +635,7 @@ class BaseAPResultCollection(object):
                 reporting_unit.update_result(result)
                 
             # Update the reporting unit's precincts status
+            reporting_unit.precincts_total = int(row['total_precincts'])
             reporting_unit.precincts_reporting = int(row['precincts_reporting'])
             reporting_unit.precincts_reporting_percent = calculate.percentage(
                 reporting_unit.precincts_reporting,
