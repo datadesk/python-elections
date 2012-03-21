@@ -587,7 +587,9 @@ class BaseAPResultCollection(object):
             county_number = str(row['county_number'])
             
             # Pull the reporting unit
-            reporting_unit = race.get_reporting_unit("%s%s" % (row['county_name'], county_number))
+            reporting_unit = race.get_reporting_unit(
+                "%s%s" % (row['county_name'], county_number)
+            )
             # Loop through all the candidates
             votes_cast = 0
             for cand in row['candidates']:
