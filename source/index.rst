@@ -507,7 +507,7 @@ A choice for voters in a race. In the presidential race, a person, like Barack O
 
 .. attribute:: obj.delegates
 
-    The number of delegates the candidate has won in this state, according to AP's estimates.
+    The number of delegates the candidate has won in this state, according to AP's estimates. Warning: AP has told The Times that the stops updating these totals after it has "closed" a state's election file. That means that if you want to track changes to these totals between the vote and the eventual nomination, you should use the nationwide delegate methods detailed below.
 
         >>> obj.delegates
         0
