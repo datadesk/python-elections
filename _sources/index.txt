@@ -30,6 +30,7 @@ In The Wild
 * `Washington Times <http://www.washingtontimes.com/campaign-2012/FL/live-map/>`_ 
 * `Palm Beach Post <http://www.palmbeachpost.com/news/see-results-from-every-florida-county-on-our-2140533.html>`_ 
 * `Tampa Bay Times <http://www.tampabay.com/specials/2012/reports/2012FloridaElectionResults/presidential_primary.shtml>`_ 
+* `Spokane Spokesman-Review <http://www.spokesman.com/elections/2012/idaho-primary-2012/>`_
 
 .. raw:: html
 
@@ -507,7 +508,7 @@ A choice for voters in a race. In the presidential race, a person, like Barack O
 
 .. attribute:: obj.delegates
 
-    The number of delegates the candidate has won in this state, according to AP's estimates. Warning: AP has told The Times that the stops updating these totals after it has "closed" a state's election file. That means that if you want to track changes to these totals between the vote and the eventual nomination, you should use the nationwide delegate methods detailed below.
+    The number of delegates the candidate has won in this state, according to AP's estimates. Warning: AP has told The Times that it stops updating these totals after they decide a race has "closed" following the election. That means that if you want to track changes to these totals between the vote and the eventual nomination, you should use the nationwide delegate methods detailed below.
 
         >>> obj.delegates
         0
