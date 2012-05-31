@@ -618,6 +618,9 @@ class BaseAPResultCollection(object):
                 candidate.is_winner = cand['is_winner'] == 'X'
                 candidate.is_runoff = cand['is_winner'] == 'R'
                 
+                # Set whether the candidate is an incumbent
+                candidate.is_incumbent = cand['incumbent'] == '1'
+                
                 # Create the Result object, which is specific to the
                 # reporting unit in this row of the flatfile.
                 result = Result(
@@ -1077,7 +1080,7 @@ class Candidate(object):
                  abbrev_name=None, suffix=None, use_suffix=False, 
                  ap_natl_number=None, ap_polra_number=None, ap_race_number=None,
                  party=None, ap_pol_number=None, is_winner=None,
-                 is_runoff=None, delegates=None):
+                 is_runoff=None, delegates=None, is_incumbent=None):
         self.first_name = first_name
         self.middle_name = middle_name
         self.last_name = last_name
@@ -1092,6 +1095,7 @@ class Candidate(object):
         self.is_winner = is_winner
         self.is_runoff = is_runoff
         self.delegates = delegates
+        self.is_incumbent = is_incumbent
     
     def __unicode__(self):
         return unicode(self.name)

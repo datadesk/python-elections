@@ -26,7 +26,7 @@ class APTest(BaseTest):
     
     def test_badlogin(self):
         client = AP("foo", "bar")
-        self.assertRaises(BadCredentialsError, client.get_state, "IA")
+        self.assertRaises(BadCredentialsError, client.get_state, "CA")
     
     def test_badstate(self):
         self.assertRaises(FileDoesNotExistError, self.client.get_state, "XYZ")
@@ -156,6 +156,7 @@ class APTest(BaseTest):
             self.assertTrue(isinstance(cand.party, basestring))
             self.assertTrue(isinstance(cand.is_winner, bool))
             self.assertTrue(isinstance(cand.is_runoff, bool))
+            self.assertTrue(isinstance(cand.is_incumbent, bool))
             self.assertTrue(isinstance(cand.delegates, int))
             self.assertTrue(isinstance(cand.name, basestring))
         
