@@ -660,7 +660,7 @@ class State(BaseAPResultCollection):
     by the AP.
     """
 
-    def __init__(self, client, name, results=True, delegates=True):
+    def __init__(self, client, name, results=True, delegates=False):
         self.results_file_path = "/%(name)s/flat/%(name)s.txt" % {'name': name}
         self.delegates_file_path = "/%(name)s/flat/%(name)s_D.txt" % {'name': name}
         self.race_file_path = "/inits/%(name)s/%(name)s_race.txt" % {'name': name}
