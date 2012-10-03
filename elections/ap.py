@@ -15,6 +15,7 @@ import itertools
 import calculate
 from ftplib import FTP
 from datetime import date
+from pprint import pprint
 from cStringIO import StringIO
 from BeautifulSoup import BeautifulStoneSoup
 from dateutil.parser import parse as dateparse
@@ -81,16 +82,22 @@ class AP(object):
         self.ftp.quit()
         return results
     
-    def get_topofticket(self, election_date, **kwargs):
+    def get_topofticket(self, election_date=None, **kwargs):
         """
         Takes a date in any common format (YYYY-MM-DD is preferred) 
         and returns the results for that date.
+        
+        If you do not provide a date, it defaults to the next major election.
+        Today that is the Nov. 6, 2012 general election.
         """
-        try:
-            dt = dateparse(election_date)
-        except ValueError:
-            raise ValueError("The election date you've submitted could not be parsed. Try submitting it in YYYY-MM-DD format.")
-        result = TopOfTicket(self, dt.strftime("%Y%m%d"), **kwargs)
+        if election_date:
+            try:
+                dt = dateparse(election_date)
+            except ValueError:
+                raise ValueError("The election date you've submitted could not be parsed. Try submitting it in YYYY-MM-DD format.")
+            result = TopOfTicket(self, dt.strftime("%Y%m%d"), **kwargs)
+        else:
+            result = TopOfTicket(self, **kwargs)
         self.ftp.quit()
         return result
     
@@ -393,7 +400,10 @@ class BaseAPResultCollection(object):
                 first_name = cand['pol_first_name'],
                 middle_name = cand['pol_middle_name'],
                 last_name = cand['pol_last_name'],
-                ap_race_number = cand['ra_number'],
+                ap_race_number = self.ap_number_template % ({
+                    'number': cand['ra_number'], 
+                    'state': cand.get('st_postal', 'None')
+                }),
                 ap_natl_number = cand['pol_nat_id'],
                 ap_polra_number = cand['polra_number'],
                 ap_pol_number = cand['pol_number'],
@@ -413,8 +423,11 @@ class BaseAPResultCollection(object):
         # Loop through it all
         for race in race_list:
             # Create a Race object...
-            race = Race(
-                ap_race_number = race['ra_number'],
+            race = Race( # self.name
+                ap_race_number = self.ap_number_template % ({
+                    'number': race['ra_number'], 
+                    'state': race.get('st_postal', 'None')
+                }),
                 office_name = race['ot_name'],
                 office_description = race['of_description'],
                 office_id = race['office_id'],
@@ -578,14 +591,18 @@ class BaseAPResultCollection(object):
         # Start looping through the lines...
         for row in flat_list:
             
-            # Get the race
-            race = self.get_race(row['race_number'])
+            # Get the race, with a special case for the presidential race
+            ap_race_number = self.ap_number_template % ({
+                'number': row['race_number'], 
+                'state': row['state_postal']
+            })
+            race = self.get_race(ap_race_number)
             
             # Figure out if it's a state or a county
             fips =row['fips']
             is_state = row['county_number'] == '1'
             county_number = str(row['county_number'])
-            
+
             # Pull the reporting unit
             reporting_unit = race.get_reporting_unit(
                 "%s%s" % (row['county_name'], county_number)
@@ -659,7 +676,8 @@ class State(BaseAPResultCollection):
     call. Contains, among its attributes, the results for all races recorded
     by the AP.
     """
-
+    ap_number_template = '%(number)s'
+    
     def __init__(self, client, name, results=True, delegates=False):
         self.results_file_path = "/%(name)s/flat/%(name)s.txt" % {'name': name}
         self.delegates_file_path = "/%(name)s/flat/%(name)s_D.txt" % {'name': name}
@@ -677,12 +695,22 @@ class TopOfTicket(BaseAPResultCollection):
     call. Contains, among its attributes, the results for all races recorded
     by the AP.
     """
-    def __init__(self, client, name, results=True, delegates=True):
-        self.results_file_path = "/Delegate_Tracking/US/flat/US_%(name)s.txt" % {'name': name}
-        self.delegates_file_path = "/Delegate_Tracking/US/flat/US_%(name)s_d.txt" % {'name': name}
-        self.race_file_path = "/inits/US/US_%(name)s_race.txt" % {'name': name}
-        self.reporting_unit_file_path = "/inits/US/US_%(name)s_ru.txt" % {'name': name}
-        self.candidate_file_path = "/inits/US/US_%(name)s_pol.txt" % {'name': name}
+    ap_number_template = '%(number)s-%(state)s'
+
+    def __init__(self, client, name='20121106', results=True, delegates=False):
+        # This means you're in a primary election with delegates at stake
+        if name and name != '20121106':
+            self.results_file_path = "/Delegate_Tracking/US/flat/US_%(name)s.txt" % {'name': name}
+            self.delegates_file_path = "/Delegate_Tracking/US/flat/US_%(name)s_d.txt" % {'name': name}
+            self.race_file_path = "/inits/US/US_%(name)s_race.txt" % {'name': name}
+            self.reporting_unit_file_path = "/inits/US/US_%(name)s_ru.txt" % {'name': name}
+            self.candidate_file_path = "/inits/US/US_%(name)s_pol.txt" % {'name': name}
+        # Otherwise we're on to general election 2012 as the default
+        else:
+            self.results_file_path = "/US_topofticket/flat/US.txt"
+            self.race_file_path = "/inits/US/US_%(name)s_race.txt" % {'name': name}
+            self.reporting_unit_file_path = "/inits/US/US_%(name)s_ru.txt" % {'name': name}
+            self.candidate_file_path = "/inits/US/US_%(name)s_pol.txt" % {'name': name}
         super(TopOfTicket, self).__init__(client, name, results, delegates)
     
     @property
@@ -873,6 +901,21 @@ class Race(object):
     
     def __repr__(self):
         return '<%s: %s>' % (self.__class__.__name__, self.__unicode__())
+    
+    @property
+    def is_referendum(self):
+        """
+        Returns true if this is a race where the people vote to decide about
+        a law, amendment, whatever.
+        """
+        return self.office_name in [
+            'Amendment',
+            'Measure',
+            'Proposition',
+            'Question',
+            'Referendum',
+            'Issue'
+        ]
     
     @property
     def name(self):
