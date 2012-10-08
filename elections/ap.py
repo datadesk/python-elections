@@ -108,6 +108,19 @@ class AP(object):
         nomination contest held by the two major parties.
         """
         return DelegateSummary(self).nominations
+    
+    def get_presidential_summary(self):
+        """
+        Returns a summary of presidential election results at three levels:
+        
+            1. Nationwide popular vote and electoral vote
+            2. State-level popular vote and electoral vote
+            3. County-level popular vote
+        
+        """
+        result = PresidentialSummary(self)
+        self.ftp.quit()
+        return result
 
     #
     # Private methods
@@ -412,7 +425,10 @@ class BaseAPResultCollection(object):
                 party = cand['polra_party'],
                 # use_suffix?
             )
-            self._races[candidate.ap_race_number].add_candidate(candidate)
+            try:
+                self._races[candidate.ap_race_number].add_candidate(candidate)
+            except KeyError:
+                pass
     
     def _init_races(self):
         """
@@ -716,6 +732,139 @@ class TopOfTicket(BaseAPResultCollection):
     @property
     def states(self):
         return [o for o in self._reporting_units.values() if o.is_state]
+
+
+class PresidentialSummary(BaseAPResultCollection):
+    """
+    A summary of presidential election results, both popular and electoral vote,
+    at three levels:
+        
+        1. Nationwide
+        2. State-level
+        3  County-level
+    
+    Returned by the public get_presidential_summary method.
+    """
+    ap_number_template = '%(number)s-%(state)s'
+    
+    def __init__(self, client):
+        self.results_file_path = "/Pres_Reports/flat/pres_county.txt"
+        self.race_file_path = "/inits/US/US_20121106_race.txt"
+        self.reporting_unit_file_path = "/inits/US/US_20121106_ru.txt"
+        self.candidate_file_path = "/inits/US/US_20121106_pol.txt"
+        self.summary_file_path = "/Pres_Reports/flat/pres_electoral.txt"
+        super(PresidentialSummary, self).__init__(client, None, results=True, delegates=False)
+    
+    def _init_races(self):
+        """
+        Override the standard race init since there's only one race we want here.
+        """
+        # Do it normal...
+        super(PresidentialSummary, self)._init_races()
+        # Then get rid of everything that isn't the presidential race
+        self._races = dict((k,v) for k,v in self._races.items()
+            if v.office_name == 'President')
+    
+    def fetch_results(self):
+        """
+        This will fetch and fill out all of the results. If called again,
+        it will simply run through and update all of the results with 
+        the most fresh data from the AP.
+        """
+        # Run the normal results fetch
+        super(PresidentialSummary, self).fetch_results()
+        # Fetch the nationwide results and electoral votes from separate file
+        summary_list = self.client._fetch_csv(
+            self.summary_file_path,
+            delimiter=";",
+            fieldnames=[
+                'test',
+                'election_date',
+                'state_postal',
+                'candidate_number',
+                'national_politician_id',
+                'electoral_votes',
+                'vote_count',
+                'is_winner',
+                'precincts_reporting',
+                'total_precincts',
+                'last_name',
+                'total_electoral_votes',
+            ]
+        )
+        # Loop through each record
+        for row in summary_list:
+            # If it's a state row...
+            if row['state_postal'] != 'US':
+                # ... tack the electoral votes on the reporting unit ...
+                this_ru = self.filter_races(state_postal=row['state_postal'])[0].state
+                this_ru.electoral_votes_total = int(row['total_electoral_votes'])
+                # ...dig out the results object with this candidate...
+                this_result = [i for i in this_ru.results
+                    if i.candidate.ap_natl_number == row['national_politician_id']][0]
+                # ...set the electoral vote attribute...
+                this_result.electoral_votes_total = int(row['electoral_votes'])
+                this_ru.update_result(this_result)
+                # ...set the ru back into our set.
+                self._reporting_units.update({this_ru.key: this_ru})
+            # If it's a nationwide row start filling in the US reporting unit
+            else:
+                # Grab the race object
+                this_race = self.filter_races(scope='N')[0]
+                # Fabricate a reporting unit if one doesn't already exist...
+                if this_race.reporting_units:
+                    this_ru = this_race.reporting_units[0]
+                else:
+                    this_ru = ReportingUnit(
+                        name = 'US',
+                        ap_number = '0',
+                        fips = '00',
+                        abbrev = 'US',
+                        precincts_total = int(row['total_precincts']),
+                        precincts_reporting = int(row['precincts_reporting']),
+                        precincts_reporting_percent = calculate.percentage(
+                            int(row['precincts_reporting']),
+                            int(row['total_precincts']),
+                        ),
+                        electoral_votes_total = 538
+                    )
+                # Grab the candidate object for this row
+                this_cand = [i for i in this_race.candidates
+                    if i.ap_natl_number == row['national_politician_id']][0]
+                # Create a new results object and connect it to the ru and cand
+                this_result = Result(
+                    candidate = this_cand,
+                    vote_total = int(row['vote_count']),
+                    reporting_unit = this_ru,
+                    electoral_votes_total = int(row['electoral_votes'])
+                )
+                this_ru.update_result(this_result)
+                this_race._reporting_units.update({this_ru.key: this_ru})
+                self._reporting_units.update({this_ru.key: this_ru})
+    
+    @property
+    def nationwide(self):
+        """
+        Return only the nationwide reporting unit
+        """
+        return [i.reporting_units[0] for i in self.races if i.scope == 'N'][0]
+
+    @property
+    def states(self):
+        """
+        Return only the state-level reporting units
+        """
+        return [i.state for i in self.races if i.scope == 'S']
+    
+    @property
+    def counties(self):
+        """
+        Return only the county-level reporting units
+        """
+        return list(itertools.chain([
+            i.counties for i in self.races if i.scope == 'S'
+        ]))
+
 
 
 class DelegateSummary(object):
@@ -1063,7 +1212,8 @@ class ReportingUnit(object):
     """
     def __init__(self, ap_number=None, name=None, abbrev=None, fips=None,
                  precincts_total=None, num_reg_voters=None, votes_cast=None,
-                 precincts_reporting=None, precincts_reporting_percent=None):
+                 precincts_reporting=None, precincts_reporting_percent=None,
+                electoral_votes_total=None):
         self.ap_number = ap_number
         self.name = name
         self.abbrev = abbrev
@@ -1073,6 +1223,7 @@ class ReportingUnit(object):
         self.precincts_total = precincts_total
         self.precincts_reporting = precincts_reporting
         self.precincts_reporting_percent = precincts_reporting_percent
+        self.electoral_votes_total = None
         self._results = {}
     
     def __unicode__(self):
@@ -1163,11 +1314,12 @@ class Result(object):
     The vote count for a candidate in a race in a particular reporting unit.
     """
     def __init__(self, candidate=None, reporting_unit=None, vote_total=None,
-                 vote_total_percent=None):
+                 vote_total_percent=None, electoral_votes_total=None):
         self.candidate = candidate
         self.reporting_unit = reporting_unit
         self.vote_total = vote_total
         self.vote_total_percent = vote_total_percent
+        self.electoral_votes_total = electoral_votes_total
     
     def __unicode__(self):
         return u'%s, %s, %s' % (self.candidate, self.reporting_unit,
