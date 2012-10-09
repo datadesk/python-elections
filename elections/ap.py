@@ -612,7 +612,10 @@ class BaseAPResultCollection(object):
                 'number': row['race_number'], 
                 'state': row['state_postal']
             })
-            race = self.get_race(ap_race_number)
+            try:
+                race = self.get_race(ap_race_number)
+            except KeyError:
+                continue
             
             # Figure out if it's a state or a county
             fips =row['fips']
@@ -633,6 +636,8 @@ class BaseAPResultCollection(object):
                 
                 # Pull the existing candidate object
                 candidate = race.get_candidate(cand["candidate_number"])
+                if not candidate:
+                    continue
                 
                 # Pull the vote total
                 vote_count = int(cand['vote_count'])
@@ -1239,9 +1244,13 @@ class ReportingUnit(object):
     
     def __repr__(self):
         return '<%s: %s>' % (self.__class__.__name__, self.__unicode__())
-
+    
     @property
     def key(self):
+        """
+        A combined ID from two AP attributes that we *think* will be unique
+        across states.
+        """
         return "%(name)s%(ap_number)s" % self.__dict__
     
     @property
