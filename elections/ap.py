@@ -831,6 +831,10 @@ class PresidentialSummary(BaseAPResultCollection):
                 # Grab the candidate object for this row
                 this_cand = [i for i in this_race.candidates
                     if i.ap_natl_number == row['national_politician_id']][0]
+                # Set some extra attributes
+                this_cand.is_winner = row['is_winner'] == 'X'
+                this_cand.is_runoff = row['is_winner'] == 'R'
+                this_cand.is_incumbent = row['last_name'] == 'Obama'
                 # Create a new results object and connect it to the ru and cand
                 this_result = Result(
                     candidate = this_cand,
