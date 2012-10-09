@@ -845,6 +845,10 @@ class PresidentialSummary(BaseAPResultCollection):
                 # Grab the candidate object for this row
                 this_cand = [i for i in this_race.candidates
                     if i.ap_natl_number == row['national_politician_id']][0]
+                # Set some extra attributes
+                this_cand.is_winner = row['is_winner'] == 'X'
+                this_cand.is_runoff = row['is_winner'] == 'R'
+                this_cand.is_incumbent = row['last_name'] == 'Obama'
                 # Create a new results object and connect it to the ru and cand
                 this_result = Result(
                     candidate = this_cand,
@@ -875,10 +879,8 @@ class PresidentialSummary(BaseAPResultCollection):
         """
         Return only the county-level reporting units
         """
-        return list(itertools.chain([
-            i.counties for i in self.races if i.scope == 'S'
-        ]))
-
+        county_list = [i.counties for i in self.races if i.scope == 'S']
+        return [item for sublist in county_list for item in sublist]
 
 class CongressionalTrends(object):
     """
@@ -1290,7 +1292,7 @@ class ReportingUnit(object):
     def __init__(self, ap_number=None, name=None, abbrev=None, fips=None,
                  precincts_total=None, num_reg_voters=None, votes_cast=None,
                  precincts_reporting=None, precincts_reporting_percent=None,
-                electoral_votes_total=None):
+                 electoral_votes_total=None):
         self.ap_number = ap_number
         self.name = name
         self.abbrev = abbrev
@@ -1300,7 +1302,7 @@ class ReportingUnit(object):
         self.precincts_total = precincts_total
         self.precincts_reporting = precincts_reporting
         self.precincts_reporting_percent = precincts_reporting_percent
-        self.electoral_votes_total = None
+        self.electoral_votes_total = electoral_votes_total
         self._results = {}
     
     def __unicode__(self):
