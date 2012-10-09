@@ -192,6 +192,22 @@ class APTest(BaseTest):
 #            [i.vote_total for i in self.st.state.results]
 #        )
      
+    def test_presidential_summary(self):
+        self.nov6 = self.client.get_presidential_summary()
+        self.assertEqual(len(self.nov6.states), 51)
+        self.assertEqual(len([self.nov6.nationwide]), 1)
+        self.assertEqual(self.nov6.nationwide.electoral_votes_total, 538)
+        self.assertEqual(sum([i.electoral_votes_total for i in self.nov6.states]), 538)
+        [self.assertTrue(isinstance(i,ReportingUnit)) for i in self.nov6.counties]
+        [self.assertTrue(isinstance(i.electoral_votes_total,int))
+            for i in self.nov6.nationwide.results]
+        for state in self.nov6.states:
+            [self.assertTrue(isinstance(i.electoral_votes_total,int))
+                for i in state.results]
+        for county in self.nov6.counties:
+            [self.assertTrue(isinstance(i.vote_total,int))
+                for i in county.results]
+
 #    def test_delegate_summary(self):
 #        self.delsum = self.client.get_delegate_summary()
 #        self.assertEqual(len(self.delsum), 2)
