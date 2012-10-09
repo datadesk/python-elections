@@ -122,6 +122,20 @@ class AP(object):
         self.ftp.quit()
         return result
 
+    def get_congressional_trends(self, results=True):
+        """
+        Returns a summary of the current balance of power in 
+        each chamber of congress.
+        
+        Usage: 
+            >>> trends = client.get_congressional_trends()
+            >>> trends.house.gop_net_change
+            -2
+        """
+        result = CongressionalTrends(self, results)
+        self.ftp.quit()
+        return result
+
     #
     # Private methods
     #
@@ -866,6 +880,69 @@ class PresidentialSummary(BaseAPResultCollection):
         ]))
 
 
+class CongressionalTrends(object):
+    """
+    A result collection that holds the two chambers of congress
+    and the current net changes for each party in each chamber.
+    """
+    def __init__(self, client, results=True):
+        self.client = client
+        self.chambers = []
+        if results:
+            self.chambers = self.get_trends()
+
+    def _process_trends(self, xml, fname):
+        soup = BeautifulStoneSoup(xml, selfClosingTags=['trend',])
+        name = soup.first('trendtable')['office'].split('U.S. ')[-1]
+        chamber = Chamber(name)
+
+        parties = soup.findAll('party')[:2]
+
+        for party in parties:
+            party_name = party['title'].lower()
+            nc_node = party.first('netchange')
+            net_change = nc_node.first(attrs={'name':'Winners'})['value']
+            net_change = int(net_change)
+            setattr(chamber, '%s_net_change' % party_name, net_change)
+        return chamber
+
+    def __str__(self):
+        return self.__unicode__().encode("utf-8")
+     
+    def __repr__(self):
+        return '<%s>' % self.__class__.__name__
+
+    #
+    # public
+    #
+
+    def get_trends(self):
+        """
+        Downloads House & Senate trends files. Re-loads
+        self.chambers with new chamber objects with new
+        net changes for each party.
+        """
+        # Warning: Thar be XML here.
+        remote_dir = '/Trend/xml/'
+        files = ['h.xml', 's.xml']
+        
+        self.chambers = []
+        for f in files:
+            data = self.client._fetch(os.path.join(remote_dir, f))
+            chamber = self._process_trends(data, f)
+            self.chambers.append(chamber)
+        return self.chambers
+
+    @property
+    def house(self):
+        return [c for c in self.chambers if c.name == "House"][0]
+
+    @property
+    def senate(self):
+        return [c for c in self.chambers if c.name == "Senate"][0]
+
+
+        
 
 class DelegateSummary(object):
     """
@@ -1328,6 +1405,30 @@ class Result(object):
     def __str__(self):
         return self.__unicode__().encode("utf-8")
     
+    def __repr__(self):
+        return '<%s: %s>' % (self.__class__.__name__, self.__unicode__())
+
+
+#
+# Trend objects
+#
+
+class Chamber(object):
+    """
+    A chamber of Congress. Holds the net change in an election for each party
+    in a specific house.
+    """
+    def __init__(self, name):
+        self.name = name
+        self.dem_net_change = None
+        self.gop_net_change = None
+
+    def __unicode__(self):
+        return unicode(self.name)
+    
+    def __str__(self):
+        return self.__unicode__().encode("utf-8")
+     
     def __repr__(self):
         return '<%s: %s>' % (self.__class__.__name__, self.__unicode__())
 
