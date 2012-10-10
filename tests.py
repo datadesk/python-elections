@@ -41,7 +41,6 @@ class APTest(BaseTest):
         self.state = self.client.get_state(TEST_STATE)
         county_list = self.state.counties
         self.assertEqual(type(county_list), type([]))
-        self.assertEqual(len(county_list) == 58, True)
         [self.assertEqual(type(i), ReportingUnit) for i in county_list]
         [self.assertEqual(i.is_state, False) for i in county_list]
     
@@ -127,7 +126,6 @@ class APTest(BaseTest):
         # Counties
         county_list = self.state.races[0].counties
         self.assertEqual(type(county_list), type([]))
-        self.assertEqual(len(county_list) == 58, True)
         self.assertEqual(type(county_list[0]), ReportingUnit)
         self.assertEqual(county_list[0].is_state, False)
         
@@ -185,8 +183,8 @@ class APTest(BaseTest):
         # Test the results against a get_state method to verify they are the same
         self.tt = self.client.get_topofticket()
         self.st = self.client.get_state(TEST_STATE)
-        self.tt = self.tt.filter_races(office_name='President', state_postal='CA')[0]
-        self.st = self.st.filter_races(office_name='President', state_postal='CA')[0]
+        self.tt = self.tt.filter_races(office_name='President', state_postal=TEST_STATE)[0]
+        self.st = self.st.filter_races(office_name='President', state_postal=TEST_STATE)[0]
 #        self.assertEqual(
 #            [i.vote_total for i in self.tt.state.results],
 #            [i.vote_total for i in self.st.state.results]
