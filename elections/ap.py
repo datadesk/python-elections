@@ -845,7 +845,7 @@ class PresidentialSummary(BaseAPResultCollection):
                             int(row['precincts_reporting']),
                             int(row['total_precincts']),
                         ),
-                        electoral_votes_total = 538
+                        electoral_votes_total = 538,
                     )
                 # Grab the candidate object for this row
                 this_cand = [i for i in this_race.candidates
@@ -864,6 +864,17 @@ class PresidentialSummary(BaseAPResultCollection):
                 this_ru.update_result(this_result)
                 this_race._reporting_units.update({this_ru.key: this_ru})
                 self._reporting_units.update({this_ru.key: this_ru})
+        
+        # Set the overall vote total and candidate vote percentages in nationwide
+        ru = self.nationwide
+        ru.votes_cast = sum([i.vote_total for i in ru.results])
+        for result in ru.results:
+            result.vote_total_percent  = calculate.percentage(
+                result.vote_total,
+                ru.votes_cast
+            )
+            ru.update_result(result)
+        self._reporting_units.update({ru.key: ru})
     
     @property
     def nationwide(self):
@@ -886,6 +897,7 @@ class PresidentialSummary(BaseAPResultCollection):
         """
         county_list = [i.counties for i in self.races if i.scope == 'S']
         return [item for sublist in county_list for item in sublist]
+
 
 class CongressionalTrends(object):
     """
