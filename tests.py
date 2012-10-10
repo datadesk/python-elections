@@ -4,7 +4,7 @@
 Tests out python-elections
 
 Most requests require authentication with, so you'll need to provide that in
-a file called private_settings.py with AP_USERNAME and AP_PASSWORD
+a file called private_settings.py with AP_USERNAME, AP_PASSWORD and TEST_STATE
 
 These tests were written using the Los Angeles Times' login, which gives it state
 level access for California and nationwide access elsewhere. If you have a different
@@ -19,7 +19,7 @@ from datetime import date, datetime
 from elections.ap import Nomination, StateDelegation
 from elections.ap import Candidate, Race, ReportingUnit, Result, State
 from elections.ap import FileDoesNotExistError, BadCredentialsError
-from private_settings import AP_USERNAME, AP_PASSWORD
+from private_settings import AP_USERNAME, AP_PASSWORD, TEST_STATE
 
 
 class BaseTest(unittest.TestCase):
@@ -32,14 +32,14 @@ class APTest(BaseTest):
     
     def test_badlogin(self):
         client = AP("foo", "bar")
-        self.assertRaises(BadCredentialsError, client.get_state, "CA")
+        self.assertRaises(BadCredentialsError, client.get_state, TEST_STATE)
     
     def test_badstate(self):
         self.assertRaises(FileDoesNotExistError, self.client.get_state, "XYZ")
     
     def test_county_aggregates(self):
-        self.ca = self.client.get_state("CA")
-        county_list = self.ca.counties
+        self.state = self.client.get_state(TEST_STATE)
+        county_list = self.state.counties
         self.assertEqual(type(county_list), type([]))
         self.assertEqual(len(county_list) == 58, True)
         [self.assertEqual(type(i), ReportingUnit) for i in county_list]
@@ -49,21 +49,21 @@ class APTest(BaseTest):
         """
         Makes sure Wyoming only has one 'state'-identified RU.
         """
-        self.ca = self.client.get_state("CA")
-        self.assertEqual(type(self.ca.races[0].state), ReportingUnit)
+        self.state = self.client.get_state(TEST_STATE)
+        self.assertEqual(type(self.state.races[0].state), ReportingUnit)
     
     def test_getstate(self):
         # Pull state
-        self.calif = self.client.get_state("CA")
+        self.state = self.client.get_state(TEST_STATE)
         
         # Races
-        race_list = self.calif.races
+        race_list = self.state.races
         self.assertTrue(isinstance(race_list, list))
         self.assertTrue(len(race_list) > 0)
         self.assertTrue(isinstance(race_list[0], Race))
-        self.assertEqual(self.calif.get_race(race_list[0].ap_race_number), race_list[0])
-        self.assertRaises(KeyError, self.calif.get_race, 'foo')
-        race = self.calif.races[0]
+        self.assertEqual(self.state.get_race(race_list[0].ap_race_number), race_list[0])
+        self.assertRaises(KeyError, self.state.get_race, 'foo')
+        race = self.state.races[0]
         self.assertTrue(isinstance(race.ap_race_number, basestring))
         self.assertTrue(isinstance(race.office_name, basestring))
         self.assertTrue(isinstance(race.office_description, basestring))
@@ -83,12 +83,12 @@ class APTest(BaseTest):
         self.assertTrue(isinstance(race.is_general, bool))
         
         # Reporting units
-        ru_list = self.calif.reporting_units
+        ru_list = self.state.reporting_units
         self.assertTrue(isinstance(ru_list, list))
         self.assertTrue(len(ru_list) > 0)
         self.assertTrue(isinstance(ru_list[0], ReportingUnit))
-        self.assertEqual(self.calif.get_reporting_unit(ru_list[0].key), ru_list[0])
-        self.assertRaises(KeyError, self.calif.get_reporting_unit, 'foo')
+        self.assertEqual(self.state.get_reporting_unit(ru_list[0].key), ru_list[0])
+        self.assertRaises(KeyError, self.state.get_reporting_unit, 'foo')
         self.assertTrue(isinstance(ru_list[0], ReportingUnit))
         self.assertTrue(isinstance(ru_list[0].ap_number, basestring))
         self.assertTrue(isinstance(ru_list[0].name, basestring))
@@ -98,7 +98,7 @@ class APTest(BaseTest):
         self.assertTrue(isinstance(ru_list[0].precincts_total, int))
         self.assertTrue(isinstance(ru_list[0].precincts_reporting, type(None)))
         self.assertTrue(isinstance(ru_list[0].precincts_reporting_percent, type(None)))
-        ru_list = self.calif.races[0].reporting_units
+        ru_list = self.state.races[0].reporting_units
         self.assertTrue(isinstance(ru_list, list))
         self.assertTrue(len(ru_list) > 0)
         for ru in ru_list:
@@ -125,19 +125,19 @@ class APTest(BaseTest):
                     self.assertTrue(isinstance(result.vote_total_percent, type(None)))
         
         # Counties
-        county_list = self.calif.races[0].counties
+        county_list = self.state.races[0].counties
         self.assertEqual(type(county_list), type([]))
         self.assertEqual(len(county_list) == 58, True)
         self.assertEqual(type(county_list[0]), ReportingUnit)
         self.assertEqual(county_list[0].is_state, False)
         
         # State
-        state = self.calif.races[0].state
+        state = self.state.races[0].state
         self.assertEqual(type(state), ReportingUnit)
         self.assertEqual(state.is_state, True)
         
         # Candidates
-        cand_list = self.calif.races[0].candidates
+        cand_list = self.state.races[0].candidates
         self.assertTrue(isinstance(race.candidates, list))
         self.assertTrue(len(cand_list) > 0)
         for cand in cand_list:
@@ -162,8 +162,8 @@ class APTest(BaseTest):
         self.assertEqual(self.client._ftp_hits, 1)
     
     def test_getstates(self):
-        # Pull states, using California twice since that's all we have access to.
-        self.first_two = self.client.get_states("CA", "CA")
+        # Pull states, using the state twice since that's all we have access to.
+        self.first_two = self.client.get_states(TEST_STATE, TEST_STATE)
         self.assertEqual(type(self.first_two), type([]))
         self.assertEqual(len(self.first_two), 2)
         [self.assertEqual(type(i), State) for i in self.first_two]
@@ -184,7 +184,7 @@ class APTest(BaseTest):
         self.assertRaises(ValueError, self.client.get_topofticket, 'abcdef')
         # Test the results against a get_state method to verify they are the same
         self.tt = self.client.get_topofticket()
-        self.st = self.client.get_state("CA")
+        self.st = self.client.get_state(TEST_STATE)
         self.tt = self.tt.filter_races(office_name='President', state_postal='CA')[0]
         self.st = self.st.filter_races(office_name='President', state_postal='CA')[0]
 #        self.assertEqual(
