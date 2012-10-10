@@ -1374,7 +1374,7 @@ class Candidate(object):
                  abbrev_name=None, suffix=None, use_suffix=False, 
                  ap_natl_number=None, ap_polra_number=None, ap_race_number=None,
                  party=None, ap_pol_number=None, is_winner=None,
-                 is_runoff=None, delegates=None, is_incumbent=None):
+                 is_runoff=None, delegates=None, is_incumbent=None, vote_total=None):
         self.first_name = first_name
         self.middle_name = middle_name
         self.last_name = last_name
@@ -1390,6 +1390,7 @@ class Candidate(object):
         self.is_runoff = is_runoff
         self.delegates = delegates
         self.is_incumbent = is_incumbent
+        self.vote_total = vote_total
     
     def __unicode__(self):
         return unicode(self.name)

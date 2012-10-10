@@ -219,4 +219,3 @@ class APTest(BaseTest):
 
 if __name__ == '__main__':
     unittest.main()
-
