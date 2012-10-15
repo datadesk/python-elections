@@ -919,6 +919,18 @@ class CongressionalTrends(object):
 
         for party in parties:
             party_name = party['title'].lower()
+            won_total = party.first(attrs={'name':'Won'})['value']
+            won_total = int(won_total)
+            setattr(chamber, '%s_won_total' % party_name, won_total)
+
+            current_total = party.first(attrs={'name':'Current'})['value']
+            current_total = int(current_total)
+            setattr(chamber, '%s_current_total' % party_name, current_total)
+
+            holdovers = party.first(attrs={'name':'Holdovers'})['value']
+            holdovers = int(holdovers)
+            setattr(chamber, '%s_holdovers' % party_name, holdovers)
+
             nc_node = party.first('netchange')
             net_change = nc_node.first(attrs={'name':'Winners'})['value']
             net_change = int(net_change)
@@ -1439,13 +1451,19 @@ class Result(object):
 
 class Chamber(object):
     """
-    A chamber of Congress. Holds the net change in an election for each party
-    in a specific house.
+    A chamber of Congress. Holds the makeup during an election for 
+    each party in a specific house.
     """
     def __init__(self, name):
         self.name = name
         self.dem_net_change = None
         self.gop_net_change = None
+        self.dem_won_total = None
+        self.gop_won_total = None
+        self.dem_current_total = None
+        self.gop_current_total = None
+        self.dem_holdovers = None
+        self.gop_holdovers = None
 
     def __unicode__(self):
         return unicode(self.name)
