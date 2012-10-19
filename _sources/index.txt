@@ -197,6 +197,15 @@ The AP client is public class you can use to connect to the AP's data feed.
         >>> client.get_topofticket('2012-02-07')
         <TopOfTicket: 20120207>
 
+..   function:: client.get_presidential_summary()
+
+    Returns a summary of presidential election results at three levels: nationwide popular vote and electoral vote; state-level popular vote and electoral vote; county-level popular vote.
+
+        >>> from elections import AP
+        >>> client = AP(USERNAME, PASSWORD)
+        >>> client.get_presidential_summary()
+        <PresidentialSummary: None>
+
 .. function:: client.get_delegate_summary()
 
    Return a nationwide summary and state-level totals contain delegate counts for all the candidates in the presidential nomination contest held by the two major parties.
