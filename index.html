@@ -752,6 +752,40 @@
 
 <hr></div>
 </div>
+<div class="section" id="presidential-summary-collections">
+<h1>Presidential Summary Collections<a class="headerlink" href="#presidential-summary-collections" title="Permalink to this headline">¶</a></h1>
+<p>Calling presidential methods, like <cite>get_presidential_summary</cite> will return a slightly different, and simpler, result collection.</p>
+<dl class="attribute">
+<dt id="obj.nationwide">
+<tt class="descclassname">obj.</tt><tt class="descname">nationwide</tt><a class="headerlink" href="#obj.nationwide" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns only the nationwide reporting unit.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">nationwide</span>
+<span class="go">&lt;ReportingUnit: US&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descclassname">obj.</tt><tt class="descname">states</tt></dt>
+<dd><p>Returns only the state-level reporting units</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">states</span>
+<span class="go">[&lt;ReportingUnit: South Carolina (state)&gt;, &lt;ReportingUnit: North Carolina (state)&gt;, &lt;ReportingUnit: Delaware (state)&gt;, &lt;ReportingUnit: Florida (state)&gt;, &lt;ReportingUnit: District of Columbia (state)&gt;, &lt;ReportingUnit: Indiana (state)&gt;, &lt;ReportingUnit: New Mexico (state)&gt;, &lt;ReportingUnit: Washington (state)&gt;, &lt;ReportingUnit: Oregon (state)&gt;, &lt;ReportingUnit: New Hampshire (state)&gt;, &lt;ReportingUnit: Nebraska (state)&gt;, &lt;ReportingUnit: North Dakota (state)&gt;, ...]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descclassname">obj.</tt><tt class="descname">counties</tt></dt>
+<dd><p>Returns only the county-level reporting units</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">counties</span>
+<span class="go">[&lt;ReportingUnit: Abbeville&gt;, &lt;ReportingUnit: Aiken&gt;, &lt;ReportingUnit: Allendale&gt;, &lt;ReportingUnit: Anderson&gt;, &lt;ReportingUnit: Bamberg&gt;, &lt;ReportingUnit: Barnwell&gt;, &lt;ReportingUnit: Beaufort&gt;, &lt;ReportingUnit: Berkeley&gt;, &lt;ReportingUnit: Calhoun&gt;, &lt;ReportingUnit: Charleston&gt;, &lt;ReportingUnit: Cherokee&gt;, &lt;ReportingUnit: Chester&gt;, &lt;ReportingUnit: Chesterfield&gt;, &lt;ReportingUnit: Clarendon&gt;, &lt;ReportingUnit: Colleton&gt;, &lt;ReportingUnit: Darlington&gt;, &lt;ReportingUnit: Dillon&gt;, &lt;ReportingUnit: Dorchester&gt;, &lt;ReportingUnit: Edgefield&gt;, &lt;ReportingUnit: Fairfield&gt;...]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<hr></div>
 <div class="section" id="delegate-summary-collections">
 <h1>Delegate Summary Collections<a class="headerlink" href="#delegate-summary-collections" title="Permalink to this headline">¶</a></h1>
 <p>Calling delegate related methods, like <cite>get_delegate_summary</cite> will return a slightly different, and simpler, result collection. To start, you should receive a list containing two Nomination objects.</p>
@@ -894,6 +928,7 @@
 <li><a class="reference internal" href="#result">Result</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#presidential-summary-collections">Presidential Summary Collections</a></li>
 <li><a class="reference internal" href="#delegate-summary-collections">Delegate Summary Collections</a><ul>
 <li><a class="reference internal" href="#nominations">Nominations</a></li>
 <li><a class="reference internal" href="#state-delegations">State Delegations</a></li>

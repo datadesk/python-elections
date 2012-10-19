@@ -622,6 +622,37 @@ The vote count for a candidate in a race in a particular reporting unit.
    <hr>
 
 
+Presidential Summary Collections
+================================
+
+Calling presidential methods, like `get_presidential_summary` will return a slightly different, and simpler, result collection.
+
+.. attribute:: obj.nationwide
+
+    Returns only the nationwide reporting unit.
+
+        >>> obj.nationwide
+        <ReportingUnit: US>
+
+.. attribute:: obj.states
+
+    Returns only the state-level reporting units
+
+        >>> obj.states
+        [<ReportingUnit: South Carolina (state)>, <ReportingUnit: North Carolina (state)>, <ReportingUnit: Delaware (state)>, <ReportingUnit: Florida (state)>, <ReportingUnit: District of Columbia (state)>, <ReportingUnit: Indiana (state)>, <ReportingUnit: New Mexico (state)>, <ReportingUnit: Washington (state)>, <ReportingUnit: Oregon (state)>, <ReportingUnit: New Hampshire (state)>, <ReportingUnit: Nebraska (state)>, <ReportingUnit: North Dakota (state)>, ...]
+
+.. attribute:: obj.counties
+
+    Returns only the county-level reporting units
+
+        >>> obj.counties
+        [<ReportingUnit: Abbeville>, <ReportingUnit: Aiken>, <ReportingUnit: Allendale>, <ReportingUnit: Anderson>, <ReportingUnit: Bamberg>, <ReportingUnit: Barnwell>, <ReportingUnit: Beaufort>, <ReportingUnit: Berkeley>, <ReportingUnit: Calhoun>, <ReportingUnit: Charleston>, <ReportingUnit: Cherokee>, <ReportingUnit: Chester>, <ReportingUnit: Chesterfield>, <ReportingUnit: Clarendon>, <ReportingUnit: Colleton>, <ReportingUnit: Darlington>, <ReportingUnit: Dillon>, <ReportingUnit: Dorchester>, <ReportingUnit: Edgefield>, <ReportingUnit: Fairfield>...]
+
+.. raw:: html
+
+   <hr>
+
+
 Delegate Summary Collections
 ============================
 
