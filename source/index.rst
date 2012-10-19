@@ -473,7 +473,11 @@ An area or unit that groups votes into a total. For instance, a state, a congres
 
 .. attribute:: obj.is_state
 
-    Return `True` if the reporting unit is a state, rather than some other unit like a county.
+    Returns `True` if the reporting unit is a state, rather than some other unit like a county.
+
+.. attribute:: obj.electoral_votes_total
+
+    Returns the number of presidential electors this area controls. Typically only found on states.
 
 .. raw:: html
 
@@ -616,6 +620,10 @@ The vote count for a candidate in a race in a particular reporting unit.
 
         >>> obj.vote_total_percent
         24.558645607855077
+
+.. attribute:: obj.electoral_votes_total
+
+    Returns the number of presidential electors awarded by this result.
 
 .. raw:: html
 
