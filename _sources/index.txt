@@ -74,44 +74,46 @@ Request all the data available for a particular state by providing its postal co
 
 .. code-block:: python
 
-    >>> iowa = client.get_state('IA')
-    >>> iowa
-    <State: IA>
+    >>> ca = client.get_state('CA')
+    >>> ca
+    <State: CA>
 
 Among other things, the state has a list of races.
 
 .. code-block:: python
 
-    >>> iowa.races
-    [<Race: GOP Caucus - President>]
+    >>> ca.races
+    [<Race: District Attorney Los Angeles>, <Race: U.S. House District 49 - Carlsbad>, <Race: U.S. House District 50 - Escondido>, <Race: U.S. House District 51 - El Centro>, <Race: U.S. House District 53 - El Cajon>, <Race: State Senate District 1 - Redding>, <Race: State Senate District 5 - Stockton>, <Race: State Senate District 7 - Concord>, <Race: State Senate District 9 - Oakland>, <Race: State Senate District 11 - San Francisco>, <Race: State Assembly District 59 - Los Angeles>, <Race: State Assembly District 58 - Norwalk>, <Race: State Assembly District 61 - Riverside>, <Race: State Assembly District 60 - Riverside>, <Race: State Assembly District 63 - Lakewood>, <Race: State Assembly District 62 - Inglewood>, <Race: State Assembly District 65 - Anaheim>, <Race: State Assembly District 64 - Compton>, <Race: State Assembly District 67 - Murrieta>, <Race: State Assembly District 66 - Torrance>,  ...]
+    >>> prez = ca.filter_races(office_name='President')[0]
+    >>> prez
+    <Race: President>
 
 The race contains a list of candidates.
 
-.. code-block:: python
-
-    >>> iowa.races[0].candidates
-    [<Candidate: Other>, <Candidate: Jon Huntsman>, <Candidate: Newt Gingrich>, <Candidate: Herman Cain>, <Candidate: Rick Santorum> ... 
+    >>> prez.candidates
+    [<Candidate: Roseanne Barr>, <Candidate: Thomas Hoefling>, <Candidate: Gary Johnson>, <Candidate: Barack Obama>, <Candidate: Mitt Romney>, <Candidate: Jill Stein>]
 
 You can find results for the whole state.
 
 .. code-block:: python
 
-    >>> iowa.races[0].state.results
-    [<Result: Newt Gingrich, Iowa (state), 896249>, <Result: Michele Bachmann, Iowa (state), 879444>, <Result: Rick Perry, Iowa (state), 65426>, ...
+    >>> prez.state.results
+    [<Result: Barack Obama, California (state), 3698001>, <Result: Mitt Romney, California (state), 3469304>, <Result: Roseanne Barr, California (state), 657614>, <Result: Jill Stein, California (state), 585121>, <Result: Thomas Hoefling, California (state), 110465>, <Result: Gary Johnson, California (state), 109602>]
 
 You can get all counties in the state.
 
 .. code-block:: python
 
-    >>> iowa.races[0].counties
-    [<ReportingUnit: Adair>, <ReportingUnit: Adams>, <ReportingUnit: Allamakee>, <ReportingUnit: Appanoose>, <ReportingUnit: Audubon>, ...
+    >>> prez.counties
+    [<ReportingUnit: Alameda>, <ReportingUnit: Alpine>, <ReportingUnit: Amador>, <ReportingUnit: Butte>, <ReportingUnit: Calaveras>, <ReportingUnit: Colusa>, <ReportingUnit: Contra Costa>, <ReportingUnit: Del Norte>, <ReportingUnit: El Dorado>, <ReportingUnit: Fresno>, <ReportingUnit: Glenn>, <ReportingUnit: Humboldt>, <ReportingUnit: Imperial>, <ReportingUnit: Inyo>, <ReportingUnit: Kern>, <ReportingUnit: Kings>, <ReportingUnit: Lake>, <ReportingUnit: Lassen>, <ReportingUnit: Los Angeles>, <ReportingUnit: Madera>, <ReportingUnit: Marin>, <ReportingUnit: Mariposa>, <ReportingUnit: Mendocino>, <ReportingUnit: Merced>, <ReportingUnit: Modoc>, <ReportingUnit: Mono>, <ReportingUnit: Monterey>, <ReportingUnit: Napa>, <ReportingUnit: Nevada>, <ReportingUnit: Orange>, <ReportingUnit: Placer>, <ReportingUnit: Plumas>, <ReportingUnit: Riverside>, <ReportingUnit: Sacramento>, <ReportingUnit: San Benito>, <ReportingUnit: San Bernardino>, <ReportingUnit: San Diego>, <ReportingUnit: San Francisco>, <ReportingUnit: San Joaquin>, <ReportingUnit: San Luis Obispo>, <ReportingUnit: San Mateo>, <ReportingUnit: Santa Barbara>, <ReportingUnit: Santa Clara>, <ReportingUnit: Santa Cruz>, <ReportingUnit: Shasta>, <ReportingUnit: Sierra>, <ReportingUnit: Siskiyou>, <ReportingUnit: Solano>, <ReportingUnit: Sonoma>, <ReportingUnit: Stanislaus>, <ReportingUnit: Sutter>, <ReportingUnit: Tehama>, <ReportingUnit: Trinity>, <ReportingUnit: Tulare>, <ReportingUnit: Tuolumne>, <ReportingUnit: Ventura>, <ReportingUnit: Yolo>, <ReportingUnit: Yuba>]
+
 
 And, of course, the results in each county.
 
 .. code-block:: python
 
-    >>> iowa.races[0].counties[0].results
-    [<Result: Michele Bachmann, Adair, 2496>, <Result: Newt Gingrich, Adair, 2219>, <Result: Rick Santorum, Adair, 191>, ...
+    >>> prez.counties[0].results
+    [<Result: Barack Obama, Alameda, 160048>, <Result: Mitt Romney, Alameda, 152934>, <Result: Roseanne Barr, Alameda, 29060>, <Result: Jill Stein, Alameda, 26147>, <Result: Thomas Hoefling, Alameda, 4966>, <Result: Gary Johnson, Alameda, 4912>]
 
 .. raw:: html
 
