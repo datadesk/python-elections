@@ -190,6 +190,8 @@ The AP client is public class you can use to connect to the AP's data feed.
 
    Top of the ticket is an AP data service that provides limited results on the top races for all 50 states (i.e. President, Governor, US Senate, and US House). It requires a date in any common format, YYYY-MM-DD is preferred, and returns all results for that date. ::
 
+   If you do not provide a date, it defaults to the next major election. Today that is the Nov. 6, 2012 general election.
+
         >>> from elections import AP
         >>> client = AP(USERNAME, PASSWORD)
         >>> client.get_topofticket('2012-02-07')
@@ -198,6 +200,8 @@ The AP client is public class you can use to connect to the AP's data feed.
 .. function:: client.get_delegate_summary()
 
    Return a nationwide summary and state-level totals contain delegate counts for all the candidates in the presidential nomination contest held by the two major parties.
+
+   **Warning:** This method does not currently work because the 2012 primaries are over and the AP has removed the folders it depends on.
 
         >>> from elections import AP
         >>> client = AP(USERNAME, PASSWORD)

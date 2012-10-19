@@ -188,6 +188,7 @@
 <dt id="client.get_topofticket">
 <tt class="descclassname">client.</tt><tt class="descname">get_topofticket</tt><big>(</big><em>election_date</em><big>)</big><a class="headerlink" href="#client.get_topofticket" title="Permalink to this definition">¶</a></dt>
 <dd><p>Top of the ticket is an AP data service that provides limited results on the top races for all 50 states (i.e. President, Governor, US Senate, and US House). It requires a date in any common format, YYYY-MM-DD is preferred, and returns all results for that date.</p>
+<p>If you do not provide a date, it defaults to the next major election. Today that is the Nov. 6, 2012 general election.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">elections</span> <span class="kn">import</span> <span class="n">AP</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">AP</span><span class="p">(</span><span class="n">USERNAME</span><span class="p">,</span> <span class="n">PASSWORD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">get_topofticket</span><span class="p">(</span><span class="s">&#39;2012-02-07&#39;</span><span class="p">)</span>
@@ -200,6 +201,7 @@
 <dt id="client.get_delegate_summary">
 <tt class="descclassname">client.</tt><tt class="descname">get_delegate_summary</tt><big>(</big><big>)</big><a class="headerlink" href="#client.get_delegate_summary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a nationwide summary and state-level totals contain delegate counts for all the candidates in the presidential nomination contest held by the two major parties.</p>
+<p><strong>Warning:</strong> This method does not currently work because the 2012 primaries are over and the AP has removed the folders it depends on.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">elections</span> <span class="kn">import</span> <span class="n">AP</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">AP</span><span class="p">(</span><span class="n">USERNAME</span><span class="p">,</span> <span class="n">PASSWORD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">get_delegate_summary</span><span class="p">()</span>
