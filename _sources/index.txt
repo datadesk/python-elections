@@ -6,6 +6,7 @@ Features
 ========
 
 * Easy access to AP election results for races in U.S. states and counties.
+* Easy access to presidential election results for the nation, the 50 states and all U.S. counties.
 * Easy access to AP’s delegate estimates in presidential nomination contests.
 
 .. raw:: html
