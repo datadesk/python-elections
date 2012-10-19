@@ -123,7 +123,7 @@
 <hr></div>
 <div class="section" id="a-working-example">
 <h2>A working example<a class="headerlink" href="#a-working-example" title="Permalink to this headline">¶</a></h2>
-<p>Let’s say the GOP is hold­ing its caucuses in Iowa, and your news or­gan­iz­a­tion bought ac­cess to the AP’s FTP ser­vice. Your boss wants you to write a simple wid­get that will sit on the homepage and out­put live res­ults. All you need are the can­did­ate names, their vote totals and per­cent­ages, the num­ber of pre­cincts re­port­ing, the num­ber of del­eg­ates won and wheth­er the AP has called a win­ner yet. How do you feed it? Here&#8217;s how.</p>
+<p>Let’s say, hypothetically, that the United States is electing a president for the next four years, and your news or­gan­iz­a­tion bought ac­cess to the AP’s FTP ser­vice for California results. Your boss wants you to write a simple wid­get that will sit on the homepage and out­put live res­ults. All you need are the can­did­ate names, their vote totals and per­cent­ages, the num­ber of pre­cincts re­port­ing and wheth­er the AP has called a win­ner yet. How do you feed it? Here&#8217;s how.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">elections</span> <span class="kn">import</span> <span class="n">AP</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">json</span>
@@ -131,25 +131,24 @@
     <span class="kn">import</span> <span class="nn">simplejson</span> <span class="kn">as</span> <span class="nn">json</span>
 
 <span class="n">client</span> <span class="o">=</span> <span class="n">AP</span><span class="p">(</span><span class="n">uname</span><span class="p">,</span> <span class="n">pwd</span><span class="p">)</span>
-<span class="n">iowa</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="s">&#39;IA&#39;</span><span class="p">)</span>
-<span class="c"># Now the iowa variable holds all of the AP result data</span>
-<span class="n">caucus</span> <span class="o">=</span> <span class="n">iowa</span><span class="o">.</span><span class="n">filter_races</span><span class="p">(</span><span class="n">office_name</span><span class="o">=</span><span class="s">&#39;President&#39;</span><span class="p">,</span> <span class="n">party</span><span class="o">=</span><span class="s">&#39;GOP&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-<span class="c"># caucus is a Race object containing the results of the GOP caucuses</span>
+<span class="n">calif</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="s">&#39;CA&#39;</span><span class="p">)</span>
+<span class="c"># Now the calif variable holds all of the AP result data</span>
+<span class="n">prez</span> <span class="o">=</span> <span class="n">iowa</span><span class="o">.</span><span class="n">filter_races</span><span class="p">(</span><span class="n">office_name</span><span class="o">=</span><span class="s">&#39;President&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="c"># prez is a Race object containing the results of the presidential race</span>
 
 <span class="c"># Set up the main data dict and set the percent of precincts reporting</span>
 <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s">&#39;precincts_reporting_percent&#39;</span><span class="p">:</span> <span class="n">caucus</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">precincts_reporting_percent</span><span class="p">,</span>
+    <span class="s">&#39;precincts_reporting_percent&#39;</span><span class="p">:</span> <span class="n">prez</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">precincts_reporting_percent</span><span class="p">,</span>
     <span class="s">&#39;candidates&#39;</span><span class="p">:</span> <span class="p">[]</span>
 <span class="p">}</span>
 
 <span class="c"># Loop through the statewide candidate results, and append them</span>
 <span class="c"># in a format we like into the data dict&#39;s candidate list.</span>
-<span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">caucus</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">results</span><span class="p">:</span>
+<span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">prez</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">results</span><span class="p">:</span>
     <span class="n">data</span><span class="p">[</span><span class="s">&#39;candidates&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
         <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">candidate</span><span class="o">.</span><span class="n">last_name</span><span class="p">,</span>
         <span class="s">&#39;vote_total&#39;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">vote_total</span><span class="p">,</span>
         <span class="s">&#39;vote_percent&#39;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">vote_total_percent</span><span class="p">,</span>
-        <span class="s">&#39;delegate_total&#39;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">candidate</span><span class="o">.</span><span class="n">delegates</span><span class="p">,</span>
         <span class="s">&#39;is_winner&#39;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">candidate</span><span class="o">.</span><span class="n">is_winner</span><span class="p">,</span>
     <span class="p">})</span>
 

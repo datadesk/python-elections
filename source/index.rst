@@ -122,7 +122,7 @@ And, of course, the results in each county.
 A working example
 -----------------
 
-Let’s say the GOP is hold­ing its caucuses in Iowa, and your news or­gan­iz­a­tion bought ac­cess to the AP’s FTP ser­vice. Your boss wants you to write a simple wid­get that will sit on the homepage and out­put live res­ults. All you need are the can­did­ate names, their vote totals and per­cent­ages, the num­ber of pre­cincts re­port­ing, the num­ber of del­eg­ates won and wheth­er the AP has called a win­ner yet. How do you feed it? Here's how.
+Let’s say, hypothetically, that the United States is electing a president for the next four years, and your news or­gan­iz­a­tion bought ac­cess to the AP’s FTP ser­vice for California results. Your boss wants you to write a simple wid­get that will sit on the homepage and out­put live res­ults. All you need are the can­did­ate names, their vote totals and per­cent­ages, the num­ber of pre­cincts re­port­ing and wheth­er the AP has called a win­ner yet. How do you feed it? Here's how.
 
 .. code-block:: python
 
@@ -133,25 +133,24 @@ Let’s say the GOP is hold­ing its caucuses in Iowa, and your news or­gan­iz
         import simplejson as json
 
     client = AP(uname, pwd)
-    iowa = client.get_state('IA') 
-    # Now the iowa variable holds all of the AP result data
-    caucus = iowa.filter_races(office_name='President', party='GOP')[0] 
-    # caucus is a Race object containing the results of the GOP caucuses
+    calif = client.get_state('CA') 
+    # Now the calif variable holds all of the AP result data
+    prez = iowa.filter_races(office_name='President')[0] 
+    # prez is a Race object containing the results of the presidential race
 
     # Set up the main data dict and set the percent of precincts reporting
     data = {
-        'precincts_reporting_percent': caucus.state.precincts_reporting_percent,
+        'precincts_reporting_percent': prez.state.precincts_reporting_percent,
         'candidates': []
     }
 
     # Loop through the statewide candidate results, and append them
     # in a format we like into the data dict's candidate list.
-    for result in caucus.state.results:
+    for result in prez.state.results:
         data['candidates'].append({
             'name': result.candidate.last_name,
             'vote_total': result.vote_total,
             'vote_percent': result.vote_total_percent,
-            'delegate_total': result.candidate.delegates,
             'is_winner': result.candidate.is_winner,
         })
 
