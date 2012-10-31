@@ -394,6 +394,10 @@ A contest being decided by voters choosing between candidates. This object is th
 
     Returns `True` is the race is uncontested.
 
+.. attribute:: self.is_referendum
+
+    Returns `True` if this is a race where the people vote to decide about a law, measure, proposition, amendment, etc.
+
 .. raw:: html
 
    <hr>
