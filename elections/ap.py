@@ -1175,11 +1175,12 @@ class Race(object):
         """
         return self.office_name in [
             'Amendment',
+            'Initiative',
+            'Issue',
             'Measure',
             'Proposition',
             'Question',
             'Referendum',
-            'Issue'
         ]
     
     @property

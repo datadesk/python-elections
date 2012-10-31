@@ -183,12 +183,24 @@ class APTest(BaseTest):
         # Test the results against a get_state method to verify they are the same
         self.tt = self.client.get_topofticket()
         self.st = self.client.get_state(TEST_STATE)
-        self.tt = self.tt.filter_races(office_name='President', state_postal=TEST_STATE)[0]
-        self.st = self.st.filter_races(office_name='President', state_postal=TEST_STATE)[0]
+#        self.tt = self.tt.filter_races(office_name='President', state_postal=TEST_STATE)[0]
+#        self.st = self.st.filter_races(office_name='President', state_postal=TEST_STATE)[0]
 #        self.assertEqual(
 #            [i.vote_total for i in self.tt.state.results],
 #            [i.vote_total for i in self.st.state.results]
 #        )
+        refs = self.tt.filter_races(is_referendum=True)
+        [self.assertTrue(i.is_referendum)
+            for i in refs if i.office_name in [
+                'Amendment',
+                'Initiative',
+                'Issue',
+                'Measure',
+                'Proposition',
+                'Question',
+                'Referendum'
+            ]
+        ]
      
     def test_presidential_summary(self):
         self.nov6 = self.client.get_presidential_summary()
