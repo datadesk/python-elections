@@ -919,7 +919,7 @@ class CongressionalTrends(object):
         name = soup.first('trendtable')['office'].split('U.S. ')[-1]
         chamber = Chamber(name)
 
-        parties = soup.findAll('party')[:2]
+        parties = soup.findAll('party')
 
         for party in parties:
             party_name = party['title'].lower()
@@ -934,6 +934,10 @@ class CongressionalTrends(object):
             holdovers = party.first(attrs={'name':'Holdovers'})['value']
             holdovers = int(holdovers)
             setattr(chamber, '%s_holdovers' % party_name, holdovers)
+
+            uncalled = party.first(attrs={'name':'InsufficientVote'})['value']
+            uncalled = int(uncalled)
+            setattr(chamber, '%s_uncalled' % party_name, uncalled)
 
             nc_node = party.first('netchange')
             net_change = nc_node.first(attrs={'name':'Winners'})['value']
@@ -1462,12 +1466,26 @@ class Chamber(object):
         self.name = name
         self.dem_net_change = None
         self.gop_net_change = None
+        self.others_net_change = None
         self.dem_won_total = None
         self.gop_won_total = None
+        self.others_won_total = None
         self.dem_current_total = None
         self.gop_current_total = None
+        self.others_current_total = None
         self.dem_holdovers = None
         self.gop_holdovers = None
+        self.other_holdovers = None
+        self.dem_uncalled = None
+        self.gop_uncalled = None
+        self.others_uncalled = None
+
+    @property
+    def all_uncalled(self):
+        """
+        Uncalled races for all parties.
+        """
+        return self.others_uncalled + self.gop_uncalled + self.dem_uncalled
 
     def __unicode__(self):
         return unicode(self.name)
