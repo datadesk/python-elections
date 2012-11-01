@@ -218,6 +218,30 @@ class APTest(BaseTest):
             [self.assertTrue(isinstance(i.vote_total,int))
                 for i in county.results]
 
+    def test_congressional_trends(self):
+        self.trends = self.client.get_congressional_trends()
+        for chamber_name in ('house', 'senate'):
+            chamber = getattr(self.trends, chamber_name)
+            self.assertEqual(isinstance(chamber.dem_net_change, int), True)
+            self.assertEqual(isinstance(chamber.gop_net_change, int), True)
+            self.assertEqual(isinstance(chamber.others_net_change, int), True)
+            self.assertEqual(isinstance(chamber.dem_won_total, int), True)
+            self.assertEqual(isinstance(chamber.gop_won_total, int), True)
+            self.assertEqual(isinstance(chamber.others_won_total, int), True)
+            self.assertEqual(isinstance(chamber.dem_leading, int), True)
+            self.assertEqual(isinstance(chamber.gop_leading, int), True)
+            self.assertEqual(isinstance(chamber.others_leading, int), True)
+            self.assertEqual(isinstance(chamber.dem_current_total, int), True)
+            self.assertEqual(isinstance(chamber.gop_current_total, int), True)
+            self.assertEqual(isinstance(chamber.others_current_total, int), True)
+            self.assertEqual(isinstance(chamber.dem_holdovers, int), True)
+            self.assertEqual(isinstance(chamber.gop_holdovers, int), True)
+            self.assertEqual(isinstance(chamber.others_holdovers, int), True)
+            self.assertEqual(isinstance(chamber.dem_insufficient, int), True)
+            self.assertEqual(isinstance(chamber.gop_insufficient, int), True)
+            self.assertEqual(isinstance(chamber.others_insufficient, int), True)
+
+
 #    def test_delegate_summary(self):
 #        self.delsum = self.client.get_delegate_summary()
 #        self.assertEqual(len(self.delsum), 2)
