@@ -931,9 +931,13 @@ class CongressionalTrends(object):
             holdovers = int(holdovers)
             setattr(chamber, '%s_holdovers' % party_name, holdovers)
 
-            uncalled = party.first(attrs={'name':'InsufficientVote'})['value']
-            uncalled = int(uncalled)
-            setattr(chamber, '%s_uncalled' % party_name, uncalled)
+            insuff = party.first(attrs={'name':'InsufficientVote'})['value']
+            insuff = int(insuff)
+            setattr(chamber, '%s_insufficient' % party_name, insuff)
+
+            leading = party.first(attrs={'name':'Leading'})['value']
+            leading = int(leading)
+            setattr(chamber, '%s_leading' % party_name, leading)
 
             nc_node = party.first('netchange')
             net_change = nc_node.first(attrs={'name':'Winners'})['value']
@@ -1463,23 +1467,56 @@ class Chamber(object):
         self.dem_net_change = None
         self.gop_net_change = None
         self.others_net_change = None
+        ##
         self.dem_won_total = None
         self.gop_won_total = None
         self.others_won_total = None
+        ##
+        self.dem_leading = None
+        self.gop_leading = None
+        self.others_leading = None
+        ##
         self.dem_current_total = None
         self.gop_current_total = None
         self.others_current_total = None
+        ##
         self.dem_holdovers = None
         self.gop_holdovers = None
         self.other_holdovers = None
-        self.dem_uncalled = None
-        self.gop_uncalled = None
-        self.others_uncalled = None
+        ##
+        self.dem_insufficient = None
+        self.gop_insufficient = None
+        self.others_insufficient = None
+
+    @property
+    def gop_uncalled(self):
+        """
+        Uncalled races for GOP.
+        Uncalled = "leading" + insufficient votes
+        """
+        return self.gop_leading + self.gop_insufficient
+
+    @property
+    def dem_uncalled(self):
+        """
+        Uncalled races for Dem.
+        Uncalled = "leading" + insufficient votes
+        """
+        return self.dem_leading + self.dem_insufficient
+
+    @property
+    def others_uncalled(self):
+        """
+        Uncalled races for others.
+        Uncalled = "leading" + insufficient votes
+        """
+        return self.others_leading + self.others_insufficient
 
     @property
     def all_uncalled(self):
         """
         Uncalled races for all parties.
+        Uncalled = "leading" + insufficient votes
         """
         return self.others_uncalled + self.gop_uncalled + self.dem_uncalled
 
