@@ -11,6 +11,7 @@ or by contacting Anthony Marquez at amarquez@ap.org.
 """
 import os
 import csv
+import copy
 import itertools
 import calculate
 from ftplib import FTP
@@ -766,12 +767,14 @@ class PresidentialSummary(BaseAPResultCollection):
     """
     ap_number_template = '%(number)s-%(state)s'
     
-    def __init__(self, client):
+    def __init__(self, client, districts=False):
         self.results_file_path = "/Pres_Reports/flat/pres_county.txt"
         self.race_file_path = "/inits/US/US_20121106_race.txt"
         self.reporting_unit_file_path = "/inits/US/US_20121106_ru.txt"
         self.candidate_file_path = "/inits/US/US_20121106_pol.txt"
         self.summary_file_path = "/Pres_Reports/flat/pres_electoral.txt"
+        self.district_file_path = "/inits/US/US_20121106_district.txt"
+        self.fetch_districts = districts
         super(PresidentialSummary, self).__init__(client, None, results=True, delegates=False)
     
     def _init_races(self):
@@ -783,6 +786,49 @@ class PresidentialSummary(BaseAPResultCollection):
         # Then get rid of everything that isn't the presidential race
         self._races = dict((k,v) for k,v in self._races.items()
             if v.office_name == 'President')
+        if self.fetch_districts:
+            # Init fake district race objects for the Nebraska...
+            new_neb = copy.deepcopy(self.filter_races(state_postal='NE')[0])
+            new_neb.scope = 'D'
+            new_neb.ap_race_number = self.ap_number_template % ({
+                'number': 'district',
+                'state': 'NE',
+            })
+            self._races.update({new_neb.ap_race_number: new_neb})
+            # .. and for Maine
+            new_maine = copy.deepcopy(self.filter_races(state_postal='ME')[0])
+            new_maine.scope = 'D'
+            new_maine.ap_race_number = self.ap_number_template % ({
+                'number': 'district',
+                'state': 'ME',
+            })
+            self._races.update({new_maine.ap_race_number: new_maine})
+    
+    def _init_reporting_units(self):
+        super(PresidentialSummary, self)._init_reporting_units()
+        if self.fetch_districts:
+            # Load the district file
+            d_list = self.client._fetch_csv(
+                self.district_file_path,
+                delimiter="|"
+            )
+            # Clear our any reporting units the races may already have
+            [setattr(r, '_reporting_units', {}) for r in self.filter_races(scope='D')]
+            # Loop through the district file
+            for r in d_list:
+                # Make a reporting unit for each
+                ru = ReportingUnit(
+                    name = "%s %s" % (r['st_postal'], r['dist_name']),
+                    ap_number = r['re_number'],
+                    abbrev = r['dist_number'],
+                    precincts_total = int(r['dist_precincts'])
+                )
+                # And connect it to the race
+                this_race = self.filter_races(
+                    scope='D',
+                    state_postal=r['st_postal']
+                )[0]
+                this_race._reporting_units.update({ru.key: ru})
     
     def fetch_results(self):
         """
@@ -816,7 +862,7 @@ class PresidentialSummary(BaseAPResultCollection):
             # If it's a state row...
             if row['state_postal'] != 'US':
                 # ... tack the electoral votes on the reporting unit ...
-                this_ru = self.filter_races(state_postal=row['state_postal'])[0].state
+                this_ru = self.filter_races(state_postal=row['state_postal'], scope='S')[0].state
                 this_ru.electoral_votes_total = int(row['total_electoral_votes'])
                 # ...dig out the results object with this candidate...
                 this_result = [i for i in this_ru.results
@@ -875,6 +921,132 @@ class PresidentialSummary(BaseAPResultCollection):
             )
             ru.update_result(result)
         self._reporting_units.update({ru.key: ru})
+        
+        if self.fetch_districts:
+            # Get the results in the Nebraska and Maine districts
+            district_result_paths = [
+                '/ME/flat/ME_D.txt',
+                '/NE/flat/NE_D.txt'
+            ]
+            for path in district_result_paths:
+                # Pull the data
+                flat_list = self.client._fetch_flatfile(
+                    path,
+                    [ # First the basic fields that will the same in each row
+                        'test',
+                        'election_date',
+                        'state_postal',
+                        'district_type',
+                        'district_number',
+                        'district_name',
+                        'race_number',
+                        'office_id',
+                        'race_type_id',
+                        'seat_number',
+                        'office_name',
+                        'seat_name',
+                        'race_type_party',
+                        'race_type',
+                        'office_description',
+                        'number_of_winners',
+                        'number_in_runoff',
+                        'precincts_reporting',
+                        'total_precincts',
+                    ],
+                   [ # Then the candidate fields that will repeat after the basics
+                        'candidate_number',
+                        'order',
+                        'party',
+                        'first_name',
+                        'middle_name',
+                        'last_name',
+                        'junior',
+                        'use_junior',
+                        'incumbent',
+                        'total_electoral_votes',
+                        'vote_count',
+                        'is_winner',
+                        'national_politician_id',
+                    ]
+                )
+                # Exclude statewide results
+                flat_list = [r for r in flat_list if r['district_number'] != '1']
+                # Loop through district-level results
+                for row in flat_list:
+                    # Get the race object
+                    this_race = self.filter_races(
+                        scope='D',
+                        state_postal=row['state_postal']
+                    )[0]
+                    # Get the reporting unit for this district
+                    ru_name = '%s %s%s' % (
+                        row['state_postal'],
+                        row['district_name'],
+                        row['district_number']
+                    )
+                    this_ru = this_race.get_reporting_unit(ru_name)
+                    votes_cast = 0
+                    # Loop through all the candidates in this row
+                    for cand in row['candidates']:
+                        # Create the candidate object
+                        this_cand = Candidate(
+                            first_name = cand['first_name'],
+                            middle_name = cand['middle_name'],
+                            last_name = cand['last_name'],
+                            ap_race_number = self.ap_number_template % ({
+                                'number': 'district',
+                                'state': row['state_postal'],
+                            }),
+                            ap_natl_number = cand['national_politician_id'],
+                            ap_polra_number = cand['candidate_number'],
+                            ap_pol_number = cand['candidate_number'],
+                            suffix = cand['junior'],
+                            party = cand['party'],
+                            is_winner = cand['is_winner'] == 'X',
+                            is_runoff = cand['is_winner'] == 'R',
+                            is_incumbent = cand['last_name'] == 'Obama'
+                        )
+                        
+                        # Pull the vote total
+                        vote_count = int(cand['vote_count'])
+                        
+                        # Add it to the overall total
+                        votes_cast += vote_count
+                        
+                        # Add it to the Race list
+                        this_race.add_candidate(this_cand)
+                        
+                        # Create the Result object
+                        this_result = Result(
+                            candidate = this_cand,
+                            vote_total = int(cand['vote_count']),
+                            reporting_unit = this_ru,
+                            electoral_votes_total = int(cand['total_electoral_votes'])
+                        )
+                        this_ru.update_result(this_result)
+                    
+                    # Sync the result with the reporting unit
+                    this_race._reporting_units.update({this_ru.key: this_ru})
+                    
+                    # Update the reporting unit's precincts status
+                    this_ru.precincts_total = int(row['total_precincts'])
+                    this_ru.precincts_reporting = int(row['precincts_reporting'])
+                    this_ru.precincts_reporting_percent = calculate.percentage(
+                        this_ru.precincts_reporting,
+                        this_ru.precincts_total
+                    )
+                    
+                    # Update the total votes cast
+                    this_ru.votes_cast = votes_cast
+                    
+                    # Loop back through the results and set the percentages now
+                    # that we know the overall total
+                    for result in this_ru.results:
+                        result.vote_total_percent = calculate.percentage(
+                            result.vote_total, 
+                            votes_cast
+                        )
+
     
     @property
     def nationwide(self):
@@ -901,6 +1073,17 @@ class PresidentialSummary(BaseAPResultCollection):
         nested_list = [i.counties for i in state_list]
         county_list = [item for sublist in nested_list for item in sublist]
         return county_list
+    
+    @property
+    def districts(self):
+        """
+        Return only congressional-district results for states that split
+        out electoral votes, which is limited to Maine and Nebraska
+        """
+        race_list = self.filter_races(scope='D')
+        nested_list = [i.reporting_units for i in race_list]
+        district_list = [item for sublist in nested_list for item in sublist]
+        return district_list
 
 
 class CongressionalTrends(object):
@@ -980,8 +1163,6 @@ class CongressionalTrends(object):
     def senate(self):
         return [c for c in self.chambers if c.name == "Senate"][0]
 
-
-        
 
 class DelegateSummary(object):
     """
