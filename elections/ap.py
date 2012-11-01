@@ -1487,7 +1487,7 @@ class Chamber(object):
         ##
         self.dem_holdovers = None
         self.gop_holdovers = None
-        self.other_holdovers = None
+        self.others_holdovers = None
         ##
         self.dem_insufficient = None
         self.gop_insufficient = None
