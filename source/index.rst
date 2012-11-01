@@ -199,9 +199,11 @@ The AP client is public class you can use to connect to the AP's data feed.
         >>> client.get_topofticket('2012-02-07')
         <TopOfTicket: 20120207>
 
-..   function:: client.get_presidential_summary()
+..   function:: client.get_presidential_summary(districts=False)
 
     Returns a summary of presidential election results at three levels: nationwide popular vote and electoral vote; state-level popular vote and electoral vote; county-level popular vote.
+
+    If `districts` is provided and set to True the results will include Congressional district-level results in the two states that break out their presidential electors: Maine and Nebraska. This feature only works if the AP has given your account access to the ME and NE data folders. By default, `districts` is set to False.
 
         >>> from elections import AP
         >>> client = AP(USERNAME, PASSWORD)
@@ -661,6 +663,13 @@ Calling presidential methods, like `get_presidential_summary` will return a slig
 
         >>> obj.counties
         [<ReportingUnit: Abbeville>, <ReportingUnit: Aiken>, <ReportingUnit: Allendale>, <ReportingUnit: Anderson>, <ReportingUnit: Bamberg>, <ReportingUnit: Barnwell>, <ReportingUnit: Beaufort>, <ReportingUnit: Berkeley>, <ReportingUnit: Calhoun>, <ReportingUnit: Charleston>, <ReportingUnit: Cherokee>, <ReportingUnit: Chester>, <ReportingUnit: Chesterfield>, <ReportingUnit: Clarendon>, <ReportingUnit: Colleton>, <ReportingUnit: Darlington>, <ReportingUnit: Dillon>, <ReportingUnit: Dorchester>, <ReportingUnit: Edgefield>, <ReportingUnit: Fairfield>...]
+
+.. attribute:: obj.districts
+
+    Returns only Congressional district-level results in the two states that break out their presidential electors: Maine and Nebraska. This feature only works if `districts` is set to True and passed into the `get_presidential_summary` model.
+
+        >>> prez = client.get_presidential_summary(districts=True)
+        >>> prez.districts
 
 .. raw:: html
 

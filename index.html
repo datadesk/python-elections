@@ -202,8 +202,9 @@
 
 <dl class="function">
 <dt id="client.get_presidential_summary">
-<tt class="descclassname">client.</tt><tt class="descname">get_presidential_summary</tt><big>(</big><big>)</big><a class="headerlink" href="#client.get_presidential_summary" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">client.</tt><tt class="descname">get_presidential_summary</tt><big>(</big><em>districts=False</em><big>)</big><a class="headerlink" href="#client.get_presidential_summary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a summary of presidential election results at three levels: nationwide popular vote and electoral vote; state-level popular vote and electoral vote; county-level popular vote.</p>
+<p>If <cite>districts</cite> is provided and set to True the results will include Congressional district-level results in the two states that break out their presidential electors: Maine and Nebraska. This feature only works if the AP has given your account access to the ME and NE data folders. By default, <cite>districts</cite> is set to False.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">elections</span> <span class="kn">import</span> <span class="n">AP</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">AP</span><span class="p">(</span><span class="n">USERNAME</span><span class="p">,</span> <span class="n">PASSWORD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">get_presidential_summary</span><span class="p">()</span>
