@@ -670,6 +670,7 @@ Calling presidential methods, like `get_presidential_summary` will return a slig
 
         >>> prez = client.get_presidential_summary(districts=True)
         >>> prez.districts
+        [<ReportingUnit: ME District 2>, <ReportingUnit: ME District 1>, <ReportingUnit: NE District 2>, <ReportingUnit: NE District 3>, <ReportingUnit: NE District 1>]
 
 .. raw:: html
 

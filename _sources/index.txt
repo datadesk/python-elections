@@ -664,6 +664,14 @@ Calling presidential methods, like `get_presidential_summary` will return a slig
         >>> obj.counties
         [<ReportingUnit: Abbeville>, <ReportingUnit: Aiken>, <ReportingUnit: Allendale>, <ReportingUnit: Anderson>, <ReportingUnit: Bamberg>, <ReportingUnit: Barnwell>, <ReportingUnit: Beaufort>, <ReportingUnit: Berkeley>, <ReportingUnit: Calhoun>, <ReportingUnit: Charleston>, <ReportingUnit: Cherokee>, <ReportingUnit: Chester>, <ReportingUnit: Chesterfield>, <ReportingUnit: Clarendon>, <ReportingUnit: Colleton>, <ReportingUnit: Darlington>, <ReportingUnit: Dillon>, <ReportingUnit: Dorchester>, <ReportingUnit: Edgefield>, <ReportingUnit: Fairfield>...]
 
+.. attribute:: obj.districts
+
+    Returns only Congressional district-level results in the two states that break out their presidential electors: Maine and Nebraska. This feature only works if `districts` is set to True and passed into the `get_presidential_summary` model.
+
+        >>> prez = client.get_presidential_summary(districts=True)
+        >>> prez.districts
+        [<ReportingUnit: ME District 2>, <ReportingUnit: ME District 1>, <ReportingUnit: NE District 2>, <ReportingUnit: NE District 3>, <ReportingUnit: NE District 1>]
+
 .. raw:: html
 
    <hr>

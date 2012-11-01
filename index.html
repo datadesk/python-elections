@@ -807,6 +807,17 @@
 </div>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="obj.districts">
+<tt class="descclassname">obj.</tt><tt class="descname">districts</tt><a class="headerlink" href="#obj.districts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns only Congressional district-level results in the two states that break out their presidential electors: Maine and Nebraska. This feature only works if <cite>districts</cite> is set to True and passed into the <cite>get_presidential_summary</cite> model.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">prez</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_presidential_summary</span><span class="p">(</span><span class="n">districts</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">prez</span><span class="o">.</span><span class="n">districts</span>
+<span class="go">[&lt;ReportingUnit: ME District 2&gt;, &lt;ReportingUnit: ME District 1&gt;, &lt;ReportingUnit: NE District 2&gt;, &lt;ReportingUnit: NE District 3&gt;, &lt;ReportingUnit: NE District 1&gt;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <hr></div>
 <div class="section" id="delegate-summary-collections">
 <h1>Delegate Summary Collections<a class="headerlink" href="#delegate-summary-collections" title="Permalink to this headline">¶</a></h1>
