@@ -882,21 +882,25 @@ class PresidentialSummary(BaseAPResultCollection):
         Return only the nationwide reporting unit
         """
         return [i.reporting_units[0] for i in self.races if i.scope == 'N'][0]
-
+    
     @property
     def states(self):
         """
         Return only the state-level reporting units
         """
-        return [i.state for i in self.races if i.scope == 'S']
+        state_list = [i.state for i in self.races if i.scope == 'S']
+        return sorted(state_list, key=lambda x: x.name)
     
     @property
     def counties(self):
         """
         Return only the county-level reporting units
         """
-        county_list = [i.counties for i in self.races if i.scope == 'S']
-        return [item for sublist in county_list for item in sublist]
+        state_list = [i for i in self.races if i.scope == 'S']
+        state_list = sorted(state_list, key=lambda x: x.state.name)
+        nested_list = [i.counties for i in state_list]
+        county_list = [item for sublist in nested_list for item in sublist]
+        return county_list
 
 
 class CongressionalTrends(object):
@@ -1175,11 +1179,12 @@ class Race(object):
         """
         return self.office_name in [
             'Amendment',
+            'Initiative',
+            'Issue',
             'Measure',
             'Proposition',
             'Question',
             'Referendum',
-            'Issue'
         ]
     
     @property
