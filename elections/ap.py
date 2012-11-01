@@ -110,7 +110,7 @@ class AP(object):
         """
         return DelegateSummary(self).nominations
     
-    def get_presidential_summary(self):
+    def get_presidential_summary(self, districts=False):
         """
         Returns a summary of presidential election results at three levels:
         
@@ -118,8 +118,14 @@ class AP(object):
             2. State-level popular vote and electoral vote
             3. County-level popular vote
         
+        If `districts` is provided and set to True the results will include 
+        Congressional district-level results in the two states that break out
+        their presidential electors: Maine and Nebraska. This feature only works
+        if the AP has given your account access to the ME and NE data folders.
+        
+        By default, `districts` is set to False.
         """
-        result = PresidentialSummary(self)
+        result = PresidentialSummary(self, districts=districts)
         self.ftp.quit()
         return result
 

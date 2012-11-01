@@ -217,6 +217,8 @@ class APTest(BaseTest):
         for county in self.nov6.counties:
             [self.assertTrue(isinstance(i.vote_total,int))
                 for i in county.results]
+        self.districts = self.client.get_presidential_summary(districts=True)
+        self.assertEqual(len(self.districts.districts), 5)
 
     def test_congressional_trends(self):
         self.trends = self.client.get_congressional_trends()
