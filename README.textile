@@ -1,5 +1,3 @@
-*2012 general election features are currently under development in the trunk. So pip packages are not yet ready to serve.*
-
 <pre><code>   _
   (_)
  <___>
