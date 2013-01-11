@@ -25,7 +25,7 @@ In order to use this library, you must pay AP for access to the data. More infor
 In The Wild
 ===========
 
-* `Los Angeles Times <http://graphics.latimes.com/2012-election-gop-primary-overview/>`_, `again <http://graphics.latimes.com/2012-election-results-national-map/>` and `again <http://graphics.latimes.com/2012-election-results-california/>`_
+* `Los Angeles Times <http://graphics.latimes.com/2012-election-gop-primary-overview/>`_, `again <http://graphics.latimes.com/2012-election-results-national-map/>`_ and `again <http://graphics.latimes.com/2012-election-results-california/>`_
 * `Chicago Tribune <http://media.apps.chicagotribune.com/2012-elections/nh-primary.html>`_, `again <http://elections.chicagotribune.com/results/>`_ and `again <http://elections.chicagotribune.com/results/us-president/>`_
 * `Washington Times <http://www.washingtontimes.com/campaign-2012/FL/live-map/>`_ 
 * `Palm Beach Post <http://www.palmbeachpost.com/news/see-results-from-every-florida-county-on-our-2140533.html>`_ and `again <http://tampabay.com/tbprojects/elections/2012/results/results.html>`_
