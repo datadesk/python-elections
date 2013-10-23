@@ -501,8 +501,11 @@ class BaseAPResultCollection(object):
                     fips = r['ru_fip'],
                     abbrev = r['ru_abbrv'],
                     precincts_total = int(r['ru_precincts']),
-                    num_reg_voters = int(r['ru_reg_voters']),
+                    num_reg_voters = None,
                 )
+                # This one is not always there, so we opt in.
+                if r.get('ru_reg_voters', None):
+                    ru.num_reg_voters = int(r['num_reg_voters'])
                 # And add them to the global store
                 race._reporting_units.update({ru.key: ru})
             # We add a set of reportingunits for the State object
@@ -514,8 +517,10 @@ class BaseAPResultCollection(object):
                 fips = r['ru_fip'],
                 abbrev = r['ru_abbrv'],
                 precincts_total = int(r['ru_precincts']),
-                num_reg_voters = int(r['ru_reg_voters']),
+                num_reg_voters = None,
             )
+            if r.get('ru_reg_voters', None):
+                ru.num_reg_voters = int(r['num_reg_voters'])
             self._reporting_units.update({ru.key: ru})
     
     def _get_flat_delegates(self):
