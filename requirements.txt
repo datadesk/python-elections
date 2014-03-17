@@ -1,7 +1,0 @@
-Jinja2==2.6
-Pygments==1.4
-Sphinx==1.1.2
-distribute==0.6.19
-docutils==0.8.1
-latimes-calculate==0.1.8
-wsgiref==0.1.2
