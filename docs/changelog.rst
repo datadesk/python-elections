@@ -1,13 +1,18 @@
 Changelog
 =========
 
-0.30
-----
+0.4
+---
+
+* Bug fix for Virgina elections
+
+0.3
+---
 
 * Added delegate summary method thanks to contributions of David Eads.
 
-0.20
-----
+0.2
+---
 
 * Added `get_topofticket` methods thanks to contributions by Corey Oordt.
 
