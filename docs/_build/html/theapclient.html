@@ -1,0 +1,878 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The Associated Press client &mdash; python-elections 0.4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="python-elections 0.4 documentation" href="index.html" />
+    <link rel="next" title="Changelog" href="changelog.html" />
+    <link rel="prev" title="Getting Started" href="gettingstarted.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="changelog.html" title="Changelog"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="gettingstarted.html" title="Getting Started"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">python-elections 0.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="the-associated-press-client">
+<h1>The Associated Press client<a class="headerlink" href="#the-associated-press-client" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="retrieving-data">
+<h2>Retrieving data<a class="headerlink" href="#retrieving-data" title="Permalink to this headline">¶</a></h2>
+<p>The AP client is public class you can use to connect to the AP&#8217;s data feed.</p>
+<dl class="function">
+<dt id="client.get_state">
+<tt class="descclassname">client.</tt><tt class="descname">get_state</tt><big>(</big><em>state_postal_code</em><big>)</big><a class="headerlink" href="#client.get_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a single state postal code, returns that state&#8217;s results.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">elections</span> <span class="kn">import</span> <span class="n">AP</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">AP</span><span class="p">(</span><span class="n">USERNAME</span><span class="p">,</span> <span class="n">PASSWORD</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="s">&#39;IA&#39;</span><span class="p">)</span>
+<span class="go">&lt;State: IA&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="client.get_states">
+<tt class="descclassname">client.</tt><tt class="descname">get_states</tt><big>(</big><em>*state_postal_codes</em><big>)</big><a class="headerlink" href="#client.get_states" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes one to many state postal codes as arguments, returns a list of results for the requested states.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">elections</span> <span class="kn">import</span> <span class="n">AP</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">AP</span><span class="p">(</span><span class="n">USERNAME</span><span class="p">,</span> <span class="n">PASSWORD</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">get_states</span><span class="p">(</span><span class="s">&#39;IA&#39;</span><span class="p">,</span> <span class="s">&#39;NH&#39;</span><span class="p">)</span>
+<span class="go">[&lt;State: IA&gt;, &lt;State: NH&gt;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="client.get_topofticket">
+<tt class="descclassname">client.</tt><tt class="descname">get_topofticket</tt><big>(</big><em>election_date</em><big>)</big><a class="headerlink" href="#client.get_topofticket" title="Permalink to this definition">¶</a></dt>
+<dd><p>Top of the ticket is an AP data service that provides limited results on the top races for all 50 states (i.e. President, Governor, US Senate, and US House). It requires a date in any common format, YYYY-MM-DD is preferred, and returns all results for that date.</p>
+<p>If you do not provide a date, it defaults to the next major election. Today that is the Nov. 6, 2012 general election.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">elections</span> <span class="kn">import</span> <span class="n">AP</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">AP</span><span class="p">(</span><span class="n">USERNAME</span><span class="p">,</span> <span class="n">PASSWORD</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">get_topofticket</span><span class="p">(</span><span class="s">&#39;2012-02-07&#39;</span><span class="p">)</span>
+<span class="go">&lt;TopOfTicket: 20120207&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="client.get_presidential_summary">
+<tt class="descclassname">client.</tt><tt class="descname">get_presidential_summary</tt><big>(</big><em>districts=False</em><big>)</big><a class="headerlink" href="#client.get_presidential_summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a summary of presidential election results at three levels: nationwide popular vote and electoral vote; state-level popular vote and electoral vote; county-level popular vote.</p>
+<p>If <cite>districts</cite> is provided and set to True the results will include Congressional district-level results in the two states that break out their presidential electors: Maine and Nebraska. This feature only works if the AP has given your account access to the ME and NE data folders. By default, <cite>districts</cite> is set to False.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">elections</span> <span class="kn">import</span> <span class="n">AP</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">AP</span><span class="p">(</span><span class="n">USERNAME</span><span class="p">,</span> <span class="n">PASSWORD</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">get_presidential_summary</span><span class="p">()</span>
+<span class="go">&lt;PresidentialSummary: None&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="client.get_delegate_summary">
+<tt class="descclassname">client.</tt><tt class="descname">get_delegate_summary</tt><big>(</big><big>)</big><a class="headerlink" href="#client.get_delegate_summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a nationwide summary and state-level totals contain delegate counts for all the candidates in the presidential nomination contest held by the two major parties.</p>
+<p><strong>Warning:</strong> This method does not currently work because the 2012 primaries are over and the AP has removed the folders it depends on.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">elections</span> <span class="kn">import</span> <span class="n">AP</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">AP</span><span class="p">(</span><span class="n">USERNAME</span><span class="p">,</span> <span class="n">PASSWORD</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">get_delegate_summary</span><span class="p">()</span>
+<span class="go">[&lt;Nomination: Dem&gt;, &lt;Nomination: GOP&gt;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<hr></div>
+<div class="section" id="election-result-collections">
+<h2>Election Result Collections<a class="headerlink" href="#election-result-collections" title="Permalink to this headline">¶</a></h2>
+<p>Depending on which client method you use to harvest data, results may be returned as <cite>State</cite> or <cite>TopOfTicket</cite> objects. Don&#8217;t worry about the distinction, because they act pretty much the same. They share the following attributes for you to use.</p>
+<dl class="attribute">
+<dt id="obj.counties">
+<tt class="descclassname">obj.</tt><tt class="descname">counties</tt><a class="headerlink" href="#obj.counties" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of all the counties from the pool of reporting units.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="s">&#39;IA&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">counties</span>
+<span class="go">[&lt;ReportingUnit: Guthrie&gt;, &lt;ReportingUnit: Union&gt;, &lt;ReportingUnit: Crawford&gt;, &lt;ReportingUnit: Wright&gt;, &lt;ReportingUnit: Tama&gt;, &lt;ReportingUnit: Hamilton&gt;, &lt;ReportingUnit: Worth&gt;, &lt;ReportingUnit: Hancock&gt;, &lt;ReportingUnit: Cherokee&gt;, &lt;ReportingUnit: Carroll&gt;, &lt;ReportingUnit: Webster&gt;, &lt;ReportingUnit: Clarke&gt;, ...]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="obj.filter_races">
+<tt class="descclassname">obj.</tt><tt class="descname">filter_races</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#obj.filter_races" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a series of keyword arguments and returns any races that match.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="s">&#39;IA&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">filter_races</span><span class="p">(</span><span class="n">office_name</span><span class="o">=</span><span class="s">&#39;President&#39;</span><span class="p">,</span> <span class="n">party</span><span class="o">=</span><span class="s">&#39;GOP&#39;</span><span class="p">)</span>
+<span class="go">[&lt;Race: GOP Caucus - President&gt;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.races">
+<tt class="descclassname">obj.</tt><tt class="descname">races</tt><a class="headerlink" href="#obj.races" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of all the races reporting results.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="s">&#39;IA&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">races</span>
+<span class="go">[&lt;Race: GOP Caucus - President&gt;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.reporting_units">
+<tt class="descclassname">obj.</tt><tt class="descname">reporting_units</tt><a class="headerlink" href="#obj.reporting_units" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of all reporting units in the result collection.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="s">&quot;IA&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">reporting_units</span>
+<span class="go">[&lt;ReportingUnit: Guthrie&gt;, &lt;ReportingUnit: Union&gt;, &lt;ReportingUnit: Crawford&gt;, &lt;ReportingUnit: Wright&gt;, &lt;ReportingUnit: Tama&gt;, &lt;ReportingUnit: Hamilton&gt;, &lt;ReportingUnit: Worth&gt;, &lt;ReportingUnit: Hancock&gt;, &lt;ReportingUnit: Cherokee&gt;, &lt;ReportingUnit: Carroll&gt;, &lt;ReportingUnit: Webster&gt;, &lt;ReportingUnit: Clarke&gt;, ...]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.states">
+<tt class="descclassname">obj.</tt><tt class="descname">states</tt><a class="headerlink" href="#obj.states" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of all the states from the pool of reporting units. Only available on <cite>TopOfTicket</cite> result collections.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_topofticket</span><span class="p">(</span><span class="s">&#39;2012-02-07&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">states</span>
+<span class="go">[&lt;ReportingUnit: Missouri (state)&gt;, &lt;ReportingUnit: Minnesota (state)&gt;, &lt;ReportingUnit: Colorado (state)&gt;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<div class="section" id="races">
+<h3>Races<a class="headerlink" href="#races" title="Permalink to this headline">¶</a></h3>
+<p>A contest being decided by voters choosing between candidates. This object is the key to everything about it. It is often found in the <cite>races</cite> attribute of a result collection.</p>
+<dl class="attribute">
+<dt id="obj.ap_race_number">
+<tt class="descclassname">obj.</tt><tt class="descname">ap_race_number</tt><a class="headerlink" href="#obj.ap_race_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>AP-assigned race number. Race numbers are guaranteed to be unique only within a state.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">ap_race_number</span>
+<span class="go">&#39;16957&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.candidates">
+<tt class="descclassname">obj.</tt><tt class="descname">candidates</tt><a class="headerlink" href="#obj.candidates" title="Permalink to this definition">¶</a></dt>
+<dd><p>The list of candidates participating in the race.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">candidates</span>
+<span class="go">[&lt;Candidate: Michele Bachmann&gt;, &lt;Candidate: Herman Cain&gt;, &lt;Candidate: Newt Gingrich&gt;, &lt;Candidate: Jon Huntsman&gt;, &lt;Candidate: No Preference&gt;, &lt;Candidate: Other&gt;, &lt;Candidate: Ron Paul&gt;, &lt;Candidate: Rick Perry&gt;, &lt;Candidate: Buddy Roemer&gt;, &lt;Candidate: Mitt Romney&gt;, &lt;Candidate: Rick Santorum&gt;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descclassname">obj.</tt><tt class="descname">counties</tt></dt>
+<dd><p>Returns all the counties that report results for this race as a list.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">counties</span>
+<span class="go">[&lt;ReportingUnit: Adair&gt;, &lt;ReportingUnit: Adams&gt;, &lt;ReportingUnit: Allamakee&gt;, &lt;ReportingUnit: Appanoose&gt;, &lt;ReportingUnit: Audubon&gt;, &lt;ReportingUnit: Benton&gt;, &lt;ReportingUnit: Black Hawk&gt;, &lt;ReportingUnit: Boone&gt;, &lt;ReportingUnit: Bremer&gt;, &lt;ReportingUnit: Buchanan&gt;, ...</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.date">
+<tt class="descclassname">obj.</tt><tt class="descname">date</tt><a class="headerlink" href="#obj.date" title="Permalink to this definition">¶</a></dt>
+<dd><p>The date of the election in Python&#8217;s datetime format.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">date</span>
+<span class="go">datetime.date(2012, 1, 3)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.is_primary">
+<tt class="descclassname">obj.</tt><tt class="descname">is_primary</tt><a class="headerlink" href="#obj.is_primary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <cite>True</cite> if the race is a primary.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.is_caucus">
+<tt class="descclassname">obj.</tt><tt class="descname">is_caucus</tt><a class="headerlink" href="#obj.is_caucus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <cite>True</cite> if the race is a caucus.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.is_general">
+<tt class="descclassname">obj.</tt><tt class="descname">is_general</tt><a class="headerlink" href="#obj.is_general" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <cite>True</cite> if the race is part of a general election.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.name">
+<tt class="descclassname">obj.</tt><tt class="descname">name</tt><a class="headerlink" href="#obj.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name of the race.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">name</span>
+<span class="go">&#39;GOP Caucus - President&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.num_winners">
+<tt class="descclassname">obj.</tt><tt class="descname">num_winners</tt><a class="headerlink" href="#obj.num_winners" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integer giving the maximum number of winners.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">num_winners</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.office_name">
+<tt class="descclassname">obj.</tt><tt class="descname">office_name</tt><a class="headerlink" href="#obj.office_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Character string for office name (e.g., U.S. House, Governor, etc.)</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">office_name</span>
+<span class="go">&#39;President&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.office_description">
+<tt class="descclassname">obj.</tt><tt class="descname">office_description</tt><a class="headerlink" href="#obj.office_description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Character string further describing the office type. May be empty.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.office_id">
+<tt class="descclassname">obj.</tt><tt class="descname">office_id</tt><a class="headerlink" href="#obj.office_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Single character Office Type ID. Only top-of-the-ticket races (President, Governor, US Senate, and US House) are guaranteed to be unique on a national level. All other office types are guaranteed to be unique only within a state. A full list of the office identifiers can be found in AP&#8217;s documentation.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.party">
+<tt class="descclassname">obj.</tt><tt class="descname">party</tt><a class="headerlink" href="#obj.party" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of party to which race applies, i.e., GOP if a Republican Primary.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.race_type_name">
+<tt class="descclassname">obj.</tt><tt class="descname">race_type_name</tt><a class="headerlink" href="#obj.race_type_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a descriptive name for the race_type.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">race_type_name</span>
+<span class="go">&#39;GOP Caucus&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descclassname">obj.</tt><tt class="descname">reporting_units</tt></dt>
+<dd><p>Returns all reporting units that belong to this race as a list.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">reporting_units</span>
+<span class="go">[&lt;ReportingUnit: Guthrie&gt;, &lt;ReportingUnit: Union&gt;, &lt;ReportingUnit: Crawford&gt;, &lt;ReportingUnit: Wright&gt;, &lt;ReportingUnit: Tama&gt;, &lt;ReportingUnit: Hamilton&gt;, &lt;ReportingUnit: Worth&gt;, &lt;ReportingUnit: Hancock&gt;, &lt;ReportingUnit: Cherokee&gt;, &lt;ReportingUnit: Carroll&gt;, ...</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.scope">
+<tt class="descclassname">obj.</tt><tt class="descname">scope</tt><a class="headerlink" href="#obj.scope" title="Permalink to this definition">¶</a></dt>
+<dd><p>Office scope – whether the race is a Local (L) or Statewide (S) race</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">scope</span>
+<span class="go">&#39;S&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.state">
+<tt class="descclassname">obj.</tt><tt class="descname">state</tt><a class="headerlink" href="#obj.state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the state-level results for this race as a ReportingUnit object.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">state</span>
+<span class="go">&lt;ReportingUnit: Iowa (state)&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.seat_name">
+<tt class="descclassname">obj.</tt><tt class="descname">seat_name</tt><a class="headerlink" href="#obj.seat_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Character string giving the district or initiative name (e.g., District 46, 1A-Gay Marriage, etc.) This may be empty for a statewide race (e.g., a Governor race).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.seat_number">
+<tt class="descclassname">obj.</tt><tt class="descname">seat_number</tt><a class="headerlink" href="#obj.seat_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integer indicating district number or an initiative number. This may be zero (0) for a statewide race.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.state_postal">
+<tt class="descclassname">obj.</tt><tt class="descname">state_postal</tt><a class="headerlink" href="#obj.state_postal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Two character state postal string (e.g., IA, LA, etc.).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="self.uncontested">
+<tt class="descclassname">self.</tt><tt class="descname">uncontested</tt><a class="headerlink" href="#self.uncontested" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <cite>True</cite> is the race is uncontested.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="self.is_referendum">
+<tt class="descclassname">self.</tt><tt class="descname">is_referendum</tt><a class="headerlink" href="#self.is_referendum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <cite>True</cite> if this is a race where the people vote to decide about a law, measure, proposition, amendment, etc.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="reporting-units">
+<h3>Reporting Units<a class="headerlink" href="#reporting-units" title="Permalink to this headline">¶</a></h3>
+<p>An area or unit that groups votes into a total. For instance, a state, a congressional district, a county.</p>
+<dl class="attribute">
+<dt id="obj.abbrev">
+<tt class="descclassname">obj.</tt><tt class="descname">abbrev</tt><a class="headerlink" href="#obj.abbrev" title="Permalink to this definition">¶</a></dt>
+<dd><p>Short Name of reporting unit</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">abbrev</span>
+<span class="go">&#39;Poweshiek&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.ap_number">
+<tt class="descclassname">obj.</tt><tt class="descname">ap_number</tt><a class="headerlink" href="#obj.ap_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unique ID within a state for reporting unit.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">ap_number</span>
+<span class="go">&#39;16079&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descclassname">obj.</tt><tt class="descname">name</tt></dt>
+<dd><p>The full name of the reporting unit</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">name</span>
+<span class="go">&#39;Poweshiek&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.fips">
+<tt class="descclassname">obj.</tt><tt class="descname">fips</tt><a class="headerlink" href="#obj.fips" title="Permalink to this definition">¶</a></dt>
+<dd><p>The unique FIPS code for this reporting unit, assigned by the U.S. government.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">fips</span>
+<span class="go">&#39;19157&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.num_reg_voters">
+<tt class="descclassname">obj.</tt><tt class="descname">num_reg_voters</tt><a class="headerlink" href="#obj.num_reg_voters" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of registered votes who live in this reporting unit.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">num_reg_voters</span>
+<span class="go">3897</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.votes_cast">
+<tt class="descclassname">obj.</tt><tt class="descname">votes_cast</tt><a class="headerlink" href="#obj.votes_cast" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of votes cast in this reporting unit.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">votes_cast</span>
+<span class="go">709</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.precincts_total">
+<tt class="descclassname">obj.</tt><tt class="descname">precincts_total</tt><a class="headerlink" href="#obj.precincts_total" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of voting precincts in this reporting unit.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">precincts_total</span>
+<span class="go">10</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.precincts_reporting">
+<tt class="descclassname">obj.</tt><tt class="descname">precincts_reporting</tt><a class="headerlink" href="#obj.precincts_reporting" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of precincts that have already provided results.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">precincts_reporting</span>
+<span class="go">10</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.precincts_reporting_percent">
+<tt class="descclassname">obj.</tt><tt class="descname">precincts_reporting_percent</tt><a class="headerlink" href="#obj.precincts_reporting_percent" title="Permalink to this definition">¶</a></dt>
+<dd><p>The percentage of precincts that have already provided results.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">precincts_reporting_percent</span>
+<span class="go">100.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.results">
+<tt class="descclassname">obj.</tt><tt class="descname">results</tt><a class="headerlink" href="#obj.results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of result objects sorted by total votes (highest first). If no votes are in, it returns the candidates in alphabetical order.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">results</span>
+<span class="go">[&lt;Result: Rick Santorum, Iowa (state), 29839&gt;, &lt;Result: Mitt Romney, Iowa (state), 29805&gt;, &lt;Result: Ron Paul, Iowa (state), 26036&gt;, &lt;Result: Newt Gingrich, Iowa (state), 16163&gt;, &lt;Result: Rick Perry, Iowa (state), 12557&gt;, &lt;Result: Michele Bachmann, Iowa (state), 6046&gt;, &lt;Result: Jon Huntsman, Iowa (state), 739&gt;, &lt;Result: No Preference, Iowa (state), 147&gt;, &lt;Result: Other, Iowa (state), 107&gt;, &lt;Result: Herman Cain, Iowa (state), 45&gt;, &lt;Result: Buddy Roemer, Iowa (state), 17&gt;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.is_state">
+<tt class="descclassname">obj.</tt><tt class="descname">is_state</tt><a class="headerlink" href="#obj.is_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <cite>True</cite> if the reporting unit is a state, rather than some other unit like a county.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.electoral_votes_total">
+<tt class="descclassname">obj.</tt><tt class="descname">electoral_votes_total</tt><a class="headerlink" href="#obj.electoral_votes_total" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of presidential electors this area controls. Typically only found on states.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="candidates">
+<h3>Candidates<a class="headerlink" href="#candidates" title="Permalink to this headline">¶</a></h3>
+<p>A choice for voters in a race. In the presidential race, a person, like Barack Obama. In a ballot measure, a direction, like Yes or No.</p>
+<dl class="attribute">
+<dt id="obj.abbrev_name">
+<tt class="descclassname">obj.</tt><tt class="descname">abbrev_name</tt><a class="headerlink" href="#obj.abbrev_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Candidate&#8217;s abbreviated name, usually last name with some vowels removed if too long.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">abbrev_name</span>
+<span class="go">&#39;Bchmnn&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.ap_natl_number">
+<tt class="descclassname">obj.</tt><tt class="descname">ap_natl_number</tt><a class="headerlink" href="#obj.ap_natl_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unique ID to identify this politician across states and races.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">ap_natl_number</span>
+<span class="go">&#39;302&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.ap_pol_number">
+<tt class="descclassname">obj.</tt><tt class="descname">ap_pol_number</tt><a class="headerlink" href="#obj.ap_pol_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unique ID within a state for this candidate.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">ap_pol_number</span>
+<span class="go">&#39;18538&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.ap_polra_number">
+<tt class="descclassname">obj.</tt><tt class="descname">ap_polra_number</tt><a class="headerlink" href="#obj.ap_polra_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unique ID within a state for this candidate for this race for their party.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">ap_polra_number</span>
+<span class="go">&#39;21304&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descclassname">obj.</tt><tt class="descname">ap_race_number</tt></dt>
+<dd><p>Unique ID within a state for the race object this candidate object is linked to.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">ap_race_number</span>
+<span class="go">&#39;16957&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.delegates">
+<tt class="descclassname">obj.</tt><tt class="descname">delegates</tt><a class="headerlink" href="#obj.delegates" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of delegates the candidate has won in this state, according to AP&#8217;s estimates. Warning: AP has told The Times that it stops updating these totals after they decide a race has &#8220;closed&#8221; following the election. That means that if you want to track changes to these totals between the vote and the eventual nomination, you should use the nationwide delegate methods detailed below.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">delegates</span>
+<span class="go">0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.first_name">
+<tt class="descclassname">obj.</tt><tt class="descname">first_name</tt><a class="headerlink" href="#obj.first_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The first name of the candidate.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">first_name</span>
+<span class="go">&#39;Michele&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.is_winner">
+<tt class="descclassname">obj.</tt><tt class="descname">is_winner</tt><a class="headerlink" href="#obj.is_winner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <cite>True</cite> if the candidate has won the race.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.is_runoff">
+<tt class="descclassname">obj.</tt><tt class="descname">is_runoff</tt><a class="headerlink" href="#obj.is_runoff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <cite>True</cite> is the candidate is advancing to a runoff.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.last_name">
+<tt class="descclassname">obj.</tt><tt class="descname">last_name</tt><a class="headerlink" href="#obj.last_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The last name of the candidate.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">last_name</span>
+<span class="go">&#39;Bachmann&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.middle_name">
+<tt class="descclassname">obj.</tt><tt class="descname">middle_name</tt><a class="headerlink" href="#obj.middle_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The middle name of the candidate. Might not always exist.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">middle_name</span>
+<span class="go">&#39;J.&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descclassname">obj.</tt><tt class="descname">name</tt></dt>
+<dd><p>The full name of candidate.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">name</span>
+<span class="go">u&#39;Michele Bachmann&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descclassname">obj.</tt><tt class="descname">party</tt></dt>
+<dd><p>Candidate&#8217;s party abbreviation.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">party</span>
+<span class="go">&#39;GOP&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.suffix">
+<tt class="descclassname">obj.</tt><tt class="descname">suffix</tt><a class="headerlink" href="#obj.suffix" title="Permalink to this definition">¶</a></dt>
+<dd><p>The suffix to the candidate&#8217;s name. Might not exist.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">suffix</span>
+<span class="go">&#39;Jr.&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.use_suffix">
+<tt class="descclassname">obj.</tt><tt class="descname">use_suffix</tt><a class="headerlink" href="#obj.use_suffix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <cite>True</cite> if you should use the suffix with the name.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="result">
+<h3>Result<a class="headerlink" href="#result" title="Permalink to this headline">¶</a></h3>
+<p>The vote count for a candidate in a race in a particular reporting unit.</p>
+<dl class="attribute">
+<dt id="obj.candidate">
+<tt class="descclassname">obj.</tt><tt class="descname">candidate</tt><a class="headerlink" href="#obj.candidate" title="Permalink to this definition">¶</a></dt>
+<dd><p>The candidate this result is for.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">candidate</span>
+<span class="go">&lt;Candidate: Rick Santorum&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.reporting_unit">
+<tt class="descclassname">obj.</tt><tt class="descname">reporting_unit</tt><a class="headerlink" href="#obj.reporting_unit" title="Permalink to this definition">¶</a></dt>
+<dd><p>The reporting unit this result is for.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">reporting_unit</span>
+<span class="go">&lt;ReportingUnit: Iowa (state)&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.vote_total">
+<tt class="descclassname">obj.</tt><tt class="descname">vote_total</tt><a class="headerlink" href="#obj.vote_total" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of votes the candidate has collected in this reporting unit.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">vote_total</span>
+<span class="go">29839</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.vote_total_percent">
+<tt class="descclassname">obj.</tt><tt class="descname">vote_total_percent</tt><a class="headerlink" href="#obj.vote_total_percent" title="Permalink to this definition">¶</a></dt>
+<dd><p>The percentage of the tpta; votes the candidate has collected in this reporting unit.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">vote_total_percent</span>
+<span class="go">24.558645607855077</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descclassname">obj.</tt><tt class="descname">electoral_votes_total</tt></dt>
+<dd><p>Returns the number of presidential electors awarded by this result.</p>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="presidential-summary-collections">
+<h2>Presidential Summary Collections<a class="headerlink" href="#presidential-summary-collections" title="Permalink to this headline">¶</a></h2>
+<p>Calling presidential methods, like <cite>get_presidential_summary</cite> will return a slightly different, and simpler, result collection.</p>
+<dl class="attribute">
+<dt id="obj.nationwide">
+<tt class="descclassname">obj.</tt><tt class="descname">nationwide</tt><a class="headerlink" href="#obj.nationwide" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns only the nationwide reporting unit.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">nationwide</span>
+<span class="go">&lt;ReportingUnit: US&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descclassname">obj.</tt><tt class="descname">states</tt></dt>
+<dd><p>Returns only the state-level reporting units</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">states</span>
+<span class="go">[&lt;ReportingUnit: South Carolina (state)&gt;, &lt;ReportingUnit: North Carolina (state)&gt;, &lt;ReportingUnit: Delaware (state)&gt;, &lt;ReportingUnit: Florida (state)&gt;, &lt;ReportingUnit: District of Columbia (state)&gt;, &lt;ReportingUnit: Indiana (state)&gt;, &lt;ReportingUnit: New Mexico (state)&gt;, &lt;ReportingUnit: Washington (state)&gt;, &lt;ReportingUnit: Oregon (state)&gt;, &lt;ReportingUnit: New Hampshire (state)&gt;, &lt;ReportingUnit: Nebraska (state)&gt;, &lt;ReportingUnit: North Dakota (state)&gt;, ...]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descclassname">obj.</tt><tt class="descname">counties</tt></dt>
+<dd><p>Returns only the county-level reporting units</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">counties</span>
+<span class="go">[&lt;ReportingUnit: Abbeville&gt;, &lt;ReportingUnit: Aiken&gt;, &lt;ReportingUnit: Allendale&gt;, &lt;ReportingUnit: Anderson&gt;, &lt;ReportingUnit: Bamberg&gt;, &lt;ReportingUnit: Barnwell&gt;, &lt;ReportingUnit: Beaufort&gt;, &lt;ReportingUnit: Berkeley&gt;, &lt;ReportingUnit: Calhoun&gt;, &lt;ReportingUnit: Charleston&gt;, &lt;ReportingUnit: Cherokee&gt;, &lt;ReportingUnit: Chester&gt;, &lt;ReportingUnit: Chesterfield&gt;, &lt;ReportingUnit: Clarendon&gt;, &lt;ReportingUnit: Colleton&gt;, &lt;ReportingUnit: Darlington&gt;, &lt;ReportingUnit: Dillon&gt;, &lt;ReportingUnit: Dorchester&gt;, &lt;ReportingUnit: Edgefield&gt;, &lt;ReportingUnit: Fairfield&gt;...]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.districts">
+<tt class="descclassname">obj.</tt><tt class="descname">districts</tt><a class="headerlink" href="#obj.districts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns only Congressional district-level results in the two states that break out their presidential electors: Maine and Nebraska. This feature only works if <cite>districts</cite> is set to True and passed into the <cite>get_presidential_summary</cite> model.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">prez</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_presidential_summary</span><span class="p">(</span><span class="n">districts</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">prez</span><span class="o">.</span><span class="n">districts</span>
+<span class="go">[&lt;ReportingUnit: ME District 2&gt;, &lt;ReportingUnit: ME District 1&gt;, &lt;ReportingUnit: NE District 2&gt;, &lt;ReportingUnit: NE District 3&gt;, &lt;ReportingUnit: NE District 1&gt;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="delegate-summary-collections">
+<h2>Delegate Summary Collections<a class="headerlink" href="#delegate-summary-collections" title="Permalink to this headline">¶</a></h2>
+<p>Calling delegate related methods, like <cite>get_delegate_summary</cite> will return a slightly different, and simpler, result collection. To start, you should receive a list containing two Nomination objects.</p>
+<div class="section" id="nominations">
+<h3>Nominations<a class="headerlink" href="#nominations" title="Permalink to this headline">¶</a></h3>
+<p>A contest to be the presidential nominee of one of the two major parties.</p>
+<dl class="attribute">
+<dt>
+<tt class="descclassname">obj.</tt><tt class="descname">candidates</tt></dt>
+<dd><p>The list of candidates participating in the race.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">candidates</span>
+<span class="go">[&lt;Candidate: Michele Bachmann&gt;, &lt;Candidate: Herman Cain&gt;, &lt;Candidate: Newt Gingrich&gt;, &lt;Candidate: Jon Huntsman&gt;, &lt;Candidate: No Preference&gt;, &lt;Candidate: Other&gt;, &lt;Candidate: Ron Paul&gt;, &lt;Candidate: Rick Perry&gt;, &lt;Candidate: Buddy Roemer&gt;, &lt;Candidate: Mitt Romney&gt;, &lt;Candidate: Rick Santorum&gt;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.delegates_needed">
+<tt class="descclassname">obj.</tt><tt class="descname">delegates_needed</tt><a class="headerlink" href="#obj.delegates_needed" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of delegates needed to capture the nomination.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.delegates_total">
+<tt class="descclassname">obj.</tt><tt class="descname">delegates_total</tt><a class="headerlink" href="#obj.delegates_total" title="Permalink to this definition">¶</a></dt>
+<dd><p>The total number of delegates available.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.delegates_chosen">
+<tt class="descclassname">obj.</tt><tt class="descname">delegates_chosen</tt><a class="headerlink" href="#obj.delegates_chosen" title="Permalink to this definition">¶</a></dt>
+<dd><p>The total number of delegates that have been awarded.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="obj.delegates_chosen_percent">
+<tt class="descclassname">obj.</tt><tt class="descname">delegates_chosen_percent</tt><a class="headerlink" href="#obj.delegates_chosen_percent" title="Permalink to this definition">¶</a></dt>
+<dd><p>The percentage of the total delegates that have been awarded.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descclassname">obj.</tt><tt class="descname">party</tt></dt>
+<dd><p>Candidate&#8217;s party abbreviation.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">party</span>
+<span class="go">&#39;GOP&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descclassname">obj.</tt><tt class="descname">states</tt></dt>
+<dd><p>Returns a list of all the state delegates we have counts for.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">states</span>
+<span class="go">[&lt;StateDelegation: AK&gt;, &lt;StateDelegation: AL&gt;, &lt;StateDelegation: AR&gt;, &lt;StateDelegation: AS&gt;, &lt;StateDelegation: AZ&gt;, &lt;StateDelegation: CA&gt;, &lt;StateDelegation: CO&gt;, &lt;StateDelegation: CT&gt;, &lt;StateDelegation: DC&gt;, &lt;StateDelegation: DE&gt;, &lt;StateDelegation: FL&gt;, &lt;StateDelegation: GA&gt;, &lt;StateDelegation: GU&gt;, &lt;StateDelegation: HI&gt;, &lt;StateDelegation: IA&gt;, &lt;StateDelegation: ID&gt;, &lt;StateDelegation: IL&gt;, &lt;StateDelegation: IN&gt;, ...]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="state-delegations">
+<h3>State Delegations<a class="headerlink" href="#state-delegations" title="Permalink to this headline">¶</a></h3>
+<p>A state&#8217;s delegation and who they choose to be a party&#8217;s presidential nominee.</p>
+<dl class="attribute">
+<dt>
+<tt class="descclassname">obj.</tt><tt class="descname">candidates</tt></dt>
+<dd><p>The list of candidates participating in the race.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">candidates</span>
+<span class="go">[&lt;Candidate: Michele Bachmann&gt;, &lt;Candidate: Herman Cain&gt;, &lt;Candidate: Newt Gingrich&gt;, &lt;Candidate: Jon Huntsman&gt;, &lt;Candidate: No Preference&gt;, &lt;Candidate: Other&gt;, &lt;Candidate: Ron Paul&gt;, &lt;Candidate: Rick Perry&gt;, &lt;Candidate: Buddy Roemer&gt;, &lt;Candidate: Mitt Romney&gt;, &lt;Candidate: Rick Santorum&gt;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descclassname">obj.</tt><tt class="descname">name</tt></dt>
+<dd><p>The name of the state. The AP only provides the postal code.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">name</span>
+<span class="go">&#39;IA&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">The Associated Press client</a><ul>
+<li><a class="reference internal" href="#retrieving-data">Retrieving data</a></li>
+<li><a class="reference internal" href="#election-result-collections">Election Result Collections</a><ul>
+<li><a class="reference internal" href="#races">Races</a></li>
+<li><a class="reference internal" href="#reporting-units">Reporting Units</a></li>
+<li><a class="reference internal" href="#candidates">Candidates</a></li>
+<li><a class="reference internal" href="#result">Result</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#presidential-summary-collections">Presidential Summary Collections</a></li>
+<li><a class="reference internal" href="#delegate-summary-collections">Delegate Summary Collections</a><ul>
+<li><a class="reference internal" href="#nominations">Nominations</a></li>
+<li><a class="reference internal" href="#state-delegations">State Delegations</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="gettingstarted.html"
+                        title="previous chapter">Getting Started</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="changelog.html"
+                        title="next chapter">Changelog</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/theapclient.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="changelog.html" title="Changelog"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="gettingstarted.html" title="Getting Started"
+             >previous</a> |</li>
+        <li><a href="index.html">python-elections 0.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Los Angeles Times Data Desk.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

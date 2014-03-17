@@ -1,0 +1,212 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Getting Started &mdash; python-elections 0.4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="python-elections 0.4 documentation" href="index.html" />
+    <link rel="next" title="The Associated Press client" href="theapclient.html" />
+    <link rel="prev" title="python-elections" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="theapclient.html" title="The Associated Press client"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="python-elections"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">python-elections 0.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="getting-started">
+<h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<p>Provided that you have <a class="reference external" href="http://pypi.python.org/pypi/pip">pip</a> installed, you can install the library like so.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>pip install python-elections
+</pre></div>
+</div>
+<p>If you&#8217;d rather work on the source code, you can clone it from GitHub using the usual methods.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>git clone https://github.com/datadesk/python-elections.git
+</pre></div>
+</div>
+<div class="section" id="creating-a-client">
+<h2>Creating a client<a class="headerlink" href="#creating-a-client" title="Permalink to this headline">¶</a></h2>
+<p>Before you can interact with AP&#8217;s data, you first must import the library and initialize a client to talk with the FTP on your behalf.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">elections</span> <span class="kn">import</span> <span class="n">AP</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">AP</span><span class="p">(</span><span class="n">USERNAME</span><span class="p">,</span> <span class="n">PASSWORD</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="some-basics">
+<h2>Some basics<a class="headerlink" href="#some-basics" title="Permalink to this headline">¶</a></h2>
+<p>Request all the data available for a particular state by providing its postal code. This will return a state object.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">ca</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="s">&#39;CA&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ca</span>
+<span class="go">&lt;State: CA&gt;</span>
+</pre></div>
+</div>
+<p>Among other things, the state has a list of races.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">ca</span><span class="o">.</span><span class="n">races</span>
+<span class="go">[&lt;Race: District Attorney Los Angeles&gt;, &lt;Race: U.S. House District 49 - Carlsbad&gt;, &lt;Race: U.S. House District 50 - Escondido&gt;, &lt;Race: U.S. House District 51 - El Centro&gt;, &lt;Race: U.S. House District 53 - El Cajon&gt;, &lt;Race: State Senate District 1 - Redding&gt;, &lt;Race: State Senate District 5 - Stockton&gt;, &lt;Race: State Senate District 7 - Concord&gt;, &lt;Race: State Senate District 9 - Oakland&gt;, &lt;Race: State Senate District 11 - San Francisco&gt;, &lt;Race: State Assembly District 59 - Los Angeles&gt;, &lt;Race: State Assembly District 58 - Norwalk&gt;, &lt;Race: State Assembly District 61 - Riverside&gt;, &lt;Race: State Assembly District 60 - Riverside&gt;, &lt;Race: State Assembly District 63 - Lakewood&gt;, &lt;Race: State Assembly District 62 - Inglewood&gt;, &lt;Race: State Assembly District 65 - Anaheim&gt;, &lt;Race: State Assembly District 64 - Compton&gt;, &lt;Race: State Assembly District 67 - Murrieta&gt;, &lt;Race: State Assembly District 66 - Torrance&gt;,  ...]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">prez</span> <span class="o">=</span> <span class="n">ca</span><span class="o">.</span><span class="n">filter_races</span><span class="p">(</span><span class="n">office_name</span><span class="o">=</span><span class="s">&#39;President&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">prez</span>
+<span class="go">&lt;Race: President&gt;</span>
+</pre></div>
+</div>
+<p>The race contains a list of candidates.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">prez</span><span class="o">.</span><span class="n">candidates</span>
+<span class="go">[&lt;Candidate: Roseanne Barr&gt;, &lt;Candidate: Thomas Hoefling&gt;, &lt;Candidate: Gary Johnson&gt;, &lt;Candidate: Barack Obama&gt;, &lt;Candidate: Mitt Romney&gt;, &lt;Candidate: Jill Stein&gt;]</span>
+</pre></div>
+</div>
+<p>You can find results for the whole state.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">prez</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">results</span>
+<span class="go">[&lt;Result: Barack Obama, California (state), 3698001&gt;, &lt;Result: Mitt Romney, California (state), 3469304&gt;, &lt;Result: Roseanne Barr, California (state), 657614&gt;, &lt;Result: Jill Stein, California (state), 585121&gt;, &lt;Result: Thomas Hoefling, California (state), 110465&gt;, &lt;Result: Gary Johnson, California (state), 109602&gt;]</span>
+</pre></div>
+</div>
+<p>You can get all counties in the state.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">prez</span><span class="o">.</span><span class="n">counties</span>
+<span class="go">[&lt;ReportingUnit: Alameda&gt;, &lt;ReportingUnit: Alpine&gt;, &lt;ReportingUnit: Amador&gt;, &lt;ReportingUnit: Butte&gt;, &lt;ReportingUnit: Calaveras&gt;, &lt;ReportingUnit: Colusa&gt;, &lt;ReportingUnit: Contra Costa&gt;, &lt;ReportingUnit: Del Norte&gt;, &lt;ReportingUnit: El Dorado&gt;, &lt;ReportingUnit: Fresno&gt;, &lt;ReportingUnit: Glenn&gt;, &lt;ReportingUnit: Humboldt&gt;, &lt;ReportingUnit: Imperial&gt;, &lt;ReportingUnit: Inyo&gt;, &lt;ReportingUnit: Kern&gt;, &lt;ReportingUnit: Kings&gt;, &lt;ReportingUnit: Lake&gt;, &lt;ReportingUnit: Lassen&gt;, &lt;ReportingUnit: Los Angeles&gt;, &lt;ReportingUnit: Madera&gt;, &lt;ReportingUnit: Marin&gt;, &lt;ReportingUnit: Mariposa&gt;, &lt;ReportingUnit: Mendocino&gt;, &lt;ReportingUnit: Merced&gt;, &lt;ReportingUnit: Modoc&gt;, &lt;ReportingUnit: Mono&gt;, &lt;ReportingUnit: Monterey&gt;, &lt;ReportingUnit: Napa&gt;, &lt;ReportingUnit: Nevada&gt;, &lt;ReportingUnit: Orange&gt;, &lt;ReportingUnit: Placer&gt;, &lt;ReportingUnit: Plumas&gt;, &lt;ReportingUnit: Riverside&gt;, &lt;ReportingUnit: Sacramento&gt;, &lt;ReportingUnit: San Benito&gt;, &lt;ReportingUnit: San Bernardino&gt;, &lt;ReportingUnit: San Diego&gt;, &lt;ReportingUnit: San Francisco&gt;, &lt;ReportingUnit: San Joaquin&gt;, &lt;ReportingUnit: San Luis Obispo&gt;, &lt;ReportingUnit: San Mateo&gt;, &lt;ReportingUnit: Santa Barbara&gt;, &lt;ReportingUnit: Santa Clara&gt;, &lt;ReportingUnit: Santa Cruz&gt;, &lt;ReportingUnit: Shasta&gt;, &lt;ReportingUnit: Sierra&gt;, &lt;ReportingUnit: Siskiyou&gt;, &lt;ReportingUnit: Solano&gt;, &lt;ReportingUnit: Sonoma&gt;, &lt;ReportingUnit: Stanislaus&gt;, &lt;ReportingUnit: Sutter&gt;, &lt;ReportingUnit: Tehama&gt;, &lt;ReportingUnit: Trinity&gt;, &lt;ReportingUnit: Tulare&gt;, &lt;ReportingUnit: Tuolumne&gt;, &lt;ReportingUnit: Ventura&gt;, &lt;ReportingUnit: Yolo&gt;, &lt;ReportingUnit: Yuba&gt;]</span>
+</pre></div>
+</div>
+<p>And, of course, the results in each county.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">prez</span><span class="o">.</span><span class="n">counties</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">results</span>
+<span class="go">[&lt;Result: Barack Obama, Alameda, 160048&gt;, &lt;Result: Mitt Romney, Alameda, 152934&gt;, &lt;Result: Roseanne Barr, Alameda, 29060&gt;, &lt;Result: Jill Stein, Alameda, 26147&gt;, &lt;Result: Thomas Hoefling, Alameda, 4966&gt;, &lt;Result: Gary Johnson, Alameda, 4912&gt;]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="a-working-example">
+<h2>A working example<a class="headerlink" href="#a-working-example" title="Permalink to this headline">¶</a></h2>
+<p>Let’s say, hypothetically, that the United States is electing a president for the next four years, and your news or­gan­iz­a­tion bought ac­cess to the AP’s FTP ser­vice for California results. Your boss wants you to write a simple wid­get that will sit on the homepage and out­put live res­ults. All you need are the can­did­ate names, their vote totals and per­cent­ages, the num­ber of pre­cincts re­port­ing and wheth­er the AP has called a win­ner yet. How do you feed it? Here&#8217;s how.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">elections</span> <span class="kn">import</span> <span class="n">AP</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">json</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">simplejson</span> <span class="kn">as</span> <span class="nn">json</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">AP</span><span class="p">(</span><span class="n">uname</span><span class="p">,</span> <span class="n">pwd</span><span class="p">)</span>
+<span class="n">calif</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="s">&#39;CA&#39;</span><span class="p">)</span>
+<span class="c"># Now the calif variable holds all of the AP result data</span>
+<span class="n">prez</span> <span class="o">=</span> <span class="n">iowa</span><span class="o">.</span><span class="n">filter_races</span><span class="p">(</span><span class="n">office_name</span><span class="o">=</span><span class="s">&#39;President&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="c"># prez is a Race object containing the results of the presidential race</span>
+
+<span class="c"># Set up the main data dict and set the percent of precincts reporting</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&#39;precincts_reporting_percent&#39;</span><span class="p">:</span> <span class="n">prez</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">precincts_reporting_percent</span><span class="p">,</span>
+    <span class="s">&#39;candidates&#39;</span><span class="p">:</span> <span class="p">[]</span>
+<span class="p">}</span>
+
+<span class="c"># Loop through the statewide candidate results, and append them</span>
+<span class="c"># in a format we like into the data dict&#39;s candidate list.</span>
+<span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">prez</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">results</span><span class="p">:</span>
+    <span class="n">data</span><span class="p">[</span><span class="s">&#39;candidates&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+        <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">candidate</span><span class="o">.</span><span class="n">last_name</span><span class="p">,</span>
+        <span class="s">&#39;vote_total&#39;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">vote_total</span><span class="p">,</span>
+        <span class="s">&#39;vote_percent&#39;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">vote_total_percent</span><span class="p">,</span>
+        <span class="s">&#39;is_winner&#39;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">candidate</span><span class="o">.</span><span class="n">is_winner</span><span class="p">,</span>
+    <span class="p">})</span>
+
+<span class="c"># Then dump the data dict out as JSON</span>
+<span class="k">print</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>There you have it: a simple JSON dump in about 20 lines of code. From here, you can set this script to up­load the JSON file every few minutes to Amazon S3 or a sim­il­ar file-serving ser­vice. Then point your front-end wid­get to pull from there.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Getting Started</a><ul>
+<li><a class="reference internal" href="#creating-a-client">Creating a client</a></li>
+<li><a class="reference internal" href="#some-basics">Some basics</a></li>
+<li><a class="reference internal" href="#a-working-example">A working example</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">python-elections</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="theapclient.html"
+                        title="next chapter">The Associated Press client</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/gettingstarted.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="theapclient.html" title="The Associated Press client"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="python-elections"
+             >previous</a> |</li>
+        <li><a href="index.html">python-elections 0.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Los Angeles Times Data Desk.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>
