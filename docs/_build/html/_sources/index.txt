@@ -2,7 +2,7 @@
 python-elections
 ================
 
-A Python wrapper for the Associated Press' U.S. election data service
+A Python wrapper for the Associated Press's U.S. election data service
 
 Features
 ========
@@ -36,4 +36,11 @@ Documentation
    theapclient
    changelog
    authors
+
+Contributing
+============
+
+* Code repository: `https://github.com/datadesk/python-elections <https://github.com/datadesk/python-elections>`_
+* Issues: `https://github.com/datadesk/python-elections/issues <https://github.com/datadesk/python-elections/issues>`_
+* Packaging: `https://pypi.python.org/pypi/python-elections <https://pypi.python.org/pypi/python-elections>`_
 

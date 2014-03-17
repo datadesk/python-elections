@@ -38,7 +38,7 @@ In order to use this library, you must pay AP for access to the data. More infor
 
 h2. Getting Started
 
-* "Documentation":http://datadesk.github.com/python-elections/
+* "Documentation":python-elections.rtfd.org
 * "Introductory blog post":http://datadesk.latimes.com/posts/2012/01/introducing-python-elections/
 
 h2. Credits
