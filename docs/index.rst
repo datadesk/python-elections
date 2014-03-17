@@ -11,14 +11,12 @@ Features
 * Easy access to presidential election results for the nation, the 50 states and all U.S. counties.
 * Easy access to AP’s delegate estimates in presidential nomination contests.
 
-
 Requirements
 ============
 
 In order to use this library, you must pay AP for access to the data. More information can be found on `the AP’s web site <http://www.apdigitalnews.com/ap_elections.html>`_ or by contacting Anthony Marquez at `amarquez@ap.org <mailto:amarquez@ap.org>`_.
 
-
-In The Wild
+In the wild
 ===========
 
 * `Los Angeles Times <http://graphics.latimes.com/2012-election-gop-primary-overview/>`_, `again <http://graphics.latimes.com/2012-election-results-national-map/>`_ and `again <http://graphics.latimes.com/2012-election-results-california/>`_

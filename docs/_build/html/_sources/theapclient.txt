@@ -62,7 +62,7 @@ The AP client is public class you can use to connect to the AP's data feed.
  
    <hr>
 
-Election Result Collections
+Election result collections
 ===========================
 
 Depending on which client method you use to harvest data, results may be returned as `State` or `TopOfTicket` objects. Don't worry about the distinction, because they act pretty much the same. They share the following attributes for you to use.
@@ -235,7 +235,7 @@ A contest being decided by voters choosing between candidates. This object is th
     Returns `True` if this is a race where the people vote to decide about a law, measure, proposition, amendment, etc.
 
 
-Reporting Units
+Reporting units
 ---------------
 
 An area or unit that groups votes into a total. For instance, a state, a congressional district, a county.
@@ -460,7 +460,7 @@ The vote count for a candidate in a race in a particular reporting unit.
 
 
 
-Presidential Summary Collections
+Presidential summary collections
 ================================
 
 Calling presidential methods, like `get_presidential_summary` will return a slightly different, and simpler, result collection.
@@ -496,7 +496,7 @@ Calling presidential methods, like `get_presidential_summary` will return a slig
 
 
 
-Delegate Summary Collections
+Delegate summary collections
 ============================
 
 Calling delegate related methods, like `get_delegate_summary` will return a slightly different, and simpler, result collection. To start, you should receive a list containing two Nomination objects.
@@ -545,7 +545,7 @@ A contest to be the presidential nominee of one of the two major parties.
         [<StateDelegation: AK>, <StateDelegation: AL>, <StateDelegation: AR>, <StateDelegation: AS>, <StateDelegation: AZ>, <StateDelegation: CA>, <StateDelegation: CO>, <StateDelegation: CT>, <StateDelegation: DC>, <StateDelegation: DE>, <StateDelegation: FL>, <StateDelegation: GA>, <StateDelegation: GU>, <StateDelegation: HI>, <StateDelegation: IA>, <StateDelegation: ID>, <StateDelegation: IL>, <StateDelegation: IN>, ...]
 
 
-State Delegations
+State delegations
 -----------------
 
 A state's delegation and who they choose to be a party's presidential nominee.
