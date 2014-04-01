@@ -1,0 +1,17 @@
+language: python
+python:
+- '2.6'
+- '2.7'
+install:
+- pip install -r requirements.txt
+script:
+- export TEST_STATE='CA'
+- coverage run tests.py
+after_success:
+- coveralls
+env:
+  global:
+    # AP_USERNAME
+  - secure: NNhA5MVjaBUnHh1IXiZoVKrkDBDJS/D0QRM6R2WP2SPo0io/0En5EShSNjdJHM5qCygfSmQTnGH7LNBi/c0vXqxROK1NOLMoiwZ4+nxGIR5rQYEikJFKz61pQdBt99XNUel0+ZA8cr+LSK5dRLF9Wki2RRykrKYaA8ehA8yDzS0=
+    # AP_PASSWORD
+  - secure: EodWA8tDmRefFa4jZ3qPg/HAQQGNLt2F/5b/6XHV3xVctXoQld1Fq6k3yZwLF1LVQnYCmO5/sg4HCmEnctRvHVHcYJCDKZoNuuDwDQ8C0Fgbhz9prQltXqlQvVmvgxfX1W0Rbs3uARFkHGY5BDd917Xpe5v9fZ2/bQjnkzx4UeY=

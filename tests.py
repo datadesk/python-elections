@@ -3,9 +3,6 @@
 """
 Tests out python-elections
 
-Most requests require authentication with, so you'll need to provide that in
-a file called private_settings.py with AP_USERNAME, AP_PASSWORD and TEST_STATE
-
 These tests were written using the Los Angeles Times' login, which gives it state
 level access for California and nationwide access elsewhere. If you have a different
 access level, this will prove to be a problem. 
@@ -19,42 +16,44 @@ from datetime import date, datetime
 from elections.ap import Nomination, StateDelegation
 from elections.ap import Candidate, Race, ReportingUnit, Result, State
 from elections.ap import FileDoesNotExistError, BadCredentialsError
-from private_settings import AP_USERNAME, AP_PASSWORD, TEST_STATE
 
 
 class BaseTest(unittest.TestCase):
     
     def setUp(self):
-        self.client = AP(AP_USERNAME, AP_PASSWORD)
+        self.client = AP(
+            os.environ['AP_USERNAME'],
+            os.environ['AP_PASSWORD']
+        )
 
 
 class APTest(BaseTest):
-    
+
     def test_badlogin(self):
         client = AP("foo", "bar")
-        self.assertRaises(BadCredentialsError, client.get_state, TEST_STATE)
-    
+        self.assertRaises(BadCredentialsError, client.get_state, os.environ['TEST_STATE'])
+
     def test_badstate(self):
         self.assertRaises(FileDoesNotExistError, self.client.get_state, "XYZ")
-    
+
     def test_county_aggregates(self):
-        self.state = self.client.get_state(TEST_STATE)
+        self.state = self.client.get_state(os.environ['TEST_STATE'])
         county_list = self.state.counties
         self.assertEqual(type(county_list), type([]))
         [self.assertEqual(type(i), ReportingUnit) for i in county_list]
         [self.assertEqual(i.is_state, False) for i in county_list]
-    
+
     def test_state_reporting_unit(self):
         """
         Makes sure Wyoming only has one 'state'-identified RU.
         """
-        self.state = self.client.get_state(TEST_STATE)
+        self.state = self.client.get_state(os.environ['TEST_STATE'])
         self.assertEqual(type(self.state.races[0].state), ReportingUnit)
-    
+
     def test_getstate(self):
         # Pull state
-        self.state = self.client.get_state(TEST_STATE)
-        
+        self.state = self.client.get_state(os.environ['TEST_STATE'])
+
         # Races
         race_list = self.state.races
         self.assertTrue(isinstance(race_list, list))
@@ -80,7 +79,7 @@ class APTest(BaseTest):
         self.assertTrue(isinstance(race.is_primary, bool))
         self.assertTrue(isinstance(race.is_caucus, bool))
         self.assertTrue(isinstance(race.is_general, bool))
-        
+
         # Reporting units
         ru_list = self.state.reporting_units
         self.assertTrue(isinstance(ru_list, list))
@@ -122,18 +121,18 @@ class APTest(BaseTest):
                     self.assertTrue(isinstance(result.vote_total_percent, float))
                 except:
                     self.assertTrue(isinstance(result.vote_total_percent, type(None)))
-        
+
         # Counties
         county_list = self.state.races[0].counties
         self.assertEqual(type(county_list), type([]))
         self.assertEqual(type(county_list[0]), ReportingUnit)
         self.assertEqual(county_list[0].is_state, False)
-        
+
         # State
         state = self.state.races[0].state
         self.assertEqual(type(state), ReportingUnit)
         self.assertEqual(state.is_state, True)
-        
+
         # Candidates
         cand_list = self.state.races[0].candidates
         self.assertTrue(isinstance(race.candidates, list))
@@ -155,20 +154,20 @@ class APTest(BaseTest):
             self.assertTrue(isinstance(cand.is_incumbent, bool))
             #self.assertTrue(isinstance(cand.delegates, int))
             self.assertTrue(isinstance(cand.name, basestring))
-        
+
         # FTP hits
         self.assertEqual(self.client._ftp_hits, 1)
-    
+
     def test_getstates(self):
         # Pull states, using the state twice since that's all we have access to.
-        self.first_two = self.client.get_states(TEST_STATE, TEST_STATE)
+        self.first_two = self.client.get_states(os.environ['TEST_STATE'], os.environ['TEST_STATE'])
         self.assertEqual(type(self.first_two), type([]))
         self.assertEqual(len(self.first_two), 2)
         [self.assertEqual(type(i), State) for i in self.first_two]
         
         # FTP hits
         self.assertEqual(self.client._ftp_hits, 1)
-    
+
     def test_topofticket(self):
         # The 2012 general election
         self.nov6 = self.client.get_topofticket()
@@ -182,9 +181,9 @@ class APTest(BaseTest):
         self.assertRaises(ValueError, self.client.get_topofticket, 'abcdef')
         # Test the results against a get_state method to verify they are the same
         self.tt = self.client.get_topofticket()
-        self.st = self.client.get_state(TEST_STATE)
-#        self.tt = self.tt.filter_races(office_name='President', state_postal=TEST_STATE)[0]
-#        self.st = self.st.filter_races(office_name='President', state_postal=TEST_STATE)[0]
+        self.st = self.client.get_state(os.environ['TEST_STATE'])
+#        self.tt = self.tt.filter_races(office_name='President', state_postal=os.environ['TEST_STATE'])[0]
+#        self.st = self.st.filter_races(office_name='President', state_postal=os.environ['TEST_STATE'])[0]
 #        self.assertEqual(
 #            [i.vote_total for i in self.tt.state.results],
 #            [i.vote_total for i in self.st.state.results]
@@ -201,7 +200,7 @@ class APTest(BaseTest):
                 'Referendum'
             ]
         ]
-     
+
     def test_presidential_summary(self):
         self.nov6 = self.client.get_presidential_summary()
         self.assertEqual(len(self.nov6.states), 51)
@@ -220,7 +219,7 @@ class APTest(BaseTest):
         self.districts = self.client.get_presidential_summary(districts=True)
         self.assertEqual(len(self.districts.districts), 5)
         self.assertEqual(len(self.nov6.districts), 0)
-    
+
     def test_congressional_trends(self):
         self.trends = self.client.get_congressional_trends()
         for chamber_name in ('house', 'senate'):
@@ -243,7 +242,6 @@ class APTest(BaseTest):
             self.assertEqual(isinstance(chamber.dem_insufficient, int), True)
             self.assertEqual(isinstance(chamber.gop_insufficient, int), True)
             self.assertEqual(isinstance(chamber.others_insufficient, int), True)
-
 
 #    def test_delegate_summary(self):
 #        self.delsum = self.client.get_delegate_summary()
