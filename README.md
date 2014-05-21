@@ -43,7 +43,7 @@ In order to use this library, you must pay AP for access to the data. More infor
 Getting Started
 ---------------
 
-* [Documentation](python-elections.rtfd.org)
+* [Documentation](http://python-elections.rtfd.org)
 * [Introductory blog post](http://datadesk.latimes.com/posts/2012/01/introducing-python-elections/)
 
 Credits
