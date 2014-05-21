@@ -25,6 +25,7 @@ In the wild
 * `Palm Beach Post <http://www.palmbeachpost.com/news/see-results-from-every-florida-county-on-our-2140533.html>`_ and `again <http://tampabay.com/tbprojects/elections/2012/results/results.html>`_
 * `Tampa Bay Times <http://www.tampabay.com/specials/2012/reports/2012FloridaElectionResults/presidential_primary.shtml>`_ 
 * `Spokane Spokesman-Review <http://www.spokesman.com/elections/2012/idaho-primary-2012/>`_ and `again <http://www.spokesman.com/elections/2012/washington-general-election/results/>`_
+* `Atlanta Journal-Constitution <http://www.ajc.com/us-senate-gop-primary-map-2014/>`_
 
 Documentation
 =============
