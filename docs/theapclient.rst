@@ -373,6 +373,10 @@ A choice for voters in a race. In the presidential race, a person, like Barack O
         >>> obj.first_name
         'Michele'
 
+.. attribute:: obj.is_incumbent
+
+    Returns `True` if the candidate is the current officeholder.
+
 .. attribute:: obj.is_winner
 
     Returns `True` if the candidate has won the race.
