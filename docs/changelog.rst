@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.0.0
+-----
+
+* PEP8 and Pyflakes compliance and testing
+* Proper semantic versioning
+
 0.4
 ---
 
