@@ -12,3 +12,5 @@ python-dateutil==1.5
 requests==2.2.1
 sh==1.09
 six==1.6.1
+pep8
+pyflakes
