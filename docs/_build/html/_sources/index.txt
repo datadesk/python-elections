@@ -27,6 +27,7 @@ In the wild
 * `Spokane Spokesman-Review <http://www.spokesman.com/elections/2012/idaho-primary-2012/>`_ and `again <http://www.spokesman.com/elections/2012/washington-general-election/results/>`_
 * `Atlanta Journal-Constitution <http://www.ajc.com/us-senate-gop-primary-map-2014/>`_
 * `WYNC <http://project.wnyc.org/election2014-nj-primary/>`_
+* `DJournal.com <https://twitter.com/palewire/status/481877328289476608>`_
 
 Documentation
 =============
