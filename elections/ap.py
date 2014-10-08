@@ -778,23 +778,12 @@ class TopOfTicket(BaseAPResultCollection):
     """
     ap_number_template = '%(number)s-%(state)s'
 
-    def __init__(self, client, name='20121106', results=True, delegates=False):
+    def __init__(self, client, name='20141104', results=True, delegates=False):
         d = {'name': name}
-        # This means you're in a primary election with delegates at stake
-        if name and name != '20121106':
-            self.results_file_path = \
-                "/Delegate_Tracking/US/flat/US_%(name)s.txt" % d
-            self.delegates_file_path = \
-                "/Delegate_Tracking/US/flat/US_%(name)s_d.txt" % d
-            self.race_file_path = "/inits/US/US_%(name)s_race.txt" % d
-            self.reporting_unit_file_path = "/inits/US/US_%(name)s_ru.txt" % d
-            self.candidate_file_path = "/inits/US/US_%(name)s_pol.txt" % d
-        # Otherwise we're on to general election 2012 as the default
-        else:
-            self.results_file_path = "/US_topofticket/flat/US.txt"
-            self.race_file_path = "/inits/US/US_%(name)s_race.txt" % d
-            self.reporting_unit_file_path = "/inits/US/US_%(name)s_ru.txt" % d
-            self.candidate_file_path = "/inits/US/US_%(name)s_pol.txt" % d
+        self.results_file_path = "/US_topofticket/flat/US.txt"
+        self.race_file_path = "/inits/US/US_%(name)s_race.txt" % d
+        self.reporting_unit_file_path = "/inits/US/US_%(name)s_ru.txt" % d
+        self.candidate_file_path = "/inits/US/US_%(name)s_pol.txt" % d
         super(TopOfTicket, self).__init__(client, name, results, delegates)
 
     @property
