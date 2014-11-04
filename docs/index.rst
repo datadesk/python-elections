@@ -23,7 +23,7 @@ In the wild
 * `Chicago Tribune <http://media.apps.chicagotribune.com/2012-elections/nh-primary.html>`_, `again <http://elections.chicagotribune.com/results/>`_ and `again <http://elections.chicagotribune.com/results/us-president/>`_
 * `Washington Times <http://www.washingtontimes.com/campaign-2012/FL/live-map/>`_ 
 * `Palm Beach Post <http://www.palmbeachpost.com/news/see-results-from-every-florida-county-on-our-2140533.html>`_ and `again <http://tampabay.com/tbprojects/elections/2012/results/results.html>`_
-* `Tampa Bay Times <http://www.tampabay.com/specials/2012/reports/2012FloridaElectionResults/presidential_primary.shtml>`_ , and `again <http://www.tampabay.com/news/politics/election-results.page>`_
+* `Tampa Bay Times <http://www.tampabay.com/specials/2012/reports/2012FloridaElectionResults/presidential_primary.shtml>`_  and `again <http://www.tampabay.com/news/politics/election-results.page>`_
 * `Spokane Spokesman-Review <http://www.spokesman.com/elections/2012/idaho-primary-2012/>`_ and `again <http://www.spokesman.com/elections/2012/washington-general-election/results/>`_
 * `Atlanta Journal-Constitution <http://www.ajc.com/us-senate-gop-primary-map-2014/>`_
 * `WYNC <http://project.wnyc.org/election2014-nj-primary/>`_
