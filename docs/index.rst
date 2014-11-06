@@ -28,6 +28,7 @@ In the wild
 * `Atlanta Journal-Constitution <http://www.ajc.com/us-senate-gop-primary-map-2014/>`_
 * `WYNC <http://project.wnyc.org/election2014-nj-primary/>`_
 * `DJournal.com <https://twitter.com/palewire/status/481877328289476608>`_
+* `Austin American-Statesman <http://projects.statesman.com/databases/election/widget.html>`_
 
 Documentation
 =============
