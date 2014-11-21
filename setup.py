@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='python-elections',
-    version='1.1.2',
+    version='1.1.1',
     description="A Python wrapper for the AP's U.S. election data service.",
     author='The Los Angeles Times Data Desk',
     author_email='datadesk@latimes.com',
