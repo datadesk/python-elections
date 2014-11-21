@@ -1,0 +1,7 @@
+[run]
+include = elections/*
+
+[report]
+exclude_lines =
+    pragma: no cover
+    add_introspection_rules
