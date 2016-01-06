@@ -711,9 +711,15 @@ class PresidentialPrimaryElections(BaseAPResultCollection):
     """
     ap_number_template = '%(number)s'
 
-    def __init__(self, client, name, results=True, delegates=False):
-        d = {'name': name}
+    def __init__(self, client, datestring, results=True, delegates=False):
+        date_to_state = {
+            '20160201': 'IA',
+        }
+        state_name = date_to_state.get(datestring)
+        
 
+
+        d = {'name': name}
         self.results_file_path = "//flat/%(name)s.txt" % d
         self.delegates_file_path = "/%(name)s/flat/%(name)s_D.txt" % d
         self.race_file_path = "/inits/%(name)s/%(name)s_race.txt" % d
