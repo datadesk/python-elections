@@ -63,45 +63,27 @@ class AP(object):
             self._ftp_hits += 1
         return self._ftp
 
-    def get_state(self, *args, **kwargs):
-        """
-        Takes a single state postal code, returns an APResult
-        object for that state.
-        """
-        result = State(self, args[0], **kwargs)
-        self.ftp.quit()
-        return result
+#     def get_topofticket(self, election_date=None, **kwargs):
+#         """
+#         Takes a date in any common format (YYYY-MM-DD is preferred)
+#         and returns the results for that date.
 
-    def get_states(self, *args, **kwargs):
-        """
-        Takes a list of state postal codes, returns a list of APResult
-        objects.
-        """
-        results = [State(self, state, **kwargs) for state in args]
-        self.ftp.quit()
-        return results
-
-    def get_topofticket(self, election_date=None, **kwargs):
-        """
-        Takes a date in any common format (YYYY-MM-DD is preferred)
-        and returns the results for that date.
-
-        If you do not provide a date, it defaults to the next major election.
-        Today that is the Nov. 6, 2012 general election.
-        """
-        if election_date:
-            try:
-                dt = dateparse(election_date)
-            except ValueError:
-                raise ValueError(
-                    "The election date you've submitted could not be parsed. \
-Try submitting it in YYYY-MM-DD format."
-                )
-            result = TopOfTicket(self, dt.strftime("%Y%m%d"), **kwargs)
-        else:
-            result = TopOfTicket(self, **kwargs)
-        self.ftp.quit()
-        return result
+#         If you do not provide a date, it defaults to the next major election.
+#         Today that is the Nov. 6, 2012 general election.
+#         """
+#         if election_date:
+#             try:
+#                 dt = dateparse(election_date)
+#             except ValueError:
+#                 raise ValueError(
+#                     "The election date you've submitted could not be parsed. \
+# Try submitting it in YYYY-MM-DD format."
+#                 )
+#             result = TopOfTicket(self, dt.strftime("%Y%m%d"), **kwargs)
+#         else:
+#             result = TopOfTicket(self, **kwargs)
+#         self.ftp.quit()
+#         return result
 
     def get_delegate_summary(self):
         """
@@ -111,38 +93,11 @@ Try submitting it in YYYY-MM-DD format."
         """
         return DelegateSummary(self).nominations
 
-    def get_presidential_summary(self, districts=False):
-        """
-        Returns a summary of presidential election results at three levels:
 
-            1. Nationwide popular vote and electoral vote
-            2. State-level popular vote and electoral vote
-            3. County-level popular vote
+    def get_presidential_primaries(self):
+        pass
 
-        If `districts` is provided and set to True the results will include
-        Congressional district-level results in the two states that break out
-        their presidential electors: Maine and Nebraska.This feature only works
-        if the AP has given your account access to the ME and NE data folders.
 
-        By default, `districts` is set to False.
-        """
-        result = PresidentialSummary(self, districts=districts)
-        self.ftp.quit()
-        return result
-
-    def get_congressional_trends(self, results=True):
-        """
-        Returns a summary of the current balance of power in
-        each chamber of congress.
-
-        Usage:
-            >>> trends = client.get_congressional_trends()
-            >>> trends.house.gop_net_change
-            -2
-        """
-        result = CongressionalTrends(self, results)
-        self.ftp.quit()
-        return result
 
     #
     # Private methods
