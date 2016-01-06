@@ -85,16 +85,17 @@ class AP(object):
 #         self.ftp.quit()
 #         return result
 
-    def get_delegate_summary(self):
-        """
-        Return a nationwide summary and state-level totals contain
-        delegate counts for all the candidates in the presidential
-        nomination contest held by the two major parties.
-        """
-        return DelegateSummary(self).nominations
+    # def get_delegate_summary(self):
+    #     """
+    #     Return a nationwide summary and state-level totals contain
+    #     delegate counts for all the candidates in the presidential
+    #     nomination contest held by the two major parties.
+    #     """
+    #     return DelegateSummary(self).nominations
 
 
-    def get_presidential_primaries(self):
+    def get_presidential_primaries(self, date):
+        # PresidentialPrimaryElections
         pass
 
 
@@ -701,6 +702,25 @@ class BaseAPResultCollection(object):
                     result.vote_total,
                     votes_cast
                 )
+
+
+class PresidentialPrimaryElections(BaseAPResultCollection):
+    """
+    Returns a list of presidential primary/caucus elections on
+    a given date.
+    """
+    ap_number_template = '%(number)s'
+
+    def __init__(self, client, name, results=True, delegates=False):
+        d = {'name': name}
+
+        self.results_file_path = "//flat/%(name)s.txt" % d
+        self.delegates_file_path = "/%(name)s/flat/%(name)s_D.txt" % d
+        self.race_file_path = "/inits/%(name)s/%(name)s_race.txt" % d
+        self.reporting_unit_file_path = "/inits/%(name)s/%(name)s_ru.txt" % d
+        self.candidate_file_path = "/inits/%(name)s/%(name)s_pol.txt" % d
+        super(State, self).__init__(client, name, results, delegates)
+
 
 
 class State(BaseAPResultCollection):

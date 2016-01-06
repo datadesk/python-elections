@@ -161,15 +161,15 @@ class APTest(BaseTest):
         # FTP hits
         self.assertEqual(self.client._ftp_hits, 1)
 
-    def test_getstates(self):
-        # Pull states, using the state twice since that's all we have access to.
-        self.first_two = self.client.get_states(os.environ['TEST_STATE'], os.environ['TEST_STATE'])
-        self.assertEqual(type(self.first_two), type([]))
-        self.assertEqual(len(self.first_two), 2)
-        [self.assertEqual(type(i), State) for i in self.first_two]
+    # def test_getstates(self):
+    #     # Pull states, using the state twice since that's all we have access to.
+    #     self.first_two = self.client.get_states(os.environ['TEST_STATE'], os.environ['TEST_STATE'])
+    #     self.assertEqual(type(self.first_two), type([]))
+    #     self.assertEqual(len(self.first_two), 2)
+    #     [self.assertEqual(type(i), State) for i in self.first_two]
 
-        # FTP hits
-        self.assertEqual(self.client._ftp_hits, 1)
+    #     # FTP hits
+    #     self.assertEqual(self.client._ftp_hits, 1)
 
 #     def test_topofticket(self):
 #         # The 2012 general election
@@ -223,28 +223,28 @@ class APTest(BaseTest):
 #        self.assertEqual(len(self.districts.districts), 5)
 #        self.assertEqual(len(self.nov6.districts), 0)
 
-    def test_congressional_trends(self):
-        self.trends = self.client.get_congressional_trends()
-        for chamber_name in ('house', 'senate'):
-            chamber = getattr(self.trends, chamber_name)
-            self.assertEqual(isinstance(chamber.dem_net_change, int), True)
-            self.assertEqual(isinstance(chamber.gop_net_change, int), True)
-            self.assertEqual(isinstance(chamber.others_net_change, int), True)
-            self.assertEqual(isinstance(chamber.dem_won_total, int), True)
-            self.assertEqual(isinstance(chamber.gop_won_total, int), True)
-            self.assertEqual(isinstance(chamber.others_won_total, int), True)
-            self.assertEqual(isinstance(chamber.dem_leading, int), True)
-            self.assertEqual(isinstance(chamber.gop_leading, int), True)
-            self.assertEqual(isinstance(chamber.others_leading, int), True)
-            self.assertEqual(isinstance(chamber.dem_current_total, int), True)
-            self.assertEqual(isinstance(chamber.gop_current_total, int), True)
-            self.assertEqual(isinstance(chamber.others_current_total, int), True)
-            self.assertEqual(isinstance(chamber.dem_holdovers, int), True)
-            self.assertEqual(isinstance(chamber.gop_holdovers, int), True)
-            self.assertEqual(isinstance(chamber.others_holdovers, int), True)
-            self.assertEqual(isinstance(chamber.dem_insufficient, int), True)
-            self.assertEqual(isinstance(chamber.gop_insufficient, int), True)
-            self.assertEqual(isinstance(chamber.others_insufficient, int), True)
+    # def test_congressional_trends(self):
+    #     self.trends = self.client.get_congressional_trends()
+    #     for chamber_name in ('house', 'senate'):
+    #         chamber = getattr(self.trends, chamber_name)
+    #         self.assertEqual(isinstance(chamber.dem_net_change, int), True)
+    #         self.assertEqual(isinstance(chamber.gop_net_change, int), True)
+    #         self.assertEqual(isinstance(chamber.others_net_change, int), True)
+    #         self.assertEqual(isinstance(chamber.dem_won_total, int), True)
+    #         self.assertEqual(isinstance(chamber.gop_won_total, int), True)
+    #         self.assertEqual(isinstance(chamber.others_won_total, int), True)
+    #         self.assertEqual(isinstance(chamber.dem_leading, int), True)
+    #         self.assertEqual(isinstance(chamber.gop_leading, int), True)
+    #         self.assertEqual(isinstance(chamber.others_leading, int), True)
+    #         self.assertEqual(isinstance(chamber.dem_current_total, int), True)
+    #         self.assertEqual(isinstance(chamber.gop_current_total, int), True)
+    #         self.assertEqual(isinstance(chamber.others_current_total, int), True)
+    #         self.assertEqual(isinstance(chamber.dem_holdovers, int), True)
+    #         self.assertEqual(isinstance(chamber.gop_holdovers, int), True)
+    #         self.assertEqual(isinstance(chamber.others_holdovers, int), True)
+    #         self.assertEqual(isinstance(chamber.dem_insufficient, int), True)
+    #         self.assertEqual(isinstance(chamber.gop_insufficient, int), True)
+    #         self.assertEqual(isinstance(chamber.others_insufficient, int), True)
 
 #    def test_delegate_summary(self):
 #        self.delsum = self.client.get_delegate_summary()
