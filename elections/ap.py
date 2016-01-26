@@ -468,32 +468,34 @@ class BaseAPResultCollection(object):
             # Create ReportingUnit objects for each race
             for race in races:
                 ru = ReportingUnit(
-                    name=r['ru_name'],
-                    ap_number=r['ru_number'],
-                    fips=r['ru_fip'],
-                    abbrev=r['ru_abbrv'],
-                    precincts_total=int(r['ru_precincts']),
-                    num_reg_voters=None,
+                    electiondate=race.electiondate,
+                    statePostal=r['st_postal'],
+                    stateName=race.statename,
+                    level=r['rut_name'].lower(),
+                    reportingunitName=r['ru_name'],
+                    reportingunitID=r['ru_number'],
+                    fipsCode=r['ru_fip'],
+                    lastUpdated=None,
+                    precinctsReporting=0,
+                    precinctsTotal=int(r['ru_precincts']),
+                    precinctsReportingPct=0.0,
+                    uncontested=race.uncontested,
+                    test=race.uncontested,
+                    raceid=race.raceid,
+                    racetype=race.racetype,
+                    racetypeid=race.racetypeid,
+                    officeid=race.officeid,
+                    officename=race.officename,
+                    seatname=race.seatname,
+                    description=race.description,
+                    seatnum=race.seatnum,
+                    initialization_data=True,
+                    national=race.national,
+                    candidates=[],
+                    votecount=0,
                 )
-                # This one is not always there, so we opt in.
-                if r.get('ru_reg_voters', None):
-                    ru.num_reg_voters = int(r['ru_reg_voters'])
                 # And add them to the global store
                 race.reportingunits.append(ru)
-            # We add a set of reportingunits for the State object
-            # so you can get county and state voter info from the
-            # State object itself.
-            ru = ReportingUnit(
-                name=r['ru_name'],
-                ap_number=r['ru_number'],
-                fips=r['ru_fip'],
-                abbrev=r['ru_abbrv'],
-                precincts_total=int(r['ru_precincts']),
-                num_reg_voters=None,
-            )
-            if r.get('ru_reg_voters', None):
-                ru.num_reg_voters = int(r['ru_reg_voters'])
-            self._reporting_units.update({ru.key: ru})
 
     def _get_flat_delegates(self):
         """
