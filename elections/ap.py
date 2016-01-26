@@ -715,57 +715,6 @@ class ElectionDay(BaseAPResultCollection):
 
 
 
-class Candidate(object):
-    """
-    A choice for voters in a race.
-
-    In the presidential race, a person, like Barack Obama.
-    In a ballot measure, a direction, like Yes or No.
-    """
-    def __init__(
-        self, first_name=None, middle_name=None, last_name=None,
-        abbrev_name=None, suffix=None, use_suffix=False,
-        ap_natl_number=None, ap_polra_number=None,
-        ap_race_number=None,
-        party=None, ap_pol_number=None, is_winner=None,
-        is_runoff=None, delegates=None, is_incumbent=None,
-        vote_total=None
-    ):
-        self.first_name = first_name
-        self.middle_name = middle_name
-        self.last_name = last_name
-        self.abbrev_name = abbrev_name
-        self.suffix = suffix
-        self.use_suffix = use_suffix
-        self.ap_natl_number = ap_natl_number
-        self.ap_polra_number = ap_polra_number
-        self.ap_race_number = ap_race_number
-        self.ap_pol_number = ap_pol_number
-        self.party = party
-        self.is_winner = is_winner
-        self.is_runoff = is_runoff
-        self.delegates = delegates
-        self.is_incumbent = is_incumbent
-        self.vote_total = vote_total
-
-    def __unicode__(self):
-        return unicode(self.name)
-
-    def __str__(self):
-        return self.__unicode__().encode("utf-8")
-
-    def __repr__(self):
-        return '<%s: %s>' % (self.__class__.__name__, self.__unicode__())
-
-    @property
-    def name(self):
-        if self.last_name not in ('Yes', 'No'):
-            s = " ".join([i for i in [self.first_name, self.last_name] if i])
-            return s.strip()
-        else:
-            return u'%s' % self.last_name
-
-
 class Result(object):
     """
     The vote count for a candidate in a race in a particular reporting unit.
