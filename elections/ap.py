@@ -393,20 +393,18 @@ class BaseAPResultCollection(object):
         for cand in candidate_list:
             # Create a Candidate...
             candidate = Candidate(
-                first_name=cand['pol_first_name'],
-                middle_name=cand['pol_middle_name'],
-                last_name=cand['pol_last_name'],
-                ap_race_number=self.ap_number_template % ({
-                    'number': cand['ra_number'],
-                    'state': cand.get('st_postal', 'None')
-                }),
-                ap_natl_number=cand['pol_nat_id'],
-                ap_polra_number=cand['polra_number'],
-                ap_pol_number=cand['pol_number'],
-                abbrev_name=cand['pol_abbrv'],
-                suffix=cand['pol_junior'],
+                ballotorder=cand['polra_in_order'],
+                candidateid=cand['polra_number'],
+                first=cand['pol_first_name'],
+                last=cand['pol_last_name'],
                 party=cand['polra_party'],
+                polid=cand['pol_nat_id'],
+                polnum=cand['pol_number'],
             )
+            candidate.ap_race_number=self.ap_number_template % ({
+                'number': cand['ra_number'],
+                'state': cand.get('st_postal', 'None')
+            })
             try:
                 self._races[candidate.ap_race_number].candidates.append(candidate)
             except KeyError:
@@ -712,7 +710,6 @@ class ElectionDay(BaseAPResultCollection):
         self.reporting_unit_file_path = "/inits/US/US_%(name)s_ru.txt" % d
         self.candidate_file_path = "/inits/US/US_%(name)s_pol.txt" % d
         super(ElectionDay, self).__init__(client, name, results, delegates)
-
 
 
 class Result(object):
