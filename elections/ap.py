@@ -20,6 +20,17 @@ from cStringIO import StringIO
 from BeautifulSoup import BeautifulStoneSoup
 from dateutil.parser import parse as dateparse
 
+from elex.api.models import (
+    APElection,
+    Candidate,
+    BallotMeasure,
+    CandidateReportingUnit,
+    ReportingUnit,
+    Race,
+    Elections,
+    Election
+)
+
 
 class AP(object):
     """
@@ -478,7 +489,7 @@ class BaseAPResultCollection(object):
                 party=cand['polra_party'],
             )
             try:
-                self._races[candidate.ap_race_number].add_candidate(candidate)
+                self._races[candidate.ap_race_number].candidates.append(candidate)
             except KeyError:
                 pass
 
@@ -489,33 +500,33 @@ class BaseAPResultCollection(object):
         # Get the data
         race_list = self.client._fetch_csv(self.race_file_path)
         # Loop through it all
-        for race in race_list:
+        for row in race_list:
             # Create a Race object...
             race = Race(
-                ap_race_number=self.ap_number_template % ({
-                    'number': race['ra_number'],
-                    'state': race.get('st_postal', 'None')
-                }),
-                office_name=race['ot_name'],
-                office_description=race['of_description'],
-                office_id=race['office_id'],
-                race_type=race['race_id'],
-                seat_name=race['se_name'],
-                seat_number=race['se_number'],
-                state_postal=race.get('st_postal', None),
-                scope=race['of_scope'],
-                date=date(*map(
-                    int,
-                    [
-                        race['el_date'][:4],
-                        race['el_date'][4:6],
-                        race['el_date'][6:]
-                    ]
-                )),
-                num_winners=int(race['ra_num_winners']),
-                party=race['rt_party_name'],
-                uncontested=race['ra_uncontested'] == '1',
+                electiondate=row['el_date'],
+                statePostal=row['st_postal'],
+                stateName=None,
+                test=None,
+                raceID=row['ra_number'],
+                raceType=None,
+                raceTypeID=row['race_id'],
+                officeID=row['office_id'],
+                officeName=row['ot_name'],
+                party=row['rt_party_name'],
+                seatName=row['se_name'] or None,
+                description=row['of_description'] or None,
+                seatNum=row['se_number'] or None,
+                uncontested=row['ra_uncontested'] == '1',
+                lastUpdated=None,
+                initialization_data=True,
+                national=row['ra_national_b'] == '1',
+                candidates=[],
+                reportingUnits=[],
             )
+            race.ap_race_number=self.ap_number_template % ({
+                'number': row['ra_number'],
+                'state': row.get('st_postal', 'None')
+            })
             # And add it to the global store
             self._races.update({race.ap_race_number: race})
 
@@ -533,7 +544,7 @@ class BaseAPResultCollection(object):
             # otherwise stuff the RUs into all of the races,
             # as they're all in the same state.
             races = self.filter_races(
-                state_postal=r.get('st_postal', None)
+                statepostal=r.get('statepostal', None)
             ) or self.races
             # Create ReportingUnit objects for each race
             for race in races:
@@ -549,7 +560,7 @@ class BaseAPResultCollection(object):
                 if r.get('ru_reg_voters', None):
                     ru.num_reg_voters = int(r['ru_reg_voters'])
                 # And add them to the global store
-                race._reporting_units.update({ru.key: ru})
+                race.reportingunits.append(ru)
             # We add a set of reportingunits for the State object
             # so you can get county and state voter info from the
             # State object itself.
@@ -872,7 +883,7 @@ class PresidentialSummary(BaseAPResultCollection):
         )
         if self.fetch_districts:
             # Init fake district race objects for the Nebraska...
-            new_neb = copy.deepcopy(self.filter_races(state_postal='NE')[0])
+            new_neb = copy.deepcopy(self.filter_races(statepostal='NE')[0])
             new_neb.scope = 'D'
             new_neb.ap_race_number = self.ap_number_template % ({
                 'number': 'district',
@@ -880,7 +891,7 @@ class PresidentialSummary(BaseAPResultCollection):
             })
             self._races.update({new_neb.ap_race_number: new_neb})
             # .. and for Maine
-            new_maine = copy.deepcopy(self.filter_races(state_postal='ME')[0])
+            new_maine = copy.deepcopy(self.filter_races(statepostal='ME')[0])
             new_maine.scope = 'D'
             new_maine.ap_race_number = self.ap_number_template % ({
                 'number': 'district',
@@ -1423,226 +1434,226 @@ class StateDelegation(object):
 # Election result objects
 #
 
-class Race(object):
-    """
-    A contest being decided by voters choosing between candidates.
-
-    For example:
-
-        * The presidential general election
-        * The governorship of Maine
-        * Proposition 8 in California
-    """
-    _race_types = {
-        'D': 'Dem Primary',
-        'R': 'GOP Primary',
-        'G': 'General Election',
-        'E': 'Dem Caucus',
-        'S': 'GOP Caucus',
-        # 'L' is not documented by the AP, but that's what it appears to be.
-        'L': 'Libertarian',
-    }
-
-    def __init__(
-        self, ap_race_number=None, office_name=None, office_description=None,
-        office_id=None, seat_name=None, seat_number=None,
-        state_postal=None, scope=None,
-        date=None, num_winners=None, race_type=None,
-        party=None, uncontested=None,
-        precincts_total=None, precincts_reporting=None,
-        precincts_reporting_percent=None, votes_cast=None
-    ):
-        self.ap_race_number = ap_race_number
-        self.office_name = office_name
-        self.office_description = office_description
-        self.office_id = office_id
-        self.seat_name = seat_name
-        self.seat_number = seat_number
-        self.state_postal = state_postal
-        self.scope = scope
-        self.date = date
-        self.num_winners = num_winners
-        self.race_type = race_type
-        self.party = party
-        self.uncontested = uncontested
-        self._candidates = {}
-        self._reporting_units = {}
-
-    def __unicode__(self):
-        return unicode(self.name)
-
-    def __str__(self):
-        return self.__unicode__().encode("utf-8")
-
-    def __repr__(self):
-        return '<%s: %s>' % (self.__class__.__name__, self.__unicode__())
-
-    @property
-    def is_referendum(self):
-        """
-        Returns true if this is a race where the people vote to decide about
-        a law, amendment, whatever.
-        """
-        return self.office_name in [
-            'Amendment',
-            'Initiative',
-            'Issue',
-            'Measure',
-            'Proposition',
-            'Question',
-            'Referendum',
-        ]
-
-    @property
-    def name(self):
-        name = ''
-        if self.scope == 'L':
-            if self.office_description:
-                name = '%s %s - %s' % (
-                    self.office_name,
-                    self.seat_name,
-                    self.office_description
-                )
-            else:
-                name = '%s %s' % (self.office_name, self.seat_name)
-        else:
-            if self.office_name == "Proposition":
-                num = self.seat_name.split('-')[0].strip()
-                name = "%s %s" % (self.office_name, num)
-            else:
-                name = '%s' % self.office_name
-        if not self.is_general:
-            if self.race_type_name:
-                name = '%s - %s' % (self.race_type_name, name)
-            else:
-                return name
-        return name
-
-    @property
-    def candidates(self):
-        return sorted(self._candidates.values(), key=lambda x: x.last_name)
-
-    def get_candidate(self, ap_polra_num):
-        """
-        Takes AP's polra number and returns a Candidate object.
-        """
-        return self._candidates.get(ap_polra_num, None)
-
-    def add_candidate(self, candidate):
-        self._candidates.update({candidate.ap_polra_number: candidate})
-
-    def get_reporting_unit(self, number):
-        """
-        Get a single ReportingUnit
-        """
-        return self._reporting_units.get(number, None)
-
-    @property
-    def reporting_units(self):
-        """
-        Returns all reporting units that belong to this race as a list of
-        ReportingUnit objects.
-        """
-        return self._reporting_units.values()
-
-    @property
-    def state(self):
-        """
-        Returns the state-level results for this race as a
-        ReportingUnit object.
-        """
-        return [o for o in self.reporting_units if o.is_state][0]
-
-    @property
-    def counties(self):
-        """
-        Returns all the counties that report results for this race as a list
-        of ReportingUnit objects.
-        """
-        ru_list = sorted(
-            [
-                o for o in self.reporting_units
-                if o.fips and not o.is_state and o.fips != '00000'
-            ],
-            key=lambda x: x.name
-        )
-        # If the AP reports sub-County data for this state, as they do for some
-        # New England states, we'll need to aggregate it here. If not, we can
-        # just pass out the data "as is."
-        if self.state.abbrev in COUNTY_CROSSWALK.keys():
-            d = {}
-            for ru in ru_list:
-                try:
-                    d[ru.fips].append(ru)
-                except KeyError:
-                    d[ru.fips] = [ru]
-            county_list = []
-            for county, units in d.items():
-                ru = ReportingUnit(
-                    name=COUNTY_CROSSWALK[self.state.abbrev][county],
-                    ap_number='',
-                    fips=county,
-                    abbrev=self.name,
-                    precincts_reporting=sum([
-                        int(i.precincts_reporting) for i in units
-                    ]),
-                    precincts_total=sum([
-                        int(i.precincts_total) for i in units
-                    ]),
-                    num_reg_voters=sum([int(i.num_reg_voters) for i in units]),
-                    votes_cast=sum([int(i.votes_cast) for i in units])
-                )
-                ru.precincts_reporting_percent = calculate.percentage(
-                    ru.precincts_reporting,
-                    ru.precincts_total
-                )
-                # Group all the candidates
-                cands = {}
-                for unit in units:
-                    for result in unit.results:
-                        try:
-                            cands[result.candidate.ap_polra_number].append(
-                                result
-                            )
-                        except KeyError:
-                            cands[result.candidate.ap_polra_number] = [result]
-                for ap_polra_number, results in cands.items():
-                    combined = Result(
-                        candidate=results[0].candidate,
-                        reporting_unit=ru,
-                        vote_total=sum([i.vote_total for i in results]),
-                        vote_total_percent=calculate.percentage(
-                            sum([i.vote_total for i in results]),
-                            ru.votes_cast
-                        )
-                    )
-                    # Update result connected to the reporting unit
-                    ru.update_result(combined)
-                # Load the finished county into our list
-                county_list.append(ru)
-            return county_list
-        else:
-            return ru_list
-        return ru_list
-
-    @property
-    def race_type_name(self):
-        """
-        Returns a descriptive name for the race_type.
-        """
-        return self._race_types.get(self.race_type, None)
-
-    @property
-    def is_primary(self):
-        return self.race_type in ('D', 'R',)
-
-    @property
-    def is_caucus(self):
-        return self.race_type in ('E', 'S',)
-
-    @property
-    def is_general(self):
-        return self.race_type == 'G'
+# class Race(object):
+#     """
+#     A contest being decided by voters choosing between candidates.
+#
+#     For example:
+#
+#         * The presidential general election
+#         * The governorship of Maine
+#         * Proposition 8 in California
+#     """
+#     _race_types = {
+#         'D': 'Dem Primary',
+#         'R': 'GOP Primary',
+#         'G': 'General Election',
+#         'E': 'Dem Caucus',
+#         'S': 'GOP Caucus',
+#         # 'L' is not documented by the AP, but that's what it appears to be.
+#         'L': 'Libertarian',
+#     }
+#
+#     def __init__(
+#         self, ap_race_number=None, office_name=None, office_description=None,
+#         office_id=None, seat_name=None, seat_number=None,
+#         state_postal=None, scope=None,
+#         date=None, num_winners=None, race_type=None,
+#         party=None, uncontested=None,
+#         precincts_total=None, precincts_reporting=None,
+#         precincts_reporting_percent=None, votes_cast=None
+#     ):
+#         self.ap_race_number = ap_race_number
+#         self.office_name = office_name
+#         self.office_description = office_description
+#         self.office_id = office_id
+#         self.seat_name = seat_name
+#         self.seat_number = seat_number
+#         self.state_postal = state_postal
+#         self.scope = scope
+#         self.date = date
+#         self.num_winners = num_winners
+#         self.race_type = race_type
+#         self.party = party
+#         self.uncontested = uncontested
+#         self._candidates = {}
+#         self._reporting_units = {}
+#
+#     def __unicode__(self):
+#         return unicode(self.name)
+#
+#     def __str__(self):
+#         return self.__unicode__().encode("utf-8")
+#
+#     def __repr__(self):
+#         return '<%s: %s>' % (self.__class__.__name__, self.__unicode__())
+#
+#     @property
+#     def is_referendum(self):
+#         """
+#         Returns true if this is a race where the people vote to decide about
+#         a law, amendment, whatever.
+#         """
+#         return self.office_name in [
+#             'Amendment',
+#             'Initiative',
+#             'Issue',
+#             'Measure',
+#             'Proposition',
+#             'Question',
+#             'Referendum',
+#         ]
+#
+#     @property
+#     def name(self):
+#         name = ''
+#         if self.scope == 'L':
+#             if self.office_description:
+#                 name = '%s %s - %s' % (
+#                     self.office_name,
+#                     self.seat_name,
+#                     self.office_description
+#                 )
+#             else:
+#                 name = '%s %s' % (self.office_name, self.seat_name)
+#         else:
+#             if self.office_name == "Proposition":
+#                 num = self.seat_name.split('-')[0].strip()
+#                 name = "%s %s" % (self.office_name, num)
+#             else:
+#                 name = '%s' % self.office_name
+#         if not self.is_general:
+#             if self.race_type_name:
+#                 name = '%s - %s' % (self.race_type_name, name)
+#             else:
+#                 return name
+#         return name
+#
+#     @property
+#     def candidates(self):
+#         return sorted(self._candidates.values(), key=lambda x: x.last_name)
+#
+#     def get_candidate(self, ap_polra_num):
+#         """
+#         Takes AP's polra number and returns a Candidate object.
+#         """
+#         return self._candidates.get(ap_polra_num, None)
+#
+#     def add_candidate(self, candidate):
+#         self._candidates.update({candidate.ap_polra_number: candidate})
+#
+#     def get_reporting_unit(self, number):
+#         """
+#         Get a single ReportingUnit
+#         """
+#         return self._reporting_units.get(number, None)
+#
+#     @property
+#     def reporting_units(self):
+#         """
+#         Returns all reporting units that belong to this race as a list of
+#         ReportingUnit objects.
+#         """
+#         return self._reporting_units.values()
+#
+#     @property
+#     def state(self):
+#         """
+#         Returns the state-level results for this race as a
+#         ReportingUnit object.
+#         """
+#         return [o for o in self.reporting_units if o.is_state][0]
+#
+#     @property
+#     def counties(self):
+#         """
+#         Returns all the counties that report results for this race as a list
+#         of ReportingUnit objects.
+#         """
+#         ru_list = sorted(
+#             [
+#                 o for o in self.reporting_units
+#                 if o.fips and not o.is_state and o.fips != '00000'
+#             ],
+#             key=lambda x: x.name
+#         )
+#         # If the AP reports sub-County data for this state, as they do for some
+#         # New England states, we'll need to aggregate it here. If not, we can
+#         # just pass out the data "as is."
+#         if self.state.abbrev in COUNTY_CROSSWALK.keys():
+#             d = {}
+#             for ru in ru_list:
+#                 try:
+#                     d[ru.fips].append(ru)
+#                 except KeyError:
+#                     d[ru.fips] = [ru]
+#             county_list = []
+#             for county, units in d.items():
+#                 ru = ReportingUnit(
+#                     name=COUNTY_CROSSWALK[self.state.abbrev][county],
+#                     ap_number='',
+#                     fips=county,
+#                     abbrev=self.name,
+#                     precincts_reporting=sum([
+#                         int(i.precincts_reporting) for i in units
+#                     ]),
+#                     precincts_total=sum([
+#                         int(i.precincts_total) for i in units
+#                     ]),
+#                     num_reg_voters=sum([int(i.num_reg_voters) for i in units]),
+#                     votes_cast=sum([int(i.votes_cast) for i in units])
+#                 )
+#                 ru.precincts_reporting_percent = calculate.percentage(
+#                     ru.precincts_reporting,
+#                     ru.precincts_total
+#                 )
+#                 # Group all the candidates
+#                 cands = {}
+#                 for unit in units:
+#                     for result in unit.results:
+#                         try:
+#                             cands[result.candidate.ap_polra_number].append(
+#                                 result
+#                             )
+#                         except KeyError:
+#                             cands[result.candidate.ap_polra_number] = [result]
+#                 for ap_polra_number, results in cands.items():
+#                     combined = Result(
+#                         candidate=results[0].candidate,
+#                         reporting_unit=ru,
+#                         vote_total=sum([i.vote_total for i in results]),
+#                         vote_total_percent=calculate.percentage(
+#                             sum([i.vote_total for i in results]),
+#                             ru.votes_cast
+#                         )
+#                     )
+#                     # Update result connected to the reporting unit
+#                     ru.update_result(combined)
+#                 # Load the finished county into our list
+#                 county_list.append(ru)
+#             return county_list
+#         else:
+#             return ru_list
+#         return ru_list
+#
+#     @property
+#     def race_type_name(self):
+#         """
+#         Returns a descriptive name for the race_type.
+#         """
+#         return self._race_types.get(self.race_type, None)
+#
+#     @property
+#     def is_primary(self):
+#         return self.race_type in ('D', 'R',)
+#
+#     @property
+#     def is_caucus(self):
+#         return self.race_type in ('E', 'S',)
+#
+#     @property
+#     def is_general(self):
+#         return self.race_type == 'G'
 
 
 class ReportingUnit(object):
