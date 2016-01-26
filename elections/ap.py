@@ -81,6 +81,21 @@ class AP(object):
         self.ftp.quit()
         return results
 
+    def get_electionday(self, election_date, **kwargs):
+        """
+        Takes a date in any common format (YYYY-MM-DD is preferred)
+        and returns a list of APResult objects for states holding
+        elections that day.
+        """
+        try:
+            dt = dateparse(election_date)
+        except ValueError:
+            raise ValueError(
+                "The election date you've submitted could not be parsed. \
+Try submitting it in YYYY-MM-DD format."
+            )
+        return ElectionDay(self, dt.strftime("%Y%m%d"), **kwargs)
+
     def get_topofticket(self, election_date=None, **kwargs):
         """
         Takes a date in any common format (YYYY-MM-DD is preferred)
@@ -766,6 +781,30 @@ class State(BaseAPResultCollection):
         self.reporting_unit_file_path = "/inits/%(name)s/%(name)s_ru.txt" % d
         self.candidate_file_path = "/inits/%(name)s/%(name)s_pol.txt" % d
         super(State, self).__init__(client, name, results, delegates)
+
+
+class ElectionDay(BaseAPResultCollection):
+    """
+    All the results from an 2016 election day.
+
+    Returned by the AP client in response to a `get_states_by_date`
+    call. Contains, among its attributes, the results for all races recorded
+    by the AP.
+    """
+    ap_number_template = '%(number)s-%(state)s'
+
+    def __init__(self, client, name='20141104', results=True, delegates=False):
+        d = {'name': name}
+        self.results_file_path = "/Delegate_Tracking/US/flat/US_%(name)s.txt" % d
+        self.race_file_path = "/inits/US/US_%(name)s_race.txt" % d
+        self.reporting_unit_file_path = "/inits/US/US_%(name)s_ru.txt" % d
+        self.candidate_file_path = "/inits/US/US_%(name)s_pol.txt" % d
+        super(ElectionDay, self).__init__(client, name, results, delegates)
+
+    @property
+    def states(self):
+        return [o for o in self._reporting_units.values() if o.is_state]
+
 
 
 class TopOfTicket(BaseAPResultCollection):
