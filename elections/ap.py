@@ -325,6 +325,22 @@ class ElectionDay(object):
         except KeyError:
             raise KeyError("The reporting unit you requested does not exist.")
 
+    @property
+    def candidates(self):
+        """
+        Get all candidates
+        """
+        return self._candidates.values()
+
+    def get_candidates(self, candidate_id):
+        """
+        Get a single ReportinUnit
+        """
+        try:
+            return self._candidates[candidate_id]
+        except KeyError:
+            raise KeyError("The candidate you requested does not exist.")
+
     #
     # Private methods
     #
