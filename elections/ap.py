@@ -295,6 +295,10 @@ Try submitting it in YYYY-MM-DD format."
         """
         return self._results.values()
 
+    @property
+    def candidate_reporting_units(self):
+        return self.results
+
     #
     # Private methods
     #
