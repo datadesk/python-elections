@@ -16,12 +16,12 @@ import itertools
 import calculate
 from ftplib import FTP
 from datetime import date
+from pprint import pprint
 from cStringIO import StringIO
 from BeautifulSoup import BeautifulStoneSoup
 from dateutil.parser import parse as dateparse
 
 from elex.api.models import (
-    APElection,
     Candidate,
     BallotMeasure,
     CandidateReportingUnit,
@@ -228,40 +228,42 @@ Try submitting it in YYYY-MM-DD format."
 # Result collections
 #
 
-class BaseAPResultCollection(object):
+class ElectionDay(object):
     """
     Base class that defines the methods to retrieve AP CSV
     data and shared properties and methods for State and
     TopOfTicket objects.
-
-    Any class that inherits from BaseAPResults must define
-    these paths before it calls the parent __init__:
-
-        * self.results_file_path
-        * self.delegates_file_path
-        * self.race_file_path
-        * self.reporting_unit_file_path
-        * self.candidate_file_path
     """
-    def __init__(self, client, name, results=True, delegates=True):
+    ap_number_template = '%(number)s-%(state)s'
+
+    def __init__(self, client, name='20160201', results=True, delegates=True):
+
+        # The FTP connection
         self.client = client
+
+        # The name of the election provided by the user
         self.name = name
-        # The AP results files for these 7 states are missing
-        # the leading 0 on the county FIPS codes.
-        if self.name in ('AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT'):
-            self.leading_zero_fips = True
-        else:
-            self.leading_zero_fips = False
+
+        # Setting the file paths
+        d = {'name': name}
+        self.results_file_path = "/Delegate_Tracking/US/flat/US_%(name)s.txt" % d
+        self.race_file_path = "/inits/US/US_%(name)s_race.txt" % d
+        self.reporting_unit_file_path = "/inits/US/US_%(name)s_ru.txt" % d
+        self.candidate_file_path = "/inits/US/US_%(name)s_pol.txt" % d
+
+        # Cache for the objects so we can grab them when we need them
         self._races = {}
         self._reporting_units = {}
+        self._candidates = {}
+
+        # Load initialization data
         self._init_races()
         self._init_reporting_units()
         self._init_candidates()
+
+        # Load results data
         if results:
-            self.fetch_results()
-        # Fetches delegates for any Primary or Caucus races
-        if delegates and self.filter_races(is_general=False):
-            self.fetch_delegates()
+            self.self._get_flat_results()
 
     def __unicode__(self):
         return unicode(self.name)
@@ -323,103 +325,20 @@ class BaseAPResultCollection(object):
         except KeyError:
             raise KeyError("The reporting unit you requested does not exist.")
 
-    @property
-    def counties(self):
-        """
-        Gets all reporting units that can be defined as counties
-        (read: !states).
-
-        Also does a crosswalk to aggregate New England ReportingUnits
-        into their respective counties.
-        """
-        # Filter out the state level data
-        ru_list = [
-            o for o in self.reporting_units
-            if o.fips and not o.is_state and o.fips != '00000'
-        ]
-        # If the AP reports sub-County data for this state, as they do for some
-        # New England states, we'll need to aggregate it here. If not, we can
-        # just pass out the data "as is."
-        if self.name in COUNTY_CROSSWALK.keys():
-            d = {}
-            for ru in ru_list:
-                try:
-                    d[ru.fips].append(ru)
-                except:
-                    d[ru.fips] = [ru]
-            county_list = []
-            for county, units in d.items():
-                ru = ReportingUnit(
-                    name=COUNTY_CROSSWALK[self.name][county],
-                    ap_number='',
-                    fips=county,
-                    abbrev=self.name,
-                    precincts_total=sum([
-                        int(i.precincts_total) for i in units
-                    ]),
-                    num_reg_voters=sum([int(i.num_reg_voters) for i in units]),
-                )
-                county_list.append(ru)
-            return county_list
-        else:
-            return ru_list
-
-    def fetch_results(self):
-        """
-        This will fetch and fill out all of the results. If called again,
-        it will simply run through and update all of the results with
-        the most fresh data from the AP.
-        """
-        self._get_flat_results()
-
-    def fetch_delegates(self):
-        """
-        This will fetch and fill out the delegate_total variable on
-        the candidate models with the statewide results.
-        """
-        self._get_flat_delegates()
-
     #
     # Private methods
     #
-
-    def _init_candidates(self):
-        """
-        Download the state's candidate file and load the data.
-        """
-        # Fetch the data from the FTP
-        candidate_list = self.client._fetch_csv(self.candidate_file_path)
-        # Loop through it...
-        for cand in candidate_list:
-            # Create a Candidate...
-            candidate = Candidate(
-                ballotorder=cand['polra_in_order'],
-                candidateid=cand['polra_number'],
-                first=cand['pol_first_name'],
-                last=cand['pol_last_name'],
-                party=cand['polra_party'],
-                polid=cand['pol_nat_id'],
-                polnum=cand['pol_number'],
-            )
-            candidate.ap_race_number=self.ap_number_template % ({
-                'number': cand['ra_number'],
-                'state': cand.get('st_postal', 'None')
-            })
-            try:
-                self._races[candidate.ap_race_number].candidates.append(candidate)
-            except KeyError:
-                pass
 
     def _init_races(self):
         """
         Download all the races in the state and load the data.
         """
         # Get the data
-        race_list = self.client._fetch_csv(self.race_file_path)
+        row_list = self.client._fetch_csv(self.race_file_path)
         # Loop through it all
-        for row in race_list:
+        for row in row_list:
             # Create a Race object...
-            race = Race(
+            obj = Race(
                 electiondate=row['el_date'],
                 statePostal=row['st_postal'],
                 stateName=None,
@@ -440,42 +359,38 @@ class BaseAPResultCollection(object):
                 candidates=[],
                 reportingUnits=[],
             )
-            race.ap_race_number=self.ap_number_template % ({
+
+            # A custom ID so we can grab this from other methods
+            obj.ap_race_number = self.ap_number_template % ({
                 'number': row['ra_number'],
                 'state': row.get('st_postal', 'None')
             })
+
             # And add it to the global store
-            self._races.update({race.ap_race_number: race})
+            self._races[obj.ap_race_number] = obj
 
     def _init_reporting_units(self):
         """
         Download all the reporting units and load the data.
         """
         # Get the data
-        ru_list = self.client._fetch_csv(self.reporting_unit_file_path)
+        row_list = self.client._fetch_csv(self.reporting_unit_file_path)
         # Loop through them all
-        for r in ru_list:
-            # if `st_postal` is in the dict, we're getting
-            # Top of the Ticket data,
-            # so we want to put reportingunits in the state they belong to.
-            # otherwise stuff the RUs into all of the races,
-            # as they're all in the same state.
-            races = self.filter_races(
-                statepostal=r.get('statepostal', None)
-            ) or self.races
+        for row in row_list:
+            race_list = self.filter_races(statepostal=row['st_postal'])
             # Create ReportingUnit objects for each race
-            for race in races:
-                ru = ReportingUnit(
+            for race in race_list:
+                obj = ReportingUnit(
                     electiondate=race.electiondate,
-                    statePostal=r['st_postal'],
+                    statePostal=row['st_postal'],
                     stateName=race.statename,
-                    level=r['rut_name'].lower(),
-                    reportingunitName=r['ru_name'],
-                    reportingunitID=r['ru_number'],
-                    fipsCode=r['ru_fip'],
+                    level=row['rut_name'].lower(),
+                    reportingunitName=row['ru_name'],
+                    reportingunitID=row['ru_number'],
+                    fipsCode=row['ru_fip'],
                     lastUpdated=None,
                     precinctsReporting=0,
-                    precinctsTotal=int(r['ru_precincts']),
+                    precinctsTotal=int(row['ru_precincts']),
                     precinctsReportingPct=0.0,
                     uncontested=race.uncontested,
                     test=race.uncontested,
@@ -492,70 +407,46 @@ class BaseAPResultCollection(object):
                     candidates=[],
                     votecount=0,
                 )
-                # And add them to the global store
-                race.reportingunits.append(ru)
 
-    def _get_flat_delegates(self):
+                # Add them to global store using a custom
+                # key we create here on-the-fly because
+                # we'll need it elsewhere
+                obj.key = "%s%s" % (row['ru_name'], row['ru_number'])
+                self._reporting_units[obj.key] = obj
+
+                # Add them to the race object
+                race.reportingunits.append(obj)
+
+    def _init_candidates(self):
         """
-        Download statewide delegate totals and load it into Candidates.
+        Download the state's candidate file and load the data.
         """
-        # Pull the data
-        flat_list = self.client._fetch_flatfile(
-            self.delegates_file_path,
-            [
-                # First the basic fields that will the same in each row
-                'test',
-                'election_date',
-                'state_postal',
-                'district_type',
-                'district_number',
-                'district_name',
-                'race_number',
-                'office_id',
-                'race_type_id',
-                'seat_number',
-                'office_name',
-                'seat_name',
-                'race_type_party',
-                'race_type',
-                'office_description',
-                'number_of_winners',
-                'number_in_runoff',
-                'precincts_reporting',
-                'total_precincts',
-            ],
-            [
-                # Then the candidate fields that will repeat after the basics
-                'candidate_number',
-                'order',
-                'party',
-                'first_name',
-                'middle_name',
-                'last_name',
-                'junior',
-                'use_junior',
-                'incumbent',
-                'delegates',
-                'vote_count',
-                'is_winner',
-                'national_politician_id',
-            ]
-        )
-        # Filter it down to the state level results
-        state_data = [i for i in flat_list if i['district_number'] == '1']
-        # Loop through them
-        for row in state_data:
-            # Get the race
-            race = self.get_race(row['race_number'])
-            # Loop through the candidates in that race
-            for cand in row['candidates']:
-                # And if it's a legit candidate, cuz sometimes they come out
-                # blank at the end of the file.
-                if cand['candidate_number']:
-                    # Grab the candidate
-                    candidate = race.get_candidate(cand['candidate_number'])
-                    # Set the delegates
-                    candidate.delegates = int(cand['delegates'])
+        # Fetch the data from the FTP
+        row_list = self.client._fetch_csv(self.candidate_file_path)
+        # Loop through it...
+        for row in row_list:
+            # Create a Candidate...
+            obj = Candidate(
+                ballotorder=row['polra_in_order'],
+                candidateid=row['polra_number'],
+                first=row['pol_first_name'],
+                last=row['pol_last_name'],
+                party=row['polra_party'],
+                polid=row['pol_nat_id'],
+                polnum=row['pol_number'],
+            )
+
+            # Create our custom key
+            obj.ap_race_number = self.ap_number_template % ({
+                'number': row['ra_number'],
+                'state': row.get('st_postal', 'None')
+            })
+
+            # Add the candidate to the related races candidate list
+            self._races[obj.ap_race_number].candidates.append(obj)
+
+            # Add the candidate to the global store
+            self._candidates[obj.candidateid] = obj
 
     def _get_flat_results(self, ftp=None):
         """
@@ -604,72 +495,115 @@ class BaseAPResultCollection(object):
         )
 
         # Figure out if we're dealing with test data or the real thing
-        self.is_test = flat_list[0]['test'] == 't'
+        is_test = flat_list[0]['test'] == 't'
+
+        from pprint import pprint
 
         # Start looping through the lines...
         for row in flat_list:
+
+            pprint(row)
 
             # Get the race, with a special case for the presidential race
             ap_race_number = self.ap_number_template % ({
                 'number': row['race_number'],
                 'state': row['state_postal']
             })
-            try:
-                race = self.get_race(ap_race_number)
-            except KeyError:
-                continue
+            race = self.get_race(ap_race_number)
 
-            # Figure out if it's a state or a county
-            is_state = row['county_number'] == '1'
-            county_number = str(row['county_number'])
-
-            # Pull the reporting unit
-            reporting_unit = race.get_reporting_unit(
-                "%s%s" % (row['county_name'], county_number)
-            )
             # Loop through all the candidates
             votes_cast = 0
-            for cand in row['candidates']:
+            for candrow in row['candidates']:
                 # Skip it if the candidate is empty, as it sometimes is at
                 # the end of the row
-                if not cand['candidate_number']:
+                if not candrow['candidate_number']:
                     continue
 
                 # Pull the existing candidate object
-                candidate = race.get_candidate(cand["candidate_number"])
+                candidate = self.get_obj_by_attr(
+                    race.candidates,
+                    'candidateid',
+                    candrow["candidate_number"]
+                )
                 if not candidate:
                     continue
 
+
+                # Figure out if it's a state or a county
+                county_number = str(candrow['county_number'])
+
+                # Pull the reporting unit
+                pprint(race)
+                pprint(race.reportingunits)
+                reporting_unit = self.get_obj_by_attr(
+                    race.reportingunits,
+                    'reportingunitid',
+                    candrow["candidate_number"]
+                )
+
+                race.get_reporting_unit(
+                    "%s%s" % (row['county_name'], county_number)
+                )
+
                 # Pull the vote total
-                vote_count = int(cand['vote_count'])
+                vote_count = int(candrow['vote_count'])
 
                 # Add it to the overall total
                 votes_cast += vote_count
 
-                # Update the candidate's global vote total
-                # if data are statewide
-                if is_state:
-                    candidate.vote_total = vote_count
-
-                # Set is_winner and is_runoff
-                # (This will just get set over and over as we loop
-                # but AP seems to put the statewide result in for every
-                # reporting unit so I think we're safe.)
-                candidate.is_winner = cand['is_winner'] == 'X'
-                candidate.is_runoff = cand['is_winner'] == 'R'
-
-                # Set whether the candidate is an incumbent
-                candidate.is_incumbent = cand['incumbent'] == '1'
-
-                # Create the Result object, which is specific to the
-                # reporting unit in this row of the flatfile.
-                result = Result(
-                    candidate=candidate,
-                    vote_total=vote_count,
-                    reporting_unit=reporting_unit
+                cru = CandidateReportingUnit(
+                    test=is_test,
+                    initialization_data=False,
+                    lastupdated=None,
+                    # Race
+                    electiondate=race.electiondate,
+                    raceid=race.raceid,
+                    statepostal=race.statepostal,
+                    statename=race.statename,
+                    racetype=race.racetype,
+                    racetypeid=race.racetypeid,
+                    officeid=race.officeid,
+                    officename=race.officename,
+                    seatname=race.seatname,
+                    description=race.description,
+                    seatnum=race.seatnum,
+                    national=race.national,
+                    is_ballot_measure=None,
+                    uncontested=race.uncontested,
+                    # Candidate
+                    first=candidate.first,
+                    last=candidate.last,
+                    party=candidate.party,
+                    candidateID=candidate.candidateid,
+                    polID=candidate.polid,
+                    polNum=candidate.polnum,
+                    incumbent=candrow['incumbent'] == '1',
+                    ballotOrder=candidate.ballotorder,
+                    # Results
+                    voteCount=vote_count,
+                    votePct=None,
+                    winner=candrow['is_winner'],
+                    # # Reporting unit
+                    # level=,
+                    # reportingunitname=,
+                    # reportingunitid=,
+                    # fipscode=,
+                    # precinctsreporting=,
+                    # precinctstotal=,
+                    # precinctsreportingpct=,
                 )
-                # Update result connected to the reporting unit
-                reporting_unit.update_result(result)
+
+            # Candidate loop was here ....
+
+                # # Create the Result object, which is specific to the
+                # # reporting unit in this row of the flatfile.
+                # result = Result(
+                #     candidate=candidate,
+                #     vote_total=vote_count,
+                #     reporting_unit=reporting_unit
+                # )
+                # # Update result connected to the reporting unit
+                # reporting_unit.update_result(result)
 
             # Update the reporting unit's precincts status
             reporting_unit.precincts_total = int(row['total_precincts'])
@@ -692,47 +626,6 @@ class BaseAPResultCollection(object):
                     votes_cast
                 )
 
-
-class ElectionDay(BaseAPResultCollection):
-    """
-    All the results from an 2016 election day.
-
-    Returned by the AP client in response to a `get_states_by_date`
-    call. Contains, among its attributes, the results for all races recorded
-    by the AP.
-    """
-    ap_number_template = '%(number)s-%(state)s'
-
-    def __init__(self, client, name='20141104', results=True, delegates=False):
-        d = {'name': name}
-        self.results_file_path = "/Delegate_Tracking/US/flat/US_%(name)s.txt" % d
-        self.race_file_path = "/inits/US/US_%(name)s_race.txt" % d
-        self.reporting_unit_file_path = "/inits/US/US_%(name)s_ru.txt" % d
-        self.candidate_file_path = "/inits/US/US_%(name)s_pol.txt" % d
-        super(ElectionDay, self).__init__(client, name, results, delegates)
-
-
-class Result(object):
-    """
-    The vote count for a candidate in a race in a particular reporting unit.
-    """
-    def __init__(self, candidate=None, reporting_unit=None, vote_total=None,
-                 vote_total_percent=None, electoral_votes_total=None):
-        self.candidate = candidate
-        self.reporting_unit = reporting_unit
-        self.vote_total = vote_total
-        self.vote_total_percent = vote_total_percent
-        self.electoral_votes_total = electoral_votes_total
-
-    def __unicode__(self):
-        return u'%s, %s, %s' % (self.candidate, self.reporting_unit,
-                                self.vote_total)
-
-    def __str__(self):
-        return self.__unicode__().encode("utf-8")
-
-    def __repr__(self):
-        return '<%s: %s>' % (self.__class__.__name__, self.__unicode__())
 
 #
 # Errors
