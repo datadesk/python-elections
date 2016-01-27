@@ -571,7 +571,7 @@ class Election(object):
                     ballotOrder=candidate.ballotorder,
                     # Results
                     voteCount=int(candrow['vote_count']),
-                    votePct=calculate.percentage(int(candrow['vote_count']), votes_total),
+                    votePct=calculate.percentage(int(candrow['vote_count']), votes_total, multiply=False),
                     winner=candrow['is_winner'],
                     # Reporting unit
                     level=reporting_unit.level,
@@ -595,7 +595,8 @@ class Election(object):
             reporting_unit.precinctsreporting = int(row['precincts_reporting'])
             reporting_unit.precinctsreportingpct = calculate.percentage(
                 reporting_unit.precinctsreporting,
-                reporting_unit.precinctstotal
+                reporting_unit.precinctstotal,
+                multiply=False
             )
             reporting_unit.votecount = votes_total
 
