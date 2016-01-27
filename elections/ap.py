@@ -255,6 +255,7 @@ class ElectionDay(object):
         self._races = {}
         self._reporting_units = {}
         self._candidates = {}
+        self._results = {}
 
         # Load initialization data
         self._init_races()
@@ -263,7 +264,7 @@ class ElectionDay(object):
 
         # Load results data
         if results:
-            self.self._get_flat_results()
+            self._get_results()
 
     def __unicode__(self):
         return unicode(self.name)
@@ -332,7 +333,7 @@ class ElectionDay(object):
         """
         return self._candidates.values()
 
-    def get_candidates(self, candidate_id):
+    def get_candidate(self, candidate_id):
         """
         Get a single ReportinUnit
         """
@@ -464,7 +465,7 @@ class ElectionDay(object):
             # Add the candidate to the global store
             self._candidates[obj.candidateid] = obj
 
-    def _get_flat_results(self, ftp=None):
+    def _get_results(self, ftp=None):
         """
         Download, parse and structure the state and county votes totals.
         """
@@ -513,12 +514,8 @@ class ElectionDay(object):
         # Figure out if we're dealing with test data or the real thing
         is_test = flat_list[0]['test'] == 't'
 
-        from pprint import pprint
-
         # Start looping through the lines...
         for row in flat_list:
-
-            pprint(row)
 
             # Get the race, with a special case for the presidential race
             ap_race_number = self.ap_number_template % ({
@@ -527,8 +524,10 @@ class ElectionDay(object):
             })
             race = self.get_race(ap_race_number)
 
+            # Total the votes
+            votes_total = sum([int(o['vote_count']) for o in row['candidates']])
+
             # Loop through all the candidates
-            votes_cast = 0
             for candrow in row['candidates']:
                 # Skip it if the candidate is empty, as it sometimes is at
                 # the end of the row
@@ -536,36 +535,11 @@ class ElectionDay(object):
                     continue
 
                 # Pull the existing candidate object
-                candidate = self.get_obj_by_attr(
-                    race.candidates,
-                    'candidateid',
-                    candrow["candidate_number"]
-                )
-                if not candidate:
-                    continue
-
-
-                # Figure out if it's a state or a county
-                county_number = str(candrow['county_number'])
+                candidate = self.get_candidate(candrow["candidate_number"])
 
                 # Pull the reporting unit
-                pprint(race)
-                pprint(race.reportingunits)
-                reporting_unit = self.get_obj_by_attr(
-                    race.reportingunits,
-                    'reportingunitid',
-                    candrow["candidate_number"]
-                )
-
-                race.get_reporting_unit(
-                    "%s%s" % (row['county_name'], county_number)
-                )
-
-                # Pull the vote total
-                vote_count = int(candrow['vote_count'])
-
-                # Add it to the overall total
-                votes_cast += vote_count
+                ru_key = "%s%s" % (row['county_name'], row['county_number'])
+                reporting_unit = self.get_reporting_unit(ru_key)
 
                 cru = CandidateReportingUnit(
                     test=is_test,
@@ -596,51 +570,34 @@ class ElectionDay(object):
                     incumbent=candrow['incumbent'] == '1',
                     ballotOrder=candidate.ballotorder,
                     # Results
-                    voteCount=vote_count,
-                    votePct=None,
+                    voteCount=int(candrow['vote_count']),
+                    votePct=calculate.percentage(int(candrow['vote_count']), votes_total),
                     winner=candrow['is_winner'],
-                    # # Reporting unit
-                    # level=,
-                    # reportingunitname=,
-                    # reportingunitid=,
-                    # fipscode=,
-                    # precinctsreporting=,
-                    # precinctstotal=,
-                    # precinctsreportingpct=,
+                    # Reporting unit
+                    level=reporting_unit.level,
+                    reportingunitname=reporting_unit.reportingunitname,
+                    reportingunitid=reporting_unit.reportingunitid,
+                    fipscode=reporting_unit.fipscode,
+                    precinctsreporting=reporting_unit.precinctsreporting,
+                    precinctstotal=reporting_unit.precinctstotal,
+                    precinctsreportingpct=reporting_unit.precinctsreportingpct,
                 )
 
-            # Candidate loop was here ....
-
-                # # Create the Result object, which is specific to the
-                # # reporting unit in this row of the flatfile.
-                # result = Result(
-                #     candidate=candidate,
-                #     vote_total=vote_count,
-                #     reporting_unit=reporting_unit
-                # )
-                # # Update result connected to the reporting unit
-                # reporting_unit.update_result(result)
+                cru.key = "%s%s%s" % (
+                    race.raceid,
+                    ru_key,
+                    candrow["candidate_number"],
+                )
+                self._results[cru.key] = cru
 
             # Update the reporting unit's precincts status
-            reporting_unit.precincts_total = int(row['total_precincts'])
-            reporting_unit.precincts_reporting = int(
-                row['precincts_reporting']
+            reporting_unit.precinctstotal = int(row['total_precincts'])
+            reporting_unit.precinctsreporting = int(row['precincts_reporting'])
+            reporting_unit.precinctsreportingpct = calculate.percentage(
+                reporting_unit.precinctsreporting,
+                reporting_unit.precinctstotal
             )
-            reporting_unit.precincts_reporting_percent = calculate.percentage(
-                reporting_unit.precincts_reporting,
-                reporting_unit.precincts_total
-            )
-
-            # Update the total votes cast
-            reporting_unit.votes_cast = votes_cast
-
-            # Loop back through the results and set the percentages now
-            # that we know the overall total
-            for result in reporting_unit.results:
-                result.vote_total_percent = calculate.percentage(
-                    result.vote_total,
-                    votes_cast
-                )
+            reporting_unit.votecount = votes_total
 
 
 #
