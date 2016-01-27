@@ -27,37 +27,54 @@ from elex.api.models import (
     CandidateReportingUnit,
     ReportingUnit,
     Race,
-    Elections,
-    Election
+    #Elections,
+    #Election
 )
 
 
-class api(object):
+class Election(object):
     """
     The public client you can use to connect to AP's data feed.
-
-    Example usage:
-
-        >>> from elections import AP
-        >>> client = AP(USERNAME, PASSWORD)
-        >>> client.get_state("IA")
     """
     FTP_HOSTNAME = 'electionsonline.ap.org'
+    ap_number_template = '%(number)s-%(state)s'
 
-    def __init__(self, username=None, password=None):
+    def __init__(self, election_date='20160201', username=None, password=None, results=True, **kwargs):
         self.username = username
         self.password = password
         self._ftp = None
         self._ftp_hits = 0
+        try:
+            dt = dateparse(election_date)
+        except ValueError:
+            raise ValueError(
+                "The election date you've submitted could not be parsed. \
+Try submitting it in YYYY-MM-DD format."
+            )
+        # The name of the election provided by the user
+        self.name = dt.strftime("%Y%m%d")
 
-    def __unicode__(self):
-        return unicode(self.username)
+        # Setting the file paths
+        d = {'name': self.name}
+        self.results_file_path = "/Delegate_Tracking/US/flat/US_%(name)s.txt" % d
+        self.race_file_path = "/inits/US/US_%(name)s_race.txt" % d
+        self.reporting_unit_file_path = "/inits/US/US_%(name)s_ru.txt" % d
+        self.candidate_file_path = "/inits/US/US_%(name)s_pol.txt" % d
 
-    def __str__(self):
-        return self.__unicode__().encode("utf-8")
+        # Cache for the objects so we can grab them when we need them
+        self._races = {}
+        self._reporting_units = {}
+        self._candidates = {}
+        self._results = {}
 
-    def __repr__(self):
-        return '<%s: %s>' % (self.__class__.__name__, self.__unicode__())
+        # Load initialization data
+        self._init_races()
+        self._init_reporting_units()
+        self._init_candidates()
+
+        # Load results data
+        if results:
+            self._get_results()
 
     #
     # Public methods
@@ -73,21 +90,6 @@ class api(object):
             self._ftp = FTP(self.FTP_HOSTNAME, self.username, self.password)
             self._ftp_hits += 1
         return self._ftp
-
-    def Election(self, election_date, **kwargs):
-        """
-        Takes a date in any common format (YYYY-MM-DD is preferred)
-        and returns a list of APResult objects for states holding
-        elections that day.
-        """
-        try:
-            dt = dateparse(election_date)
-        except ValueError:
-            raise ValueError(
-                "The election date you've submitted could not be parsed. \
-Try submitting it in YYYY-MM-DD format."
-            )
-        return Election(self, dt.strftime("%Y%m%d"), **kwargs)
 
     #
     # Private methods
@@ -223,62 +225,6 @@ Try submitting it in YYYY-MM-DD format."
         args = [iter(iterable)] * n
         return list(itertools.izip_longest(*args, fillvalue=fillvalue))
 
-
-#
-# Result collections
-#
-
-class Election(object):
-    """
-    Base class that defines the methods to retrieve AP CSV
-    data and shared properties and methods for State and
-    TopOfTicket objects.
-    """
-    ap_number_template = '%(number)s-%(state)s'
-
-    def __init__(self, client, name='20160201', results=True, delegates=True):
-
-        # The FTP connection
-        self.client = client
-
-        # The name of the election provided by the user
-        self.name = name
-
-        # Setting the file paths
-        d = {'name': name}
-        self.results_file_path = "/Delegate_Tracking/US/flat/US_%(name)s.txt" % d
-        self.race_file_path = "/inits/US/US_%(name)s_race.txt" % d
-        self.reporting_unit_file_path = "/inits/US/US_%(name)s_ru.txt" % d
-        self.candidate_file_path = "/inits/US/US_%(name)s_pol.txt" % d
-
-        # Cache for the objects so we can grab them when we need them
-        self._races = {}
-        self._reporting_units = {}
-        self._candidates = {}
-        self._results = {}
-
-        # Load initialization data
-        self._init_races()
-        self._init_reporting_units()
-        self._init_candidates()
-
-        # Load results data
-        if results:
-            self._get_results()
-
-    def __unicode__(self):
-        return unicode(self.name)
-
-    def __str__(self):
-        return self.__unicode__().encode("utf-8")
-
-    def __repr__(self):
-        return '<%s: %s>' % (self.__class__.__name__, self.__unicode__())
-
-    #
-    # Public methods
-    #
-
     @property
     def races(self):
         """
@@ -342,6 +288,17 @@ class Election(object):
         except KeyError:
             raise KeyError("The candidate you requested does not exist.")
 
+    @property
+    def results(self):
+        """
+        Get all results
+        """
+        return self._results.values()
+
+    @property
+    def candidate_reporting_units(self):
+        return self.results
+
     #
     # Private methods
     #
@@ -351,7 +308,7 @@ class Election(object):
         Download all the races in the state and load the data.
         """
         # Get the data
-        row_list = self.client._fetch_csv(self.race_file_path)
+        row_list = self._fetch_csv(self.race_file_path)
         # Loop through it all
         for row in row_list:
             # Create a Race object...
@@ -391,7 +348,7 @@ class Election(object):
         Download all the reporting units and load the data.
         """
         # Get the data
-        row_list = self.client._fetch_csv(self.reporting_unit_file_path)
+        row_list = self._fetch_csv(self.reporting_unit_file_path)
         # Loop through them all
         for row in row_list:
             race_list = self.filter_races(statepostal=row['st_postal'])
@@ -439,7 +396,7 @@ class Election(object):
         Download the state's candidate file and load the data.
         """
         # Fetch the data from the FTP
-        row_list = self.client._fetch_csv(self.candidate_file_path)
+        row_list = self._fetch_csv(self.candidate_file_path)
         # Loop through it...
         for row in row_list:
             # Create a Candidate...
@@ -470,7 +427,7 @@ class Election(object):
         Download, parse and structure the state and county votes totals.
         """
         # Download the data
-        flat_list = self.client._fetch_flatfile(
+        flat_list = self._fetch_flatfile(
             self.results_file_path,
             [
                 # First the basic fields that will the same in each row
