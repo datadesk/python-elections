@@ -74,7 +74,7 @@ class AP(object):
             self._ftp_hits += 1
         return self._ftp
 
-    def get_electionday(self, election_date, **kwargs):
+    def get_election(self, election_date, **kwargs):
         """
         Takes a date in any common format (YYYY-MM-DD is preferred)
         and returns a list of APResult objects for states holding
@@ -87,7 +87,7 @@ class AP(object):
                 "The election date you've submitted could not be parsed. \
 Try submitting it in YYYY-MM-DD format."
             )
-        return ElectionDay(self, dt.strftime("%Y%m%d"), **kwargs)
+        return Election(self, dt.strftime("%Y%m%d"), **kwargs)
 
     #
     # Private methods
@@ -228,7 +228,7 @@ Try submitting it in YYYY-MM-DD format."
 # Result collections
 #
 
-class ElectionDay(object):
+class Election(object):
     """
     Base class that defines the methods to retrieve AP CSV
     data and shared properties and methods for State and
