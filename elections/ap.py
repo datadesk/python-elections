@@ -528,7 +528,7 @@ Try submitting it in YYYY-MM-DD format."
                     ballotOrder=candidate.ballotorder,
                     # Results
                     voteCount=int(candrow['vote_count']),
-                    votePct=calculate.percentage(int(candrow['vote_count']), votes_total, multiply=False),
+                    votePct=calculate.percentage(int(candrow['vote_count']), votes_total, multiply=False) or 0.0,
                     winner=candrow['is_winner'],
                     # Reporting unit
                     level=reporting_unit.level,
@@ -554,7 +554,7 @@ Try submitting it in YYYY-MM-DD format."
                 reporting_unit.precinctsreporting,
                 reporting_unit.precinctstotal,
                 multiply=False
-            )
+            ) or 0.0
             reporting_unit.votecount = votes_total
 
 
