@@ -32,7 +32,7 @@ from elex.api.models import (
 )
 
 
-class AP(object):
+class api(object):
     """
     The public client you can use to connect to AP's data feed.
 
@@ -74,7 +74,7 @@ class AP(object):
             self._ftp_hits += 1
         return self._ftp
 
-    def get_election(self, election_date, **kwargs):
+    def Election(self, election_date, **kwargs):
         """
         Takes a date in any common format (YYYY-MM-DD is preferred)
         and returns a list of APResult objects for states holding

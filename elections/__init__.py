@@ -1,2 +1,2 @@
-__all__ = ['AP']
-from ap import AP
+__all__ = ['api']
+from ap import api
