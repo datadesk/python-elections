@@ -481,6 +481,10 @@ Try submitting it in YYYY-MM-DD format."
             })
             race = self.get_race(ap_race_number)
 
+            # Pull the reporting unit
+            ru_key = "%s%s" % (row['county_name'], row['county_number'])
+            reporting_unit = self.get_reporting_unit(ru_key)
+
             # Total the votes
             votes_total = sum([int(o['vote_count']) for o in row['candidates']])
 
@@ -493,10 +497,6 @@ Try submitting it in YYYY-MM-DD format."
 
                 # Pull the existing candidate object
                 candidate = self.get_candidate(candrow["candidate_number"])
-
-                # Pull the reporting unit
-                ru_key = "%s%s" % (row['county_name'], row['county_number'])
-                reporting_unit = self.get_reporting_unit(ru_key)
 
                 cru = CandidateReportingUnit(
                     test=is_test,
@@ -535,9 +535,9 @@ Try submitting it in YYYY-MM-DD format."
                     reportingunitname=reporting_unit.reportingunitname,
                     reportingunitid=reporting_unit.reportingunitid,
                     fipscode=reporting_unit.fipscode,
-                    precinctsreporting=reporting_unit.precinctsreporting,
-                    precinctstotal=reporting_unit.precinctstotal,
-                    precinctsreportingpct=reporting_unit.precinctsreportingpct,
+                    precinctsreporting=int(row['precincts_reporting']),
+                    precinctstotal=int(row['total_precincts']),
+                    precinctsreportingpct=calculate.percentage(int(row['precincts_reporting']), int(row['total_precincts']), multiply=True) or 0.0,
                 )
 
                 cru.key = "%s%s%s" % (
