@@ -553,7 +553,7 @@ Try submitting it in YYYY-MM-DD format."
             reporting_unit.precinctsreportingpct = calculate.percentage(
                 reporting_unit.precinctsreporting,
                 reporting_unit.precinctstotal,
-                multiply=False
+                multiply=True
             ) or 0.0
             reporting_unit.votecount = votes_total
 
