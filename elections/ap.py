@@ -20,15 +20,12 @@ from pprint import pprint
 from cStringIO import StringIO
 from BeautifulSoup import BeautifulStoneSoup
 from dateutil.parser import parse as dateparse
-
 from elex.api.models import (
     Candidate,
     BallotMeasure,
     CandidateReportingUnit,
     ReportingUnit,
-    Race,
-    #Elections,
-    #Election
+    Race
 )
 
 
@@ -39,7 +36,7 @@ class Election(object):
     FTP_HOSTNAME = 'electionsonline.ap.org'
     ap_number_template = '%(number)s-%(state)s'
 
-    def __init__(self, election_date='20160201', username=None, password=None, results=True, **kwargs):
+    def __init__(self, electiondate='20160201', username=None, password=None, results=True, **kwargs):
         self.username = username
         self.password = password
         self._ftp = None
