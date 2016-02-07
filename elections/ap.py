@@ -9,20 +9,14 @@ In order to use this library, you must pay AP for access to the data.
 More information can be found on the AP's web site (http://www.apdigitalnews.\
 com/ap_elections.html) or by contacting Anthony Marquez at amarquez@ap.org.
 """
-import os
 import csv
-import copy
 import itertools
 import calculate
 from ftplib import FTP
-from datetime import date
-from pprint import pprint
 from cStringIO import StringIO
-from BeautifulSoup import BeautifulStoneSoup
 from dateutil.parser import parse as dateparse
 from elex.api.models import (
     Candidate,
-    BallotMeasure,
     CandidateReportingUnit,
     ReportingUnit,
     Race
@@ -36,13 +30,20 @@ class Election(object):
     FTP_HOSTNAME = 'electionsonline.ap.org'
     ap_number_template = '%(number)s-%(state)s'
 
-    def __init__(self, electiondate='20160201', username=None, password=None, results=True, **kwargs):
+    def __init__(
+        self,
+        electiondate='20160201',
+        username=None,
+        password=None,
+        results=True,
+        **kwargs
+    ):
         self.username = username
         self.password = password
         self._ftp = None
         self._ftp_hits = 0
         try:
-            dt = dateparse(election_date)
+            dt = dateparse(electiondate)
         except ValueError:
             raise ValueError(
                 "The election date you've submitted could not be parsed. \
@@ -53,7 +54,8 @@ Try submitting it in YYYY-MM-DD format."
 
         # Setting the file paths
         d = {'name': self.name}
-        self.results_file_path = "/Delegate_Tracking/US/flat/US_%(name)s.txt" % d
+        self.results_file_path = "/Delegate_Tracking/US/flat/US_%(name)s.\
+txt" % d
         self.race_file_path = "/inits/US/US_%(name)s_race.txt" % d
         self.reporting_unit_file_path = "/inits/US/US_%(name)s_ru.txt" % d
         self.candidate_file_path = "/inits/US/US_%(name)s_pol.txt" % d
@@ -483,7 +485,9 @@ Try submitting it in YYYY-MM-DD format."
             reporting_unit = self.get_reporting_unit(ru_key)
 
             # Total the votes
-            votes_total = sum([int(o['vote_count']) for o in row['candidates']])
+            votes_total = sum(
+                [int(o['vote_count']) for o in row['candidates']]
+            )
 
             # Loop through all the candidates
             for candrow in row['candidates']:
@@ -525,7 +529,11 @@ Try submitting it in YYYY-MM-DD format."
                     ballotOrder=candidate.ballotorder,
                     # Results
                     voteCount=int(candrow['vote_count']),
-                    votePct=calculate.percentage(int(candrow['vote_count']), votes_total, multiply=False) or 0.0,
+                    votePct=calculate.percentage(
+                        int(candrow['vote_count']),
+                        votes_total,
+                        multiply=False
+                    ) or 0.0,
                     winner=candrow['is_winner'],
                     # Reporting unit
                     level=reporting_unit.level,
@@ -534,7 +542,11 @@ Try submitting it in YYYY-MM-DD format."
                     fipscode=reporting_unit.fipscode,
                     precinctsreporting=int(row['precincts_reporting']),
                     precinctstotal=int(row['total_precincts']),
-                    precinctsreportingpct=calculate.percentage(int(row['precincts_reporting']), int(row['total_precincts']), multiply=True) or 0.0,
+                    precinctsreportingpct=calculate.percentage(
+                        int(row['precincts_reporting']),
+                        int(row['total_precincts']),
+                        multiply=True
+                    ) or 0.0,
                 )
 
                 cru.key = "%s%s%s" % (

@@ -1,2 +1,2 @@
-__all__ = ['Election']
 from ap import Election
+__all__ = ['Election']
