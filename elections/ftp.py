@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Collects and organizes election results published the Associated Press'
-data service.
+FTP data service.
 
 In order to use this library, you must pay AP for access to the data.
 
@@ -54,8 +54,7 @@ Try submitting it in YYYY-MM-DD format."
 
         # Setting the file paths
         d = {'name': self.name}
-        self.results_file_path = "/Delegate_Tracking/US/flat/US_%(name)s.\
-txt" % d
+        self.results_file_path = "/Delegate_Tracking/US/flat/US_%(name)s.txt" % d
         self.race_file_path = "/inits/US/US_%(name)s_race.txt" % d
         self.reporting_unit_file_path = "/inits/US/US_%(name)s_ru.txt" % d
         self.candidate_file_path = "/inits/US/US_%(name)s_pol.txt" % d

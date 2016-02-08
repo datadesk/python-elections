@@ -11,48 +11,44 @@ We need to work this out somehow. If you have any bright ideas let me know.
 """
 import os
 import unittest
-from elections import AP
+from elections import Election
 from datetime import date, datetime
-from elections.ap import Nomination, StateDelegation
-from elections.ap import Candidate, Race, ReportingUnit, Result, State
-from elections.ap import FileDoesNotExistError, BadCredentialsError
+#from elections.ap import Nomination, StateDelegation
+#from elections.ap import Candidate, Race, ReportingUnit, Result, State
+from elections import FileDoesNotExistError, BadCredentialsError
 
 
-class BaseTest(unittest.TestCase):
+
+class FTPTest(unittest.TestCase):
 
     def setUp(self):
-        self.client = AP(
-            os.environ['AP_USERNAME'],
-            os.environ['AP_PASSWORD']
-        )
-
-
-class APTest(BaseTest):
+        self.username = os.environ['AP_USERNAME'],
+        self.password = os.environ['AP_PASSWORD']
+        self.electiondate = "20160201"
+        self.baddate = "20160202"
 
     def test_badlogin(self):
-        client = AP("foo", "bar")
-        self.assertRaises(BadCredentialsError, client.get_state, os.environ['TEST_STATE'])
+        with self.assertRaises(BadCredentialsError):
+             Election(
+                electiondate=self.electiondate,
+                username="foo",
+                password="bar"
+            )
 
-    def test_badstate(self):
-        self.assertRaises(FileDoesNotExistError, self.client.get_state, "XYZ")
+    def test_baddate(self):
+        with self.assertRaises(FileDoesNotExistError):
+            Election(
+                electiondate=self.baddate,
+                username=self.username,
+                password=self.password,
+            )
 
-    def test_county_aggregates(self):
-        self.state = self.client.get_state(os.environ['TEST_STATE'])
-        county_list = self.state.counties
-        self.assertEqual(type(county_list), type([]))
-        [self.assertEqual(type(i), ReportingUnit) for i in county_list]
-        [self.assertEqual(i.is_state, False) for i in county_list]
-
-    def test_state_reporting_unit(self):
-        """
-        Makes sure Wyoming only has one 'state'-identified RU.
-        """
-        self.state = self.client.get_state(os.environ['TEST_STATE'])
-        self.assertEqual(type(self.state.races[0].state), ReportingUnit)
-
-    def test_getstate(self):
-        # Pull state
-        self.state = self.client.get_state(os.environ['TEST_STATE'])
+    def test_election(self):
+        self.election = Election(
+            electiondate=self.electiondate,
+            username=self.username,
+            password=self.password,
+        )
 
         # Races
         race_list = self.state.races
@@ -160,100 +156,6 @@ class APTest(BaseTest):
 
         # FTP hits
         self.assertEqual(self.client._ftp_hits, 1)
-
-    def test_getstates(self):
-        # Pull states, using the state twice since that's all we have access to.
-        self.first_two = self.client.get_states(os.environ['TEST_STATE'], os.environ['TEST_STATE'])
-        self.assertEqual(type(self.first_two), type([]))
-        self.assertEqual(len(self.first_two), 2)
-        [self.assertEqual(type(i), State) for i in self.first_two]
-
-        # FTP hits
-        self.assertEqual(self.client._ftp_hits, 1)
-
-#     def test_topofticket(self):
-#         # The 2012 general election
-#         self.nov6 = self.client.get_topofticket()
-#         self.assertEqual(len(self.nov6.filter_races(office_name='President')), 52)
-#         self.assertEqual(len(self.nov6.filter_races(office_name='President', state_postal='CO')), 1)
-#         # Test custom properties
-#         self.assertEqual(len(self.nov6.states), 51)
-#         [self.assertEqual(type(i), ReportingUnit) for i in self.nov6.states]
-#         # Pull some bum dates
-#         self.assertRaises(FileDoesNotExistError, self.client.get_topofticket, "2011-02-07")
-#         self.assertRaises(ValueError, self.client.get_topofticket, 'abcdef')
-#         # Test the results against a get_state method to verify they are the same
-#         self.tt = self.client.get_topofticket()
-#         self.st = self.client.get_state(os.environ['TEST_STATE'])
-# #        self.tt = self.tt.filter_races(office_name='President', state_postal=os.environ['TEST_STATE'])[0]
-# #        self.st = self.st.filter_races(office_name='President', state_postal=os.environ['TEST_STATE'])[0]
-# #        self.assertEqual(
-# #            [i.vote_total for i in self.tt.state.results],
-# #            [i.vote_total for i in self.st.state.results]
-# #        )
-#         refs = self.tt.filter_races(is_referendum=True)
-#         [self.assertTrue(i.is_referendum)
-#             for i in refs if i.office_name in [
-#                 'Amendment',
-#                 'Initiative',
-#                 'Issue',
-#                 'Measure',
-#                 'Proposition',
-#                 'Question',
-#                 'Referendum'
-#             ]
-#         ]
-
-#    def test_presidential_summary(self):
-#        self.nov6 = self.client.get_presidential_summary()
-#        self.assertEqual(len(self.nov6.states), 51)
-#        self.assertEqual(len([self.nov6.nationwide]), 1)
-#        self.assertEqual(self.nov6.nationwide.electoral_votes_total, 538)
-#        self.assertEqual(sum([i.electoral_votes_total for i in self.nov6.states]), 538)
-#        [self.assertTrue(isinstance(i,ReportingUnit)) for i in self.nov6.counties]
-#        [self.assertTrue(isinstance(i.electoral_votes_total,int))
-#            for i in self.nov6.nationwide.results]
-#        for state in self.nov6.states:
-#            [self.assertTrue(isinstance(i.electoral_votes_total,int))
-#                for i in state.results]
-#        for county in self.nov6.counties:
-#            [self.assertTrue(isinstance(i.vote_total,int))
-#                for i in county.results]
-#        self.districts = self.client.get_presidential_summary(districts=True)
-#        self.assertEqual(len(self.districts.districts), 5)
-#        self.assertEqual(len(self.nov6.districts), 0)
-
-    def test_congressional_trends(self):
-        self.trends = self.client.get_congressional_trends()
-        for chamber_name in ('house', 'senate'):
-            chamber = getattr(self.trends, chamber_name)
-            self.assertEqual(isinstance(chamber.dem_net_change, int), True)
-            self.assertEqual(isinstance(chamber.gop_net_change, int), True)
-            self.assertEqual(isinstance(chamber.others_net_change, int), True)
-            self.assertEqual(isinstance(chamber.dem_won_total, int), True)
-            self.assertEqual(isinstance(chamber.gop_won_total, int), True)
-            self.assertEqual(isinstance(chamber.others_won_total, int), True)
-            self.assertEqual(isinstance(chamber.dem_leading, int), True)
-            self.assertEqual(isinstance(chamber.gop_leading, int), True)
-            self.assertEqual(isinstance(chamber.others_leading, int), True)
-            self.assertEqual(isinstance(chamber.dem_current_total, int), True)
-            self.assertEqual(isinstance(chamber.gop_current_total, int), True)
-            self.assertEqual(isinstance(chamber.others_current_total, int), True)
-            self.assertEqual(isinstance(chamber.dem_holdovers, int), True)
-            self.assertEqual(isinstance(chamber.gop_holdovers, int), True)
-            self.assertEqual(isinstance(chamber.others_holdovers, int), True)
-            self.assertEqual(isinstance(chamber.dem_insufficient, int), True)
-            self.assertEqual(isinstance(chamber.gop_insufficient, int), True)
-            self.assertEqual(isinstance(chamber.others_insufficient, int), True)
-
-#    def test_delegate_summary(self):
-#        self.delsum = self.client.get_delegate_summary()
-#        self.assertEqual(len(self.delsum), 2)
-#        [self.assertEqual(type(i), Nomination) for i in self.delsum]
-#        [self.assertEqual(type(i), Candidate) for i in self.delsum[0].candidates]
-#        [self.assertEqual(type(i), StateDelegation) for i in self.delsum[0].states]
-#        [self.assertEqual(type(i), Candidate) for i in self.delsum[0].states[0].candidates]
-
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,2 +1,10 @@
-from ap import Election
-__all__ = ['Election']
+from ftp import (
+    Election,
+    FileDoesNotExistError,
+    BadCredentialsError
+)
+__all__ = (
+    'Election',
+    'FileDoesNotExistError',
+    'BadCredentialsError'
+)
