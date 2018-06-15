@@ -1,3 +1,5 @@
+## This library has been deprecated in favor of [newsdev/elex](https://github.com/newsdev/elex). Use that instead.
+
 <pre><code>   _
   (_)
  <___>
